@@ -1,6 +1,6 @@
 push:
-	chmod +777 ./push_nvim_config.sh
+	chmod +777 ./*
 	./push_nvim_config.sh
 pull:
-	chomd +777 ./pull_nvim_config.sh
+	chmod +777 ./*	
 	./pull_nvim_config.sh
