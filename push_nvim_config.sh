@@ -2,7 +2,7 @@
 
 rm -rf ./neovim/* 
 
-root_dir="/home/hpf"
+root_dir="/home/$(whoami)"
 
 # 源文件夹路径
 source_folder_1=$root_dir"/.config/nvim"
