@@ -8,8 +8,8 @@ root_dir="/home/$(whoami)"
 source_folder_1=$root_dir"/.config/nvim"
 source_folder_2=$root_dir"/.local/share/nvim"
 # 目标压缩文件路径
-target_file_1="./neovim/config_nvim.gz"
-target_file_2="./neovim/local_share_nvim.gz"
+target_file_1="./full_neovim/config_nvim.gz"
+target_file_2="./full_neovim/local_share_nvim.gz"
 
 # 压缩文件夹
 tar -czf "$target_file_1" -C "$(dirname "$source_folder_1")" "$(basename "$source_folder_1")";

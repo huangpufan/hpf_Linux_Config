@@ -4,8 +4,8 @@ rm -rf $root_dir/.config/nvim
 rm -rf $root_dir/.local/share/nvim
 
 # 压缩文件路径
-archive_file_1="./neovim/config_nvim.gz"
-archive_file_2="./neovim/local_share_nvim.gz"
+archive_file_1="./full_neovim/config_nvim.gz"
+archive_file_2="./full_neovim/local_share_nvim.gz"
 
 # 目标解压目录
 target_folder_1=$root_dir/.config
