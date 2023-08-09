@@ -11,5 +11,7 @@ archive_file_2="./neovim/local_share_nvim.gz"
 target_folder_1=$root_dir/.config
 target_folder_2=$root_dir/.local/share
 # 解压缩文件
-tar -xzf "$archive_file_1" -C "$target_folder_1";
-tar -xzf "$archive_file_2" -C "$target_folder_2";
+tar -xzf $archive_file_1
+mv ./neovim/nvim target_folder_1
+tar -xzf $archive_file_2
+mv ./neovim/nvim target_folder_2
