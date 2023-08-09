@@ -1,0 +1,57 @@
+##############################  Only For WSL.  ##################################
+
+########### Man color set ############
+export LESS=-R
+export LESS_TERMCAP_mb=$'\E[1;31m'     # begin blink
+export LESS_TERMCAP_md=$'\E[1;36m'     # begin bold
+export LESS_TERMCAP_me=$'\E[0m'        # reset bold/blink
+export LESS_TERMCAP_so=$'\E[01;44;33m' # begin reverse video
+export LESS_TERMCAP_se=$'\E[0m'        # reset reverse video
+export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
+export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
+
+export hostip=$(cat /etc/resolv.conf |grep -oP '(?<=nameserver\ ).*')
+alias setss='export all_proxy="socks5://${hostip}:7890";'
+alias unsetss='unset all_proxy && unset ALL_PROXY'
+
+#display cursor
+echo -e "\033[?25h"
+#################################################################################
+
+################################## My Alias #####################################
+
+####### Bashrc editting ways set.#######
+# Use nvim by default,if no nvim,use vim.
+if command -v zoxide >/dev/null 2>&1; then
+    alias eb="nvim ~/.bashrc"
+else
+    alias eb="vim ~/.bashrc"
+fi
+alias sb="source ~/.bashrc"
+
+########## tmux related alias ##########
+alias a="tmux a -t"
+alias new="tmux new -s"
+alias kt="tmux kill-server"
+
+########## nvim related alias ##########
+alias clearsession="rm -rf~/.local/share/nvim/sessions/*"
+alias nivm="nvim"
+alias en="cd ~/hpf_Linux_Config/nvim && nvim"
+
+alias lls="du -h -d 1 ."
+
+########## fzf related alias ###########
+
+# Use bat to preview file contents when using fzf.
+alias f="fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}'"
+
+############### zoxide #################
+if command -v zoxide >/dev/null 2>&1; then
+    # 启用alias
+    alias cd="z"
+    eval "$(~/.local/bin/zoxide init bash)"
+fi
+
+# For Software
+#eval "$(zoxide init bash)"
