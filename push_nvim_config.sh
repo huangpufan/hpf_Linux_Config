@@ -12,7 +12,7 @@ target_file_1="./neovim/config_nvim.gz"
 target_file_2="./neovim/local_share_nvim.gz"
 
 # 压缩文件夹
-tar -czf "$target_file_1" -C "$(dirname "$source_folder_1")" "$(basename "$source_folder_1")"
-tar -czf "$target_file_2" -C "$(dirname "$source_folder_2")" "$(basename "$source_folder_2")"
+tar -czf "$target_file_1" -C "$(dirname "$source_folder_1")" "$(basename "$source_folder_1")";
+tar -czf "$target_file_2" -C "$(dirname "$source_folder_2")" "$(basename "$source_folder_2")";
 
 echo "本机 nvim 配置已经成功更新至 neovim 文件夹";
