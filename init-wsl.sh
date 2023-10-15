@@ -49,20 +49,23 @@ alias setss='export all_proxy=\"socks5://\${hostip}:7890\";'
 alias unsetss='unset all_proxy''
 EOF
 ) 
- 
+setss
 echo -e $content >> $BASHRC
 echo "bashrc 更新成功"
  
  
 # Step 2.5 git ssh key
- 
+
  
  
 # Step 3 nvim 相关
 sudo apt -y install -y gcc wget iputils-ping python3-pip git bear tig shellcheck ripgrep
 sudo apt -y install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
-sudo apt -y install efm-langserver ccls npm cargo xclip lua5.4
+sudo apt -y install ccls npm cargo xclip
 sudo snap install marksman
+if [[ $ubuntu_version == "22.04" ]] ; then
+  sudo apt -y install efm-langserver lua5.4
+fi
 git clone --depth=1 https://github.com/neovim/neovim && cd neovim
 make CMAKE_BUILD_TYPE=Release -j8
 sudo make install
