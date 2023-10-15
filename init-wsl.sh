@@ -1,39 +1,41 @@
-BASHRC = "~/.bashrc"
- 
+#!/bin/bash
+
+# 脚本启动方式：sudo bash init-wsl.sh
+BASHRC="/home/($whoami)/.bashrc"
+
  
 # Step 1 换源
  
-mv /etc/apt/sources.list /etc/apt/sources.list.backup
+sudo mv /etc/apt/sources.list /etc/apt/sources.list.backup
  # 获取Ubuntu版本号
 ubuntu_version=$(cat /etc/os-release | grep VERSION_ID | cut -d '=' -f 2 | tr -d '"')
 
 # 判断Ubuntu版本并执行相应的操作
 if [[ "$ubuntu_version" == "22.04" ]]; then
   # 如果是Ubuntu 22.04，则执行一些操作
-  echo "这是Ubuntu 22.04版本"
+  echo "这是Ubuntu 22.04 版本"
   content="# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted universe multiverse"
-
 elif  [[ "$ubuntu_version" == "20.04" ]]; then
-  echo "这是Ubuntu 20.04版本，执行其他操作..."
+  echo "这是Ubuntu 20.04 版版本"
   content="
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal main restricted universe multiverse
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted universe multiverse"
 else
-  echo "未识别的 ubuntu 版本号"
+  echo "未识别的 ubuntu 版本号，配置终止"
   exit 1
 fi
  
 filename="/etc/apt/sources.list"   
 # 将内容写入文件
-echo "$content" > "$filename"
-sudo apt update
-sudo apt upgrade
+sudo echo "$content" > "$filename"
+sudo apt -y update
+sudo apt -y upgrade
 # 输出成功消息
 echo "换源成功：$filename"
  
