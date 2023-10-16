@@ -1,0 +1,8 @@
+# My Alias
+alias eb="nvim ~/.bashrc"
+alias sb="source ~/.bashrc"
+
+# Only For WSL.
+export hostip=\$(cat /etc/resolv.conf |grep -oP '(?<=nameserver\ ).*')
+alias setss='export all_proxy=\"socks5://\${hostip}:7890\";'
+alias unsetss='unset all_proxy''

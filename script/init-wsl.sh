@@ -4,7 +4,10 @@
 # 脚本启动方式：sudo bash init-wsl.sh
 BASHRC="/home/($whoami)/.bashrc"
 
- 
+# 创建用户目录下惯用文件夹
+cd ~
+mkdir project install download
+
 # Step 1 换源
 echo "开始换源\n\n"
 sudo mv /etc/apt/sources.list /etc/apt/sources.list.backup
@@ -43,16 +46,7 @@ echo "换源结束：$filename \n\n"
  
 #Step 2 编辑 .bashrc 文件
 echo "开始编辑 bashrc 文件 \n\n"
-content=$(cat <<'EOF'
-alias eb='nvim ~/.bashrc'
-alias sb='source ~/.bashrc'
-export hostip=\$(cat /etc/resolv.conf |grep -oP '(?<=nameserver\ ).*')
-alias setss='export all_proxy=\"socks5://\${hostip}:7890\";'
-alias unsetss='unset all_proxy''
-EOF
-) 
-setss
-echo -e $content >> $BASHRC
+cat ./bashrc_append >> $BASHRC
 echo "bashrc 编辑结束 \n\n"
  
  
