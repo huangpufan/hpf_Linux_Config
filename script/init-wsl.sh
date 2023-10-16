@@ -1,15 +1,29 @@
 #!/bin/bash
 
+# 函数定义区
+print_with_padding() {
+    local string="$1"
+    local length=${#string}
+    local padding_length=$((70 - length))
+
+    echo
+    echo -n "$string"
+    for ((i=0; i<padding_length; i++)); do
+        echo -n "-"
+    done
+    echo
+}
 # 变量定义区
 # 脚本启动方式：sudo bash init-wsl.sh
-BASHRC="/home/($whoami)/.bashrc"
+BASHRC="/home/$(whoami)/.bashrc"
+GIT_EMAIL="59730801@qq.com"
 
 # 创建用户目录下惯用文件夹
 cd ~
 mkdir project install download
 
 # Step 1 换源
-echo "开始换源\n\n"
+print_with_padding "开始换源"
 sudo mv /etc/apt/sources.list /etc/apt/sources.list.backup
  # 获取Ubuntu版本号
 ubuntu_version=$(cat /etc/os-release | grep VERSION_ID | cut -d '=' -f 2 | tr -d '"')
@@ -17,21 +31,21 @@ ubuntu_version=$(cat /etc/os-release | grep VERSION_ID | cut -d '=' -f 2 | tr -d
 # 判断Ubuntu版本并执行相应的操作
 if [[ "$ubuntu_version" == "22.04" ]]; then
   # 如果是Ubuntu 22.04，则执行一些操作
-  echo "这是Ubuntu 22.04 版本"
+  echo "这是 Ubuntu 22.04 版本"
   content="# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted universe multiverse"
 elif  [[ "$ubuntu_version" == "20.04" ]]; then
-  echo "这是Ubuntu 20.04 版版本"
+  echo "这是 Ubuntu 20.04 版版本"
   content="
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal main restricted universe multiverse
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
 	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted universe multiverse"
 else
-  echo "未识别的 ubuntu 版本号，配置终止"
+  echo "!!! 未识别的 ubuntu 版本号，配置终止"
   exit 1
 fi
  
@@ -41,19 +55,22 @@ sudo echo "$content" > "$filename"
 sudo apt -y update
 sudo apt -y upgrade
 # 输出成功消息
-echo "换源结束：$filename \n\n"
+print_with_padding "换源结束：$filename"
  
  
 #Step 2 编辑 .bashrc 文件
-echo "开始编辑 bashrc 文件 \n\n"
+print_with_padding "开始编辑 bashrc 文件"
 cat ./bashrc_append >> $BASHRC
-echo "bashrc 编辑结束 \n\n"
+source $BASHRC
+setss
+print_with_padding "bashrc 编辑结束"
  
  
 # Step 2.5 git ssh key
+print_with_padding "开始生成 ssh key"
+echo -e '\n' | ssh-keygen -t ed25519 -C $GIT_EMAIL
+print_with_padding "ssh key 生成结束" 
 
- 
- 
 # Step 3 nvim 相关
 sudo apt -y install -y gcc wget iputils-ping python3-pip git bear tig shellcheck ripgrep
 sudo apt -y install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
@@ -80,9 +97,9 @@ EOF
 ) 
 echo -e $content>> $BASHRC
 # bat
-echo "Bat install start."
+print_with_padding "Bat install start."
 cargo install --locked bat
-echo "Bat install success!"
+print_with_padding "Bat install success!"
 # lazygit
 # cd ~/download/
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
