@@ -65,6 +65,8 @@ fi
 git clone --depth=1 https://github.com/neovim/neovim && cd neovim
 make CMAKE_BUILD_TYPE=Release -j8
 sudo make install
+cd ..
+rm -rf ./neovim
  
  
 # Step 4 各类基础软件
