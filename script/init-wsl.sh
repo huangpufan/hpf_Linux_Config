@@ -29,35 +29,35 @@ mkdir project install download
 
 
 # Step 1 换源
-print_with_padding "开始换源"
+print_with_padding "Changing sources list start."
 sudo mv /etc/apt/sources.list /etc/apt/sources.list.backup
  # 获取Ubuntu版本号
 ubuntu_version=$(cat /etc/os-release | grep VERSION_ID | cut -d '=' -f 2 | tr -d '"')
 
 # 判断Ubuntu版本并执行相应的操作
 if [[ "$ubuntu_version" == "22.04" ]]; then
-  # 如果是Ubuntu 22.04，则执行一些操作
-  echo "这是 Ubuntu 22.04 版本"
+  print_with_padding "This is ubuntu 22.04 verison"
   sudo cp ./sourcelist-for-ubuntu2204 /etc/apt/sources.list
 elif  [[ "$ubuntu_version" == "20.04" ]]; then
-  echo "这是 Ubuntu 20.04 版版本"
+  print_with_padding "This is ubuntu 20.04 verison"
   sudo cp ./sourcelist-for-ubuntu2004 /etc/apt/sources.list
 else
-  echo "!!! 未识别的 ubuntu 版本号，配置终止"
+  print_with_padding "!!! This Configuration is not prepared for your ubuntu version.Terminated."
   exit 1
 fi
  
 sudo apt -y update
 sudo apt -y upgrade
 # 输出成功消息
-print_with_padding "换源结束：$filename"
+print_with_padding "Changing sources list over."
  
  
 #Step 2 编辑 .bashrc 文件
 print_with_padding "开始编辑 bashrc 文件"
 cat ./bashrc_append >> ~/.bashrc
 source ~/.bashrc
-setss
+export hostip=$(cat /etc/resolv.conf |grep -oP '(?<=nameserver\ ).*')
+export all_proxy="socks5://${hostip}:7890";
 print_with_padding "bashrc 编辑结束"
  
  
