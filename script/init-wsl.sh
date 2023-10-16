@@ -4,7 +4,7 @@
 print_with_padding() {
     local string="$1"
     local length=${#string}
-    local padding_length=$((70 - length))
+    local padding_length=$((100 - length))
 
     echo
     echo -n "$string"
@@ -80,7 +80,7 @@ if [[ $ubuntu_version == "22.04" ]] ; then
   sudo apt -y install efm-langserver lua5.4
 fi
 git clone --depth=1 https://github.com/neovim/neovim && cd neovim
-make CMAKE_BUILD_TYPE=Release -j8
+make CMAKE_BUILD_TYPE=Release -j16
 sudo make install
 cd ..
 rm -rf ./neovim
@@ -90,18 +90,13 @@ rm -rf ./neovim
 sudo apt -y install htop
 # zoxide 
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
-content=$(cat <<'EOF'
-eval "$(mcfly init bash)"
-alias cd="z"
-EOF 
-) 
-echo -e $content>> $BASHRC
+
 # bat
 print_with_padding "Bat install start."
 cargo install --locked bat
 print_with_padding "Bat install success!"
 # lazygit
-# cd ~/download/
+cd ~/download/
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
 curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
 tar xf lazygit.tar.gz lazygit
@@ -110,11 +105,9 @@ rm -rf lazygit* && cd
 # fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 yes | ~/.fzf/install
-echo -e "alias f=\"fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}'\"" >> $BASHRC
 
 # tmux
 sudo apt -y install tmux
-echo -e "alias a=\"tmux a -t\"" >>  ~/.bashrc
 
 # cgdb
 cd download && git clone git://github.com/cgdb/cgdb.git --depth=1 && cd cgdb
