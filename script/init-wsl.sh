@@ -34,26 +34,15 @@ ubuntu_version=$(cat /etc/os-release | grep VERSION_ID | cut -d '=' -f 2 | tr -d
 if [[ "$ubuntu_version" == "22.04" ]]; then
   # 如果是Ubuntu 22.04，则执行一些操作
   echo "这是 Ubuntu 22.04 版本"
-  content="# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
-	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse
-	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
-	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
-	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted universe multiverse"
+  cp ./sourcelist-for-ubuntu2204 /etc/apt/sources.list
 elif  [[ "$ubuntu_version" == "20.04" ]]; then
   echo "这是 Ubuntu 20.04 版版本"
-  content="
-	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal main restricted universe multiverse
-	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
-	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
-	deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted universe multiverse"
+  cp ./sourcelist-for-ubuntu2004 /etc/apt/sources.list
 else
   echo "!!! 未识别的 ubuntu 版本号，配置终止"
   exit 1
 fi
  
-filename="/etc/apt/sources.list"   
-# 将内容写入文件
-sudo echo "$content" > "$filename"
 sudo apt -y update
 sudo apt -y upgrade
 # 输出成功消息
