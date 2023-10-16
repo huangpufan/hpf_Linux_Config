@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# 脚本启动方式：bash init-wsl.sh
+
+
 # 函数定义区
 print_with_padding() {
     local string="$1"
@@ -14,7 +17,6 @@ print_with_padding() {
     echo
 }
 # 变量定义区
-# 脚本启动方式：sudo bash init-wsl.sh
 BASHRC="/home/$(whoami)/.bashrc"
 GIT_EMAIL="59730801@qq.com"
 
