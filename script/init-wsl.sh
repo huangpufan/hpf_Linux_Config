@@ -1,11 +1,12 @@
 #!/bin/bash
 
+# 变量定义区
 # 脚本启动方式：sudo bash init-wsl.sh
 BASHRC="/home/($whoami)/.bashrc"
 
  
 # Step 1 换源
- 
+echo "开始换源\n\n"
 sudo mv /etc/apt/sources.list /etc/apt/sources.list.backup
  # 获取Ubuntu版本号
 ubuntu_version=$(cat /etc/os-release | grep VERSION_ID | cut -d '=' -f 2 | tr -d '"')
@@ -37,10 +38,11 @@ sudo echo "$content" > "$filename"
 sudo apt -y update
 sudo apt -y upgrade
 # 输出成功消息
-echo "换源成功：$filename"
+echo "换源结束：$filename \n\n"
  
  
 #Step 2 编辑 .bashrc 文件
+echo "开始编辑 bashrc 文件 \n\n"
 content=$(cat <<'EOF'
 alias eb='nvim ~/.bashrc'
 alias sb='source ~/.bashrc'
@@ -51,7 +53,7 @@ EOF
 ) 
 setss
 echo -e $content >> $BASHRC
-echo "bashrc 更新成功"
+echo "bashrc 编辑结束 \n\n"
  
  
 # Step 2.5 git ssh key
