@@ -26,7 +26,7 @@ print_with_padding "HPF WSL Ubuntu Configuration start!"
 print_with_padding "Create usual file folder"
 cd ~
 mkdir project install download
-
+cd -
 
 # Step 1 换源
 print_with_padding "Changing sources list start."
