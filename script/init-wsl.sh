@@ -5,6 +5,7 @@
 # 变量定义区
 BASHRC="/home/$(whoami)/.bashrc"
 GIT_EMAIL="59730801@qq.com"
+GIT_NAME="huangpufan"
 
 # 函数定义区
 print_with_padding() {
@@ -64,6 +65,9 @@ print_with_padding "bashrc 编辑结束"
 # Step 2.5 git ssh key
 print_with_padding "SSH key generating start."
 echo -e '\n' | ssh-keygen -t ed25519 -C $GIT_EMAIL
+git config --global user.name $GIT_NAME
+git config --global user.email $GIT_EMAIL
+
 print_with_padding "SSH key has been generated." 
 
 # Step 3 nvim 相关
