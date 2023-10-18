@@ -84,6 +84,8 @@ make CMAKE_BUILD_TYPE=Release -j16
 sudo make install
 cd ..
 rm -rf ./neovim
+
+
  
  
 # Step 4 各类基础软件
