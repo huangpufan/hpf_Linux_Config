@@ -63,3 +63,16 @@ let g:gitblame_ignored_filetypes = ['lua', 'markdown', 'sh']
 
 " 因为 nvim-treesitter-textobjects 使用 x 来跳转，原始的 x 被映射为 xx
 nn xx x
+
+" use alter + left/right to switch buffer.
+noremap<M-Left> :bp<CR>
+noremap<M-Right> :bn<CR>
+
+" use esc to enable nohilight.
+noremap<Esc> :noh<CR>
+
+" set tab = 2 space.
+set tabstop=2
+set shiftwidth=2
+" Shift tab to space.
+set expandtab
