@@ -21,7 +21,7 @@ dashboard.section.header.val = {
 dashboard.section.buttons.val = {}
 
 dashboard.section.buttons.val = {
-  dashboard.button("       ,f", "  > Find file", ":Telescope find_files<CR>"),
+  dashboard.button("       ,f", "󰈞 > Find file", ":Telescope find_files<CR>"),
   dashboard.button("<Space>ft", "  > FileTree", ":NvimTreeOpen<CR>"),
 }
 
