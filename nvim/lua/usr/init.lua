@@ -23,7 +23,7 @@ require("fidget").setup()
 require("nvim-navic").setup()
 require("barbecue").setup()
 require("nvim-lightbulb").update_lightbulb()
-require("im_select").setup()
+-- require("im_select").setup()
 require("lualine").setup()
 require("rsync").setup()
 
