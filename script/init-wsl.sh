@@ -29,39 +29,6 @@ cd ~
 mkdir project install download
 cd -
 
-# Step 1 换源
-print_with_padding "Changing sources list start."
-sudo mv /etc/apt/sources.list /etc/apt/sources.list.backup
- # 获取Ubuntu版本号
-ubuntu_version=$(cat /etc/os-release | grep VERSION_ID | cut -d '=' -f 2 | tr -d '"')
-
-# 判断Ubuntu版本并执行相应的操作
-if [[ "$ubuntu_version" == "22.04" ]]; then
-  print_with_padding "This is ubuntu 22.04 verison"
-  sudo cp ./sourcelist-for-ubuntu2204 /etc/apt/sources.list
-elif  [[ "$ubuntu_version" == "20.04" ]]; then
-  print_with_padding "This is ubuntu 20.04 verison"
-  sudo cp ./sourcelist-for-ubuntu2004 /etc/apt/sources.list
-else
-  print_with_padding "!!! This Configuration is not prepared for your ubuntu version.Terminated."
-  exit 1
-fi
- 
-sudo apt -y update
-sudo apt -y upgrade
-# 输出成功消息
-print_with_padding "Changing sources list over."
- 
- 
-#Step 2 编辑 .bashrc 文件
-print_with_padding "开始编辑 bashrc 文件"
-cat ./bashrc_append >> ~/.bashrc
-source ~/.bashrc
-export hostip=$(cat /etc/resolv.conf |grep -oP '(?<=nameserver\ ).*')
-export all_proxy="socks5://${hostip}:7890";
-print_with_padding "bashrc 编辑结束"
- 
- 
 # Step 2.5 git ssh key
 print_with_padding "SSH key generating start."
 echo -e '\n' | ssh-keygen -t ed25519 -C $GIT_EMAIL
@@ -70,23 +37,6 @@ git config --global user.email $GIT_EMAIL
 
 print_with_padding "SSH key has been generated." 
 
-# Step 3 nvim 相关
-print_with_padding "neovim install start"
-sudo apt -y install -y gcc wget iputils-ping python3-pip git bear tig shellcheck ripgrep
-sudo apt -y install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
-sudo apt -y install ccls npm cargo xclip
-sudo snap install marksman
-if [[ $ubuntu_version == "22.04" ]] ; then
-  sudo apt -y install efm-langserver lua5.4
-fi
-git clone --depth=1 https://github.com/neovim/neovim && cd neovim
-make CMAKE_BUILD_TYPE=Release -j16
-sudo make install
-cd ..
-rm -rf ./neovim
-
-
- 
  
 # Step 4 各类基础软件
 sudo apt -y install htop
