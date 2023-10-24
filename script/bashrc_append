@@ -6,7 +6,8 @@ alias unsetss='unset all_proxy'
 # My Alias
 alias eb="nvim ~/.bashrc"
 alias sb="source ~/.bashrc"
-alias cd="z"
+alias cd="z"  
+alias cn="rm -f ~/.local/share/nvim/sessions/*"
 alias f="fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}'"
 
 
