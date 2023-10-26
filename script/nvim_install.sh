@@ -4,6 +4,9 @@ sudo apt -y install -y gcc wget iputils-ping python3-pip git bear tig shellcheck
 sudo apt -y install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
 sudo apt -y install ccls npm cargo xclip
 sudo snap install marksman
+cp ./../install_package/marksman-linux-x64 ~/.local/bin/
+npm install -g vim-language-server
+
 if [[ $ubuntu_version == "22.04" ]] ; then
   sudo apt -y install efm-langserver lua5.4
 fi

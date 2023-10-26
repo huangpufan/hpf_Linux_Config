@@ -33,8 +33,8 @@ autocmd TextYankPost *
 " set foldexpr=nvim_treesitter#foldexpr()
 
 " floaterm 永远的神
-let g:floaterm_width = 0.8
-let g:floaterm_height = 0.8
+let g:floaterm_width = 0.85
+let g:floaterm_height = 0.85
 let g:floaterm_keymap_prev   = '<C-p>'
 let g:floaterm_keymap_new    = '<C-n>'
 let g:floaterm_keymap_toggle = '<C-t>'
