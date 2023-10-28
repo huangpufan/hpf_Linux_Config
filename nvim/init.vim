@@ -70,7 +70,7 @@ noremap<M-Right> :bn<CR>
 
 " use esc to enable nohilight.
 noremap<Esc> :noh<CR>
-
+autocmd VimEnter * NvimTreeOpen
 " set tab = 2 space.
 set tabstop=2
 set shiftwidth=2
