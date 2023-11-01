@@ -70,24 +70,10 @@ noremap<M-Right> :bn<CR>
 
 " use esc to enable nohilight.
 noremap<Esc> :noh<CR>
-autocmd VimEnter * NvimTreeOpen
+"autocmd VimEnter * NvimTreeOpen
 " set tab = 2 space.
 set tabstop=2
 set shiftwidth=2
 " Shift tab to space.
 set expandtab
-
-if executable('clipboard-provider')
-  let g:clipboard = {
-          \ 'name': 'myClipboard',
-          \     'copy': {
-          \         '+': 'clipboard-provider copy',
-          \         '*': 'clipboard-provider copy',
-          \     },
-          \     'paste': {
-          \         '+': 'clipboard-provider paste',
-          \         '*': 'clipboard-provider paste',
-          \     },
-          \ }
-endif
 
