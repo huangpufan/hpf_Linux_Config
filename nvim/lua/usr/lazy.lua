@@ -100,7 +100,7 @@ require("lazy").setup({
   "dhruvasagar/vim-table-mode", -- 快速编辑 markdown 的表格
   "xiyaowong/telescope-emoji.nvim", -- 使用 telescope 搜索 emoji 表情
   -- 高效编辑
-  "tpope/vim-commentary", -- 快速注释代码
+  -- "tpope/vim-commentary", -- 快速注释代码
   "kylechui/nvim-surround", -- 快速编辑单词两侧的符号
   -- "tpope/vim-sleuth",               -- 自动设置 tabstop 之类的
   "tpope/vim-repeat", -- 更加强大的 `.`

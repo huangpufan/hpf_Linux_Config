@@ -1,0 +1,79 @@
+#!/bin/bash
+# Taken and modified from https://github.com/agriffis/skel/blob/master/neovim/bin/clipboard-provider
+#
+# clipboard provider for neovim
+#
+# :help provider-clipboard
+
+#exec 2>> ~/clipboard-provider.out
+#set -x
+
+: ${COPY_PROVIDERS:=tmux pb xclip osc52 local}
+: ${PASTE_PROVIDERS:=xclip pb tmux local}
+: ${TTY:=`(tty || tty </proc/$PPID/fd/0) 2>/dev/null | grep /dev/`}
+
+LOCAL_STORAGE=$HOME/.clipboard-provider.out
+
+main() {
+    declare buffer status=1
+
+    case $1 in
+        copy)
+            buffer=$(base64 | tr -d '\n')
+            internal() { base64 --decode <<<"$buffer"; }
+            for p in $COPY_PROVIDERS; do
+                internal | $p-provider copy && status=0
+            done ;;
+        paste)
+            for p in $PASTE_PROVIDERS; do
+                $p-provider paste && status=0 && break
+            done ;;
+    esac
+
+    exit $status
+}
+
+is-copy() {
+    if [[ "$1" == "copy" ]]; then return 0; else return 1; fi
+}
+
+tmux-provider() {
+    [[ -n $TMUX ]] || return 1
+    case $1 in
+        copy) internal | tmux load-buffer - ;;
+        paste) tmux save-buffer - ;;
+    esac
+}
+
+pb-provider() {
+    if ! command -v pbcopy &>/dev/null;then return $(is-copy $1); fi
+    case $1 in
+        copy) internal | pbcopy ;;
+        paste) pbpaste ;;
+    esac
+}
+
+osc52-provider() {
+    # HACK: this ignores stdin and looks directly at the base64 buffer
+    case $1 in
+        copy) [[ -n "$TTY" ]] && printf $'\e]52;c;%s\a' "$buffer" > "$TTY" ;;
+        paste) return 1 ;;
+    esac
+}
+
+local-provider() {
+    case $1 in
+        copy) internal > $LOCAL_STORAGE ;;
+        paste) cat $LOCAL_STORAGE && return 0;;
+    esac
+}
+
+xclip-provider() {
+    if ! command -v xclip &>/dev/null;then return $(is-copy $1); fi
+    case $1 in
+        copy) internal | xclip -i -selection clipboard;;
+        paste) xclip -o -selection clipboard;;
+    esac
+}
+
+main "$@"
