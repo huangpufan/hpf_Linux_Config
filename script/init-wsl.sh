@@ -77,4 +77,5 @@ make install
 print_with_padding "cgdb install over"
 cd && mkdir ~/.cgdb &&cd .cgdb
 
-
+# python
+pip install pysocks
