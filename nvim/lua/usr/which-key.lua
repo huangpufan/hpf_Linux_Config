@@ -2,7 +2,7 @@
 local wk = require("which-key")
 wk.setup({
   plugins = {
-    marks = false, -- shows a list of your marks on ' and `
+    marks = false,    -- shows a list of your marks on ' and `
     registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mo
   },
 })
@@ -72,9 +72,9 @@ wk.register({
     c = {
       -- only works in a c/cpp file
       name = "+ouroboros",
-      c = { "<cmd>Ouroboros<cr>", "open file in current window"},
-      h = { "<cmd>split | Ouroboros<cr>", "open file in a horizontal split"},
-      v = { "<cmd>vsplit | Ouroboros<cr>", "open file in a vertical split"},
+      c = { "<cmd>Ouroboros<cr>", "open file in current window" },
+      h = { "<cmd>split | Ouroboros<cr>", "open file in a horizontal split" },
+      v = { "<cmd>vsplit | Ouroboros<cr>", "open file in a vertical split" },
     },
     f = {
       name = "+file",

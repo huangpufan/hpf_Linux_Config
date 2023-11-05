@@ -94,3 +94,4 @@ set shiftwidth=2
 set expandtab
 nnoremap <C-c> "+y
 vnoremap <C-c> "+y
+nnoremap <C-s> :wall<CR>
