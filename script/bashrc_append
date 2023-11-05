@@ -12,6 +12,6 @@ alias f="fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}'
 
 
 # For Software
-eval "$(zoxide init bash)"
-#eval "$(~/.local/bin/zoxide init bash)"
+#eval "$(zoxide init bash)"
+eval "$(~/.local/bin/zoxide init bash)"
 

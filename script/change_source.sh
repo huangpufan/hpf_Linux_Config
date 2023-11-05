@@ -1,3 +1,4 @@
+#!/bin/bash
 # 函数定义区
 print_with_padding() {
     local string="$1"

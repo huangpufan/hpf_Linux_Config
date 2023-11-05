@@ -27,6 +27,8 @@ print_with_padding "HPF WSL Ubuntu Configuration start!"
 print_with_padding "Create usual file folder"
 cd ~
 mkdir project install download
+mkdir .config
+mkdir .config/nvim
 cd -
 
 # Step 2.5 git ssh key
@@ -39,7 +41,12 @@ print_with_padding "SSH key has been generated."
 
  
 # Step 4 各类基础软件
+
+pip install pysocks
+
+setss
 sudo apt -y install htop
+sudo apt -y install lua5.3
 # zoxide 
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 
