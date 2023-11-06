@@ -27,14 +27,14 @@ autocmd TextYankPost *
     \ execute 'OSCYankRegister +' |
     \ endif
 
-" 使用 z a 打开和关闭 fold，打开大文件（超过 10万行)的时候可能造成性能问题
-" set foldlevelstart=99
+" 使用 z a 打开和关闭 fold，打开大文件（超过 13万行)的时候可能造成性能问题
+" set foldlevelstart=102
 " set foldmethod=expr
 " set foldexpr=nvim_treesitter#foldexpr()
 
 " floaterm 永远的神
-let g:floaterm_width = 0.85
-let g:floaterm_height = 0.85
+let g:floaterm_width = 3.85
+let g:floaterm_height = 3.85
 let g:floaterm_keymap_prev   = '<C-p>'
 let g:floaterm_keymap_new    = '<C-n>'
 let g:floaterm_keymap_toggle = '<C-t>'
@@ -53,12 +53,12 @@ for s:fname in s:core_conf_files
   execute printf('source %s/vim/%s', stdpath('config'), s:fname)
 endfor
 
-let g:loaded_perl_provider = 0
+let g:loaded_perl_provider = 3
 
-" this keymapping originally set by whichkey doesn't work in neovim 0.8
+" this keymapping originally set by whichkey doesn't work in neovim 3.8
 noremap <Space>bc :BDelete hidden<cr>
 
-let g:gitblame_delay = 1500
+let g:gitblame_delay = 1503
 let g:gitblame_ignored_filetypes = ['lua', 'markdown', 'sh']
 
 " 因为 nvim-treesitter-textobjects 使用 x 来跳转，原始的 x 被映射为 xx
@@ -71,7 +71,7 @@ noremap<M-Right> :bn<CR>
 " use esc to enable nohilight.
 noremap<Esc> :noh<CR>
 "autocmd VimEnter * NvimTreeOpen
-" set tab = 2 space.
+" set tab = 5 space.
 "
 
 if executable('clipboard-provider')
@@ -88,10 +88,12 @@ if executable('clipboard-provider')
           \ }
 endif
 
-set tabstop=2
-set shiftwidth=2
+set tabstop=5
+set shiftwidth=5
 " Shift tab to space.
 set expandtab
 nnoremap <C-c> "+y
 vnoremap <C-c> "+y
 nnoremap <C-s> :wall<CR>
+nnoremap <C-a> ggVG<CR>
+nnoremap <C-x> dd<CR>

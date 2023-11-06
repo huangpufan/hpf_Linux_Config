@@ -47,6 +47,7 @@ pip install pysocks
 setss
 sudo apt -y install htop
 sudo apt -y install lua5.3
+sudo apt -y install gcc-multilib efm-langserver
 # zoxide 
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 
