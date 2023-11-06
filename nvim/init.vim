@@ -83,8 +83,8 @@ if executable('clipboard-provider')
           \ }
 endif
 
-set tabstop=5
-set shiftwidth=5
+set tabstop=3
+set shiftwidth=3
 " Shift tab to space.
 set expandtab
 " use alter + left/right to switch buffer.
@@ -96,5 +96,6 @@ nnoremap <C-c> "+y
 vnoremap <C-c> "+y
 nnoremap <C-s> :wall<CR>
 nnoremap <C-a> ggVG<CR>
-nnoremap <C-x> dd<CR>
+nnoremap <C-x> "+x
+vnoremap <C-x> "+x
 nnoremap <C-A-l>:Commentary<CR>
