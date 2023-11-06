@@ -33,10 +33,10 @@ autocmd TextYankPost *
 " set foldexpr=nvim_treesitter#foldexpr()
 
 " floaterm 永远的神
-let g:floaterm_width = 3.85
-let g:floaterm_height = 3.85
+let g:floaterm_width = 0.85
+let g:floaterm_height = 0.85
 let g:floaterm_keymap_prev   = '<C-p>'
-let g:floaterm_keymap_new    = '<C-n>'
+"let g:floaterm_keymap_new    = '<C-n>'
 let g:floaterm_keymap_toggle = '<C-t>'
 
 " 加载 lua 配置
@@ -64,16 +64,11 @@ let g:gitblame_ignored_filetypes = ['lua', 'markdown', 'sh']
 " 因为 nvim-treesitter-textobjects 使用 x 来跳转，原始的 x 被映射为 xx
 nn xx x
 
-" use alter + left/right to switch buffer.
-noremap<M-Left> :bp<CR>
-noremap<M-Right> :bn<CR>
 
-" use esc to enable nohilight.
-noremap<Esc> :noh<CR>
 "autocmd VimEnter * NvimTreeOpen
 " set tab = 5 space.
 "
-
+" Clipboard Related Setting
 if executable('clipboard-provider')
   let g:clipboard = {
           \ 'name': 'myClipboard',
@@ -92,8 +87,14 @@ set tabstop=5
 set shiftwidth=5
 " Shift tab to space.
 set expandtab
+" use alter + left/right to switch buffer.
+noremap<M-Left> :bp<CR>
+noremap<M-Right> :bn<CR>
+" use esc to enable nohilight.
+noremap<Esc> :noh<CR>
 nnoremap <C-c> "+y
 vnoremap <C-c> "+y
 nnoremap <C-s> :wall<CR>
 nnoremap <C-a> ggVG<CR>
 nnoremap <C-x> dd<CR>
+nnoremap <C-A-l>:Commentary<CR>

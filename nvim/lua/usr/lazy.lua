@@ -136,21 +136,5 @@ require("lazy").setup({
     "OscarCreator/rsync.nvim",                 -- 自动同步代码远程
     build = "make",                            -- 实在不行，进入到 ~/.local/share/nvim/lazy/rsync.nvim 中执行下 make
   },
-  {
-    "numToStr/Comment.nvim",
-    keys = {
-      { "gcc", mode = "n",          desc = "Comment toggle current line" },
-      { "gc",  mode = { "n", "o" }, desc = "Comment toggle linewise" },
-      { "gc",  mode = "x",          desc = "Comment toggle linewise (visual)" },
-      { "gbc", mode = "n",          desc = "Comment toggle current block" },
-      { "gb",  mode = { "n", "o" }, desc = "Comment toggle blockwise" },
-      { "gb",  mode = "x",          desc = "Comment toggle blockwise (visual)" },
-    },
-    --init = function()
-    --  require("core.utils").load_mappings "comment"
-    --end,
-    config = function(_, opts)
-      require("Comment").setup(opts)
-    end,
-  },
+
 }, {})
