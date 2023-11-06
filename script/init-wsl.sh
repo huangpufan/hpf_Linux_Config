@@ -45,16 +45,9 @@ print_with_padding "SSH key has been generated."
 pip install pysocks
 
 setss
-sudo apt -y install htop
-sudo apt -y install lua5.3
-sudo apt -y install gcc-multilib efm-langserver
+sudo apt -y install htop lua5.4  gcc-multilib efm-langserver
 # zoxide 
 curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
-
-# bat
-print_with_padding "Bat install start."
-cargo install --locked bat
-print_with_padding "Bat install over"
 
 # lazygit
 print_with_padding "lazygit install start"
@@ -76,14 +69,14 @@ sudo apt -y install tmux
 print_with_padding "tmux install over"
 
 # cgdb
-print_with_padding "cgdb install start"
-cd download && git clone git://github.com/cgdb/cgdb.git --depth=1 && cd cgdb
-./autogen.sh
-./configure
-make -j
-make install
-print_with_padding "cgdb install over"
-cd && mkdir ~/.cgdb &&cd .cgdb
+#print_with_padding "cgdb install start"
+#cd download && git clone git://github.com/cgdb/cgdb.git --depth=1 && cd cgdb
+#./autogen.sh
+#./configure
+#make -j
+#make install
+#print_with_padding "cgdb install over"
+#cd && mkdir ~/.cgdb &&cd .cgdb
 
 # python
 pip install pysocks

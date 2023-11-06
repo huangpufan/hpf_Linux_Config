@@ -35,8 +35,8 @@ autocmd TextYankPost *
 " floaterm 永远的神
 let g:floaterm_width = 0.85
 let g:floaterm_height = 0.85
-let g:floaterm_keymap_prev   = '<C-p>'
-"let g:floaterm_keymap_new    = '<C-n>'
+let g:floaterm_keymap_prev = '<C-k>'
+let g:floaterm_keymap_new = '<C-j>'
 let g:floaterm_keymap_toggle = '<C-t>'
 
 " 加载 lua 配置
@@ -83,6 +83,7 @@ if executable('clipboard-provider')
           \ }
 endif
 
+" tab 设置
 set tabstop=3
 set shiftwidth=3
 " Shift tab to space.
@@ -92,10 +93,24 @@ noremap<M-Left> :bp<CR>
 noremap<M-Right> :bn<CR>
 " use esc to enable nohilight.
 noremap<Esc> :noh<CR>
+" 复制设置
 nnoremap <C-c> "+y
 vnoremap <C-c> "+y
-nnoremap <C-s> :wall<CR>
-nnoremap <C-a> ggVG<CR>
+" 保存文件
+noremap <C-s> :wall<CR>
+inoremap <C-s> <C-o>:wall<CR>
+" 全选文件
+nnoremap <C-a> ggVG
+inoremap <C-a> <Esc> ggVG
+" 剪切文件
 nnoremap <C-x> "+x
 vnoremap <C-x> "+x
-nnoremap <C-A-l>:Commentary<CR>
+" 重新加载配置文件
+noremap <F5> :source $MYVIMRC<CR>
+inoremap <F5> <C-O>:source $MYVIMRC<CR>
+" ctrl z 映射为撤销，插入模式下也生效
+inoremap <C-z> <C-O>u
+" ctrl r 在插入模式下，redo 也生效
+inoremap <C-r> <C-o><C-r>
+noremap <A-x> :BDelete hidden<cr>
+" 注意，映射的命令后必须要有空格，不然后面的全部不生效
