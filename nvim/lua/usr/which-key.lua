@@ -2,13 +2,13 @@
 local wk = require("which-key")
 wk.setup({
    plugins = {
-      marks = false,    -- shows a list of your marks on ' and `
+      marks = false, -- shows a list of your marks on ' and `
       registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mo
    },
 })
 wk.register({
    ["<C-A-l>"] = { "<cmd> lua vim.lsp.buf.format{ async = true }<cr>", "format current buffer" },
-   ["<C-/>"] = { "<cmd>Commentary<cr>", "comment code" },
+   ["<C-_>"] = { "<cmd> Commentary<cr>", "comment code" },
    ["<C-n>"] = { "<cmd>NvimTreeToggle<cr>", "toggle file tree" },
 })
 wk.register({
@@ -27,7 +27,7 @@ wk.register({
       b = { "<cmd>Telescope buffers<cr>", "searcher buffers" },
       f = { "<cmd>Telescope find_files<cr>", "search files (include submodules)" },
       F = { "<cmd>Telescope git_files<cr>", "search files (exclude submodules)" },
-      g = { "<cmd>Telescope live_grep<cr>", "live grep" },
+      w = { "<cmd>Telescope live_grep<cr>", "live grep" },
       G = { "<cmd>Telescope grep_string<cr>", "live grep cursor word" },
       h = { "<cmd>Telescope help_tags<cr>", "search vim manual" },
       i = { "<cmd>Telescope jumplist<cr>", "search jumplist" },

@@ -105,11 +105,15 @@ inoremap <C-a> <Esc> ggVG
 " 剪切文件
 nnoremap <C-x> "+x
 vnoremap <C-x> "+x
+nnoremap <C-d> yyp
+vnoremap <C-d> y<Esc>o<C-R>"<CR>
 " 重新加载配置文件
 noremap <F5> :source $MYVIMRC<CR>
 inoremap <F5> <C-O>:source $MYVIMRC<CR>
 " ctrl z 映射为撤销，插入模式下也生效
 inoremap <C-z> <C-O>u
+noremap <C-z> <C-O>u
+
 " ctrl r 在插入模式下，redo 也生效
 inoremap <C-r> <C-o><C-r>
 noremap <A-x> :BDelete hidden<cr>
