@@ -113,7 +113,9 @@ inoremap <F5> <C-O>:source $MYVIMRC<CR>
 " ctrl z 映射为撤销，插入模式下也生效
 inoremap <C-z> <C-O>u
 noremap <C-z> <C-O>u
-
+" 关闭当前缓冲区
+nnoremap <C-w> :w<CR>:bd<CR>
+inoremap <C-w> <Esc>:w<CR>:bd<CR>
 " ctrl r 在插入模式下，redo 也生效
 inoremap <C-r> <C-o><C-r>
 noremap <A-x> :BDelete hidden<cr>
