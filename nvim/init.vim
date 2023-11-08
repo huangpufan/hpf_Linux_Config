@@ -106,8 +106,8 @@ inoremap <C-a> <Esc> ggVG
 nnoremap <C-x> "+x
 vnoremap <C-x> "+x
 nnoremap <C-d> yyp
-"inoremap <C-d> <C-o><Esc>yyp
 vnoremap <C-d> y<Esc>o<C-R>"<CR>
+inoremap <C-d> <Esc>:normal! yy<CR>p`[A
 " 重新加载配置文件
 noremap <F5> :source $MYVIMRC<CR>
 inoremap <F5> <C-O>:source $MYVIMRC<CR>
@@ -135,4 +135,9 @@ inoremap <S-Up>    <Esc>v<Up>
 inoremap <S-Down>  <Esc>lv<Down>
 inoremap <S-Left>  <Esc>v<Left>
 inoremap <S-Right> <Esc>lv<Right>
+" 删除一行
+nnoremap <C-l> dd
+inoremap <C-l> <Esc>:normal! dd<CR>i
+
+
 " 注意，映射的命令后必须要有空格，不然后面的全部不生效
