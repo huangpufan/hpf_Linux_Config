@@ -106,6 +106,7 @@ inoremap <C-a> <Esc> ggVG
 nnoremap <C-x> "+x
 vnoremap <C-x> "+x
 nnoremap <C-d> yyp
+"inoremap <C-d> <C-o><Esc>yyp
 vnoremap <C-d> y<Esc>o<C-R>"<CR>
 " 重新加载配置文件
 noremap <F5> :source $MYVIMRC<CR>
@@ -118,5 +119,20 @@ nnoremap <C-w> :w<CR>:bd<CR>
 inoremap <C-w> <Esc>:w<CR>:bd<CR>
 " ctrl r 在插入模式下，redo 也生效
 inoremap <C-r> <C-o><C-r>
-noremap <A-x> :BDelete hidden<cr>
+nnoremap <A-x> :BDelete hidden<cr>
+inoremap <A-x> <C-o>:BDelete hidden<cr>
+inoremap <C-A-l> <C-o>:lua vim.lsp.buf.format{ async = true }<CR>
+" shift 选中内容
+noremap <S-Up>    <Esc>v<Up>
+noremap <S-Down>  <Esc>v<Down>
+noremap <S-Left>  <Esc>v<Left>
+noremap <S-Right> <Esc>v<Right>
+vnoremap <S-Up>    <Up>
+vnoremap <S-Down>  <Down>
+vnoremap <S-Left>  <Left>
+vnoremap <S-Right> <Right>
+inoremap <S-Up>    <Esc>v<Up>
+inoremap <S-Down>  <Esc>lv<Down>
+inoremap <S-Left>  <Esc>v<Left>
+inoremap <S-Right> <Esc>lv<Right>
 " 注意，映射的命令后必须要有空格，不然后面的全部不生效
