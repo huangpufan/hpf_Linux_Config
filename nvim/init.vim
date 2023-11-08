@@ -33,8 +33,8 @@ autocmd TextYankPost *
 " set foldexpr=nvim_treesitter#foldexpr()
 
 " floaterm 永远的神
-let g:floaterm_width = 0.85
-let g:floaterm_height = 0.85
+let g:floaterm_width = 0.90
+let g:floaterm_height = 0.90
 let g:floaterm_keymap_prev = '<C-k>'
 let g:floaterm_keymap_new = '<C-j>'
 let g:floaterm_keymap_toggle = '<C-t>'
@@ -84,8 +84,8 @@ if executable('clipboard-provider')
 endif
 
 " tab 设置
-set tabstop=3
-set shiftwidth=3
+set tabstop=2
+set shiftwidth=2
 " Shift tab to space.
 set expandtab
 " use alter + left/right to switch buffer.
@@ -138,6 +138,7 @@ inoremap <S-Right> <Esc>lv<Right>
 " 删除一行
 nnoremap <C-l> dd
 inoremap <C-l> <Esc>:normal! dd<CR>i
-
+" 删除
+vnoremap <BS> "_d
 
 " 注意，映射的命令后必须要有空格，不然后面的全部不生效
