@@ -25,7 +25,7 @@ local options = {
   whichwrap = "bs<>[]hl", -- which "horizontal" keys are allowed to travel to prev/next line
 
   -- 我设置的部分
-  wrap = false, -- 不要自动 wrap
+  wrap = true, -- 不要自动 wrap
   laststatus = 3, -- 只有一个全局的 status line，而不是每一个 window 一个
 }
 
