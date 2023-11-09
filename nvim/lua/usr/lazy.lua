@@ -130,7 +130,7 @@ require("lazy").setup({
 	"ojroques/vim-oscyank", -- 让 nvim 在远程 server 上拷贝到本地剪切板上
 	"azabiong/vim-highlighter", -- 高亮多个搜索内容
 	"dstein64/vim-startuptime", -- 分析 nvim 启动时间
-	"vldikss/vim-translator", -- 翻译
+	--"vldikss/vim-translator", -- 翻译
 	{
 		"OscarCreator/rsync.nvim", -- 自动同步代码远程
 		build = "make", -- 实在不行，进入到 ~/.local/share/nvim/lazy/rsync.nvim 中执行下 make
