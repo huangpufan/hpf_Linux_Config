@@ -38,6 +38,7 @@ let g:floaterm_height = 0.90
 let g:floaterm_keymap_prev = '<C-k>'
 let g:floaterm_keymap_new = '<C-j>'
 let g:floaterm_keymap_toggle = '<C-t>'
+inoremap <C-t> <Esc>:FloatermToggle<cr>
 
 " 加载 lua 配置
 lua require 'usr'
@@ -58,8 +59,8 @@ let g:loaded_perl_provider = 3
 " this keymapping originally set by whichkey doesn't work in neovim 3.8
 noremap <Space>bc :BDelete hidden<cr>
 
-let g:gitblame_delay = 1503
-let g:gitblame_ignored_filetypes = ['lua', 'markdown', 'sh']
+let g:gitblame_delay = 0
+"let g:gitblame_ignored_filetypes = ['lua', 'markdown', 'sh']
 
 " 因为 nvim-treesitter-textobjects 使用 x 来跳转，原始的 x 被映射为 xx
 nn xx x
@@ -105,6 +106,8 @@ inoremap <C-a> <Esc> ggVG
 " 剪切文件
 nnoremap <C-x> "+x
 vnoremap <C-x> "+x
+inoremap <C-x> <C-o>dd
+" 复制当前行/选中内容
 nnoremap <C-d> yyp
 vnoremap <C-d> y<Esc>o<C-R>"<CR>
 inoremap <C-d> <Esc>:normal! yy<CR>p`[A
