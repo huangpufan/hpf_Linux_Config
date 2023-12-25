@@ -13,3 +13,5 @@ reset_nvim:
 	rm -rf ~/.local/state/nvim
 link_nvim:
 	ln -s ~/hpf_Linux_Config/nvim  ~/.config/nvim 
+#single_file_compile_commands_json:
+
