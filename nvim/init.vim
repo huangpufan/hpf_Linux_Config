@@ -145,7 +145,11 @@ inoremap <C-l> <Esc>:normal! dd<CR>i
 vnoremap <BS> "_d
 
 " Alt+Right 跳到下一个单词
+
 inoremap <A-Right> <C-\><C-O>e<C-\><C-O>a
 " Alt+Left 跳到上一个单词
 inoremap <A-Left> <Esc>bi
 " 注意，映射的命令后必须要有空格，不然后面的全部不生效
+
+" 多行编辑模式
+noremap <C-M> <C-V>
