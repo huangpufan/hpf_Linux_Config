@@ -3,6 +3,9 @@ export hostip=$(cat /etc/resolv.conf |grep -oP '(?<=nameserver\ ).*')
 alias setss='export all_proxy="socks5://${hostip}:7890";'
 alias unsetss='unset all_proxy'
 
+#display cursor
+echo -e "\033[?25h"
+
 # My Alias
 
 # Bashrc editting ways set.Use nvim by default,if no nvim,use vim.
@@ -12,10 +15,16 @@ else
     alias eb="vim ~/.bashrc"
 fi
 alias sb="source ~/.bashrc"
-# Remove nvim session stats.
-alias cn="rm -f ~/.local/share/nvim/sessions/*"
+
 # Use bat to preview file contents when using fzf.
 alias f="fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}'"
+
+# tmux related
+alias a="tmux a -t"
+alias new="tmux new -s"
+
+alias clearsession="rm -rf~/.local/share/nvim/sessions/*"
+
 # Only when zoxide installed,use cd=z.
 if command -v zoxide >/dev/null 2>&1; then
     # 启用alias
