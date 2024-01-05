@@ -89,6 +89,9 @@ set tabstop=2
 set shiftwidth=2
 " Shift tab to space.
 set expandtab
+" 仅有大写字母时才区分大小写
+set ignorecase
+set smartcase
 " use alter + left/right to switch buffer.
 noremap<M-Left> :bp<CR>
 noremap<M-Right> :bn<CR>
