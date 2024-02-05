@@ -14,7 +14,7 @@ Hydra({
   name = "Adjust Window Size",
   hint = hint,
   config = {
-    color = "blue",
+    color = "pink",
     invoke_on_body = true,
     hint = {
       border = "rounded",
