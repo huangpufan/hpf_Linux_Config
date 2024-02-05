@@ -16,7 +16,7 @@ require("lazy").setup({
   "nvim-lua/plenary.nvim",        -- 很多 lua 插件依赖的库
   "kyazdani42/nvim-web-devicons", -- 显示图标
   "folke/which-key.nvim",         -- 用于配置和提示快捷键
-  "kkharji/sqlite.lua",           -- 数据库
+  -- "kkharji/sqlite.lua",           -- 数据库
 
   --------------------------------------- Edit Related ----------------------------------
   -- 补全
@@ -135,7 +135,7 @@ require("lazy").setup({
   -- },
   "akinsho/bufferline.nvim",    -- buffer
   "nvim-lualine/lualine.nvim",  -- 状态栏
-  "kazhala/close-buffers.nvim", -- 一键删除不可见 buffer
+  -- "kazhala/close-buffers.nvim", -- 一键删除不可见 buffer
   "gelguy/wilder.nvim",         -- 更加智能的命令窗口
   "romgrk/fzy-lua-native",      -- wilder.nvim 的依赖
   "xiyaowong/nvim-transparent", -- 可以移除掉背景色，让 vim 透明

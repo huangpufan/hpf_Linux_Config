@@ -69,7 +69,7 @@ wk.register({
 		},
 		c = {
 			-- only works in a c/cpp file
-			name = "+ouroboros",
+			name = "+switch h/c",
 			c = { "<cmd>Ouroboros<cr>", "open file in current window" },
 			h = { "<cmd>split | Ouroboros<cr>", "open file in a horizontal split" },
 			v = { "<cmd>vsplit | Ouroboros<cr>", "open file in a vertical split" },
@@ -141,7 +141,7 @@ wk.register({
 			s = { "<cmd>set spell!<cr>", "spell check" },
 			w = { "<cmd>set wrap!<cr>", "wrap line" },
 			-- h = { "<cmd>noh<cr>", "Stop the highlighting" },
-			l = { "<cmd>Telescope colorscheme<cr>", "colorscheme" },
+			h = { "<cmd>Telescope colorscheme<cr>", "Theme switch" },
 			m = { "<cmd>TableModeToggle<cr>", "markdown table edit mode" },
 			t = { "<cmd>set nocursorline<cr> <cmd>TransparentToggle<cr>", "make background transparent" },
 		},
