@@ -69,7 +69,8 @@ require("bookmarks").setup({
 	virt_pattern = { "*.lua", "*.md", "*.c", "*.h", "*.sh" },
 })
 
--- require("tabout").setup()
+require("tabout").setup()
+
 require("goto-preview").setup({
 	default_mappings = true,
 })

@@ -107,7 +107,7 @@ require("lazy").setup({
   -- },
   --
   --
-  -- "abecodes/tabout.nvim",
+   "abecodes/tabout.nvim",
   ------------------------------------- User Interface -----------------------
   ---
   ---
