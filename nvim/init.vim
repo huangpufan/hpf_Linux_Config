@@ -83,3 +83,6 @@ set expandtab
 " / : Only when has upper case char,do we seperate upper and lower case.
 set ignorecase
 set smartcase
+
+" Set ~ as invisible char
+set fillchars+=eob:\ 
