@@ -8,22 +8,32 @@ require("nvim-treesitter.configs").setup({
 	},
 	-- ensure_installed = "maintained", 安装目前维护的所有语言 treesitter 插件。
 	ensure_installed = {
-		-- "org",
-		"lua",
-		-- "java",
-		-- "rust",
-		"c",
-		-- "nix",
+		--
+		---------------------------- Basic Languages ----------------------------
+		"vim",
 		"bash",
-		-- "go",
-		"diff",
-		-- "scala",
-		"cpp",
-		-- "python",
+		"lua",
+		---------------------------- Web Languages ----------------------------
+		"yaml",
+		"html",
+		"css",
+		---------------------------- Misc Languages ----------------------------
 		"markdown",
 		"markdown_inline", -- 让 markdown 里面的代码段可以高亮
 		"comment", -- 更好的高亮 TODO XXX NOTE FIXME ，但是其让 url 的高亮过于明显
+		"diff",
+		"json",
+		-- "org",
+		---------------------------- Advanced Languages ----------------------------
+		"c",
+		"cpp",
+		-- "java",
+		-- "rust",
+		-- "nix",
+		-- "go",
+		-- "scala",
 		-- "rst",
+		-- "python",
 	},
 })
 
