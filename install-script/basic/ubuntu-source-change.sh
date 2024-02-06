@@ -1,6 +1,5 @@
 #!/bin/bash
 
-print_with_padding "Changing sources list start."
 sudo mv /etc/apt/sources.list /etc/apt/sources.list.backup
  # Get the version of Ubuntu
 ubuntu_version=$(cat /etc/os-release | grep VERSION_ID | cut -d '=' -f 2 | tr -d '"')

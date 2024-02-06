@@ -27,13 +27,12 @@ sshkey-genarate-and-cat:
 
 # Totally install.
 install-all:
-	make bashrc-init
-	setss
-	make create-folder
-	make change-source
-	make pip-install
-	make apt-install
-	make curl-install
-	make git-install
-	make cargo-install
-
+	  make bashrc-init -i
+		export all_proxy="socks5://${hostip}:7890" && \
+    make create-folder -i && \
+    make change-source -i && \
+    make pip-install -i && \
+    make apt-install -i && \
+    make curl-install -i && \
+    make git-install -i && \
+    make cargo-install -i
