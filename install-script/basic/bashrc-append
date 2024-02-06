@@ -56,3 +56,4 @@ fi
 alias lg="lazygit"
 
 #eval "$(zoxide init bash)"
+#############################  Bashrc Already Set  ##############################
