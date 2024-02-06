@@ -53,5 +53,6 @@ if command -v zoxide >/dev/null 2>&1; then
     eval "$(~/.local/bin/zoxide init bash)"
 fi
 
-# For Software
+alias lg="lazygit"
+
 #eval "$(zoxide init bash)"
