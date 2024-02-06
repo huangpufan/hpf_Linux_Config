@@ -20,18 +20,18 @@ require("lazy").setup({
 
 	--------------------------------------- Edit Related ----------------------------------
 	-- 补全
-	{ "hrsh7th/nvim-cmp",lazy=true, },         -- The completion plugin
-	{ "hrsh7th/cmp-buffer", lazy =true,},       -- buffer completions
-	{ "hrsh7th/cmp-path" ,lazy =true},         -- path completions
-	{ "saadparwaiz1/cmp_luasnip" ,lazy =true,}, -- snippet completions
-	{ "hrsh7th/cmp-nvim-lsp" ,lazy=true,},
-	{ "hrsh7th/cmp-nvim-lua",lazy=true, },
-	{ "folke/neodev.nvim", lazy=true,      opts = {} },
+	{ "hrsh7th/nvim-cmp",lazy=false, },         -- The completion plugin
+	{ "hrsh7th/cmp-buffer", lazy =false,},       -- buffer completions
+	{ "hrsh7th/cmp-path" ,lazy =false},         -- path completions
+	{ "saadparwaiz1/cmp_luasnip" ,lazy =false,}, -- snippet completions
+	{ "hrsh7th/cmp-nvim-lsp" ,lazy=false,},
+	{ "hrsh7th/cmp-nvim-lua",lazy=false, },
+	{ "folke/neodev.nvim", lazy=false,      opts = {} },
 
 	-- Eazily add bracket
 	{
 		"kylechui/nvim-surround",
-		lazy = true,
+		lazy =false,
 		version = "*", -- Use for stability; omit to use `main` branch for the latest features
 		event = "VeryLazy",
 		config = function()
@@ -39,13 +39,13 @@ require("lazy").setup({
 		end,
 	},
 	-- Snippets
-	{ "L3MON4D3/LuaSnip",lazy =true  },             --snippet engine
-	{ "rafamadriz/friendly-snippets",lazy = true }, -- a bunch of snippets to use
+	{ "L3MON4D3/LuaSnip",lazy =false},             --snippet engine
+	{ "rafamadriz/friendly-snippets",lazy = false}, -- a bunch of snippets to use
 
 	-- LSP
-	{ "neovim/nvim-lspconfig" ,lazy=true,},           -- enable LSP
+	{ "neovim/nvim-lspconfig" ,lazy=false,},           -- enable LSP
 
-	{ "williamboman/mason.nvim", lazy = true,  -- simple to use language server installer
+	{ "williamboman/mason.nvim", lazy =false,  -- simple to use language server installer
 	cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
 	opts = function()
 		return require "usr.mason"
@@ -60,16 +60,16 @@ require("lazy").setup({
 		vim.g.mason_binaries_list = opts.ensure_installed
 	end,
 },         -- simple to use language server installer
-{ "williamboman/mason-lspconfig.nvim",lazy=true },
-{ "jose-elias-alvarez/null-ls.nvim" ,lazy=true}, -- for formatters and linters
-{ "j-hui/fidget.nvim",  lazy=true,              tag = "legacy" },
-{ "SmiteshP/nvim-navic" ,lazy=true},
-{ "utilyre/barbecue.nvim" ,lazy=true},
-{ "kosayoda/nvim-lightbulb" ,lazy=true},
+{ "williamboman/mason-lspconfig.nvim",lazy=false},
+{ "jose-elias-alvarez/null-ls.nvim" ,lazy=false}, -- for formatters and linters
+{ "j-hui/fidget.nvim",  lazy=false,              tag = "legacy" },
+{ "SmiteshP/nvim-navic" ,lazy=false},
+{ "utilyre/barbecue.nvim" ,lazy=false},
+{ "kosayoda/nvim-lightbulb" ,lazy=false},
 
 {
 	"ray-x/lsp_signature.nvim",
-	lazy = true,
+	lazy = false,
 	event = "VeryLazy",
 	opts = {},
 	config = function(_, opts)
@@ -80,7 +80,7 @@ require("lazy").setup({
 --treesitter
 {
 	"nvim-treesitter/nvim-treesitter",
-	lazy=true,
+	lazy=false,
 	build = ":TSUpdate",
 },
 {"RRethy/nvim-treesitter-textsubjects",lazy=true,},
@@ -96,13 +96,13 @@ require("lazy").setup({
 
 {
 	"smjonas/inc-rename.nvim",
-	lazy = true,
+	lazy =false,
 	config = function()
 		require("inc_rename").setup()
 	end,
 },
 
-{"rmagatti/goto-preview",lazy=true,},
+{"rmagatti/goto-preview",lazy=false,},
 
 -- indent
 {
@@ -128,7 +128,7 @@ require("lazy").setup({
 -- },
 --
 --
-{"abecodes/tabout.nvim",lazy=true,},
+{"abecodes/tabout.nvim",lazy=false,},
 ------------------------------------- User Interface -----------------------
 ---
 ---
@@ -142,7 +142,7 @@ require("lazy").setup({
 -- 	end,
 -- 	dependencies = { { "nvim-tree/nvim-web-devicons" } },
 -- },
-{"stevearc/aerial.nvim",lazy=true,},     -- 导航栏
+{"stevearc/aerial.nvim",lazy=false,},     -- 导航栏
 "kyazdani42/nvim-tree.lua", -- 文件树
 -- {
 -- 	"nvim-neo-tree/neo-tree.nvim",
@@ -156,9 +156,11 @@ require("lazy").setup({
 -- },
 "akinsho/bufferline.nvim",    -- buffer
 "nvim-lualine/lualine.nvim",  -- 状态栏
-{"kazhala/close-buffers.nvim",lazy=true,}, -- 一键删除不可见 buffer
-{"gelguy/wilder.nvim"},         -- 更加智能的命令窗口
-{"romgrk/fzy-lua-native"},      -- wilder.nvim 的依赖
+{"kazhala/close-buffers.nvim",lazy=false,
+event = "VeryLazy",
+}, -- 一键删除不可见 buffer
+{"gelguy/wilder.nvim",lazy=false},         -- 更加智能的命令窗口
+{"romgrk/fzy-lua-native",lazy=false,},      -- wilder.nvim 的依赖
 {"xiyaowong/nvim-transparent",lazy=true,}, -- 可以移除掉背景色，让 vim 透明
 --{ "lukas-reineke/virt-column.nvim", opts = {} }, -- not know why no effect.
 { "goolord/alpha-nvim", event = "VimEnter" },
@@ -173,10 +175,10 @@ require("lazy").setup({
 {"rebelot/kanagawa.nvim",lazy=true,},
 -- git 版本管理
 { "tpope/vim-fugitive",lazy=true,},      -- 显示 git blame，实现一些基本操作的快捷执行
-{ "rhysd/git-messenger.vim",lazy=true,}, -- 利用 git blame 显示当前行的 commit message
-{ "lewis6991/gitsigns.nvim",lazy=true,}, -- 显示改动的信息
-{ "f-person/git-blame.nvim",lazy=true,}, -- 显示 git blame 信息
-{ "sindrets/diffview.nvim",lazy=true,},
+{ "rhysd/git-messenger.vim",lazy=false,}, -- 利用 git blame 显示当前行的 commit message
+{ "lewis6991/gitsigns.nvim",lazy=false,}, -- 显示改动的信息
+{ "f-person/git-blame.nvim",lazy=false,}, -- 显示 git blame 信息
+{ "sindrets/diffview.nvim",lazy=false,},
 {
 	"folke/todo-comments.nvim",
 	dependencies = { "nvim-lua/plenary.nvim" },
@@ -195,55 +197,55 @@ require("lazy").setup({
 		return vim.fn.executable("make") == 1
 	end,
 },
-{ "nvim-telescope/telescope-frecency.nvim",lazy =true,}, -- 查找最近打开的文件
+{ "nvim-telescope/telescope-frecency.nvim",lazy =false,}, -- 查找最近打开的文件
 -- 命令执行
-{ "voldikss/vim-floaterm", lazy=true,},                 -- 终端
-{ "akinsho/toggleterm.nvim", lazy=true,},               -- 性能好点，但是易用性和稳定性都比较差
+{ "voldikss/vim-floaterm", lazy=false},                 -- 终端
+{ "akinsho/toggleterm.nvim", lazy=false,},              -- 性能好点，但是易用性和稳定性都比较差
 { "CRAG666/code_runner.nvim", lazy=true,},              -- 一键运行代码
 { "samjwill/nvim-unception", lazy=true,},               -- 嵌套 nvim 自动 offload 到 host 中
 -- markdown
 -- 如果发现插件有问题， 可以进入到 ~/.local/share/nvim/lazy/markdown-preview.nvim/app && npm install
 {
 	"iamcco/markdown-preview.nvim",
-	lazy = true,
+	lazy =false,
 	cmd = { "MarkdownPreview" },
 	ft = { "markdown" },
 	build = "cd app && npm install",
 },
-{ "mzlogin/vim-markdown-toc", lazy =true,},      -- 自动目录生成
+{ "mzlogin/vim-markdown-toc", lazy =false,},      -- 自动目录生成
 { "dhruvasagar/vim-table-mode",lazy =true,},     -- 快速编辑 markdown 的表格
-{ "xiyaowong/telescope-emoji.nvim",lazy =true,}, -- 使用 telescope 搜索 emoji 表情
+{ "xiyaowong/telescope-emoji.nvim",lazy =false,}, -- 使用 telescope 搜索 emoji 表情
 -- 高效编辑
 -- "tpope/vim-commentary", -- 快速注释代码
-{ "kylechui/nvim-surround",lazy =true,},      -- 快速编辑单词两侧的符号
+{ "kylechui/nvim-surround",lazy =false,},      -- 快速编辑单词两侧的符号
 -- "tpope/vim-sleuth",               -- 自动设置 tabstop 之类的
-{ "tpope/vim-repeat",lazy =true,},            -- 更加强大的 `.`
-{ "windwp/nvim-autopairs",lazy =true,},       -- 自动括号匹配
-{ "honza/vim-snippets",lazy =true,},          -- 安装公共的的 snippets
+{ "tpope/vim-repeat",lazy =false,},            -- 更加强大的 `.`
+{ "windwp/nvim-autopairs",lazy =false,},       -- 自动括号匹配
+{ "honza/vim-snippets",lazy =false,},          -- 安装公共的的 snippets
 --"mbbill/undotree", -- 显示编辑的历史记录
-{ "mg979/vim-visual-multi",lazy =true,},      -- 同时编辑多个位置
+{ "mg979/vim-visual-multi",lazy =false,},      -- 同时编辑多个位置
 { "AckslD/nvim-neoclip.lua",lazy =true,},     -- 保存 macro
-{ "windwp/nvim-spectre",lazy =true,},         -- 媲美 vscode 的多文件替换
+{ "windwp/nvim-spectre",lazy =false,},         -- 媲美 vscode 的多文件替换
 -- 高亮
-{ "norcalli/nvim-colorizer.lua",lazy =true,}, -- 显示 #FFFFFF
-{ "andymass/vim-matchup",lazy =true,},        -- 高亮匹配的元素，例如 #if 和 #endif
+{ "norcalli/nvim-colorizer.lua",lazy =false,}, -- 显示 #FFFFFF
+{ "andymass/vim-matchup",lazy =false,},        -- 高亮匹配的元素，例如 #if 和 #endif
 -- 时间管理
 -- "nvim-orgmode/orgmode", -- orgmode 日程管理
 
 -- lsp 增强
-{"jackguo380/vim-lsp-cxx-highlight",lazy=true,}, -- ccls 高亮
-{"mattn/efm-langserver",lazy=true,},             -- 支持 bash
-{"gbrlsnchs/telescope-lsp-handlers.nvim",lazy=true},
-{"jakemason/ouroboros",lazy=true},              -- quickly switch between header and source file in C/C++ project
+{"jackguo380/vim-lsp-cxx-highlight",lazy=false,}, -- ccls 高亮
+{"mattn/efm-langserver",lazy=false,},             -- 支持 bash
+{"gbrlsnchs/telescope-lsp-handlers.nvim",lazy=false},
+{"jakemason/ouroboros",lazy=false},              -- quickly switch between header and source file in C/C++ project
 -- 其他
 --"ggandor/leap.nvim", -- 快速移动
-{ "crusj/bookmarks.nvim", branch = "main" ,lazy =true}, -- 书签
-{ "tyru/open-browser.vim", lazy = true,},                     -- 使用 gx 打开链接
+{ "crusj/bookmarks.nvim", branch = "main" ,lazy =false}, -- 书签
+{ "tyru/open-browser.vim", lazy = false,},                     -- 使用 gx 打开链接
 --"keaising/im-select.nvim", -- 自动切换输入法
 { "olimorris/persisted.nvim",lazy=true,},                  -- 打开 vim 的时候，自动回复上一次打开的样子
-{ "anuvyklack/hydra.nvim", lazy=true,},-- 消除重复快捷键，可以用于调整 window 大小等
-{ "ojroques/vim-oscyank", lazy=true,},                     -- 让 nvim 在远程 server 上拷贝到本地剪切板上
-{ "azabiong/vim-highlighter", lazy=true,},                 -- 高亮多个搜索内容
+{ "anuvyklack/hydra.nvim", lazy=false,},-- 消除重复快捷键，可以用于调整 window 大小等
+{ "ojroques/vim-oscyank", lazy=false,},                     -- 让 nvim 在远程 server 上拷贝到本地剪切板上
+{ "azabiong/vim-highlighter", lazy=false,},                 -- 高亮多个搜索内容
 -- "dstein64/vim-startuptime", -- 分析 nvim 启动时间
 --"vldikss/vim-translator", -- 翻译
 -- {
@@ -271,7 +273,7 @@ require("lazy").setup({
 
 {
 	"folke/flash.nvim",
-	lazy = true,
+	lazy =false,
 	event = "VeryLazy",
 	-- @type Flash.Config
 	opts = {},
@@ -298,7 +300,7 @@ require("lazy").setup({
 },
 {
 	"numToStr/Comment.nvim",
-	lazy = true,
+	lazy =false,
 	event = "VeryLazy",
 	opts = {
 		-- add any options here
@@ -327,22 +329,22 @@ require("lazy").setup({
 --"RRethy/vim-illuminate",
 {
 	"danymat/neogen",
-	lazy = true,
+	lazy =false,
 	event = "VeryLazy",
 	dependencies = "nvim-treesitter/nvim-treesitter",
 	config = true,
 	-- Uncomment next line if you want to follow only stable versions
 	-- version = "*"
 },
-{ "karb94/neoscroll.nvim",lazy = true,},
+{ "karb94/neoscroll.nvim",lazy =false,},
 {
 	"zbirenbaum/copilot.lua",
-	lazy = true,
+	lazy =false,
 	cmd = "Copilot",
 	build = ":Copilot auth",
 },
 
-{"m-demare/hlargs.nvim",lazy = true,},
+{"m-demare/hlargs.nvim",lazy =false,},
 
 {
 	"kawre/leetcode.nvim",
