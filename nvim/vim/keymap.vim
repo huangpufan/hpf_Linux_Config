@@ -1,4 +1,11 @@
 """""""""""""""""""""""""""" Shortcut Setting """"""""""""""""""""""""""""""""
+
+" Window Split
+" Map '\' to split the window horizontally
+nnoremap \ :split<CR>
+" Map '|' to split the window vertically
+nnoremap <Bar> :vsplit<CR>
+
 " use alter + left/right to switch buffer.
 noremap<M-Left> :bp<CR>
 noremap<M-Right> :bn<CR>
