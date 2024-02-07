@@ -2,7 +2,7 @@
 
 # Check if /etc/apt/sources.list contains "Already Done" string
 if grep -q "Already Done" /etc/apt/sources.list; then
-    echo "The script will not be executed as /etc/apt/sources.list contains 'Already Done' string."
+    echo "The script will not be executed as /etc/apt/sources.list contains 'Already Done'."
     exit 0
 fi
 

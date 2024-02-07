@@ -1,6 +1,7 @@
 SSH_KEY_PATH=~/.ssh/id_ed25519
 SSH_KEY_PUB=$(SSH_KEY_PATH).pub
-
+hostip=$(cat /etc/resolv.conf |grep -oP '(?<=nameserver\ ).*')
+setss := export all_proxy="socks5://${hostip}:7890";
 bashrc-init:
 	./bashrc-init.sh
 
@@ -31,15 +32,8 @@ git-install:
 cargo-install:
 	./cargo-install.sh
 
-sshkey-genarate-and-cat: generate-sshkey cat-sshkey
+sshkey-genarate-and-cat: 
+	generate-sshkey cat-sshkey
 
 install-all:
-	make bashrc-init -i
-	export all_proxy="socks5://${hostip}:7890" && \
-	make create-folder -i && \
-	make change-source -i && \
-	make pip-install -i && \
-	make apt-install -i && \
-	make curl-install -i && \
-	make git-install -i && \
-	make cargo-install -i
+	./basic-install.sh 
