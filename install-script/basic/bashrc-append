@@ -1,6 +1,6 @@
 ##############################  Only For WSL.  ##################################
 
-########### Man color set ############
+# Man color set
 export LESS=-R
 export LESS_TERMCAP_mb=$'\E[1;31m'     # begin blink
 export LESS_TERMCAP_md=$'\E[1;36m'     # begin bold
@@ -14,46 +14,59 @@ export hostip=$(cat /etc/resolv.conf |grep -oP '(?<=nameserver\ ).*')
 alias setss='export all_proxy="socks5://${hostip}:7890";'
 alias unsetss='unset all_proxy && unset ALL_PROXY'
 
-#display cursor
+# display cursor
 echo -e "\033[?25h"
-#################################################################################
+
 
 ################################## My Alias #####################################
 
-####### Bashrc editting ways set.#######
+# Bashrc related
 # Use nvim by default,if no nvim,use vim.
 if command -v zoxide >/dev/null 2>&1; then
     alias eb="nvim ~/.bashrc"
 else
     alias eb="vim ~/.bashrc"
 fi
+
 alias sb="source ~/.bashrc"
 
-########## tmux related alias ##########
+
+# Misc
+alias lls="du -h -d 1 ."
+alias lg="lazygit"
+
+
+# tmux related
 alias a="tmux a -t"
 alias new="tmux new -s"
 alias kt="tmux kill-server"
 
-########## nvim related alias ##########
+
+# nvim related
 alias clearsession="rm -rf~/.local/share/nvim/sessions/*"
-alias nivm="nvim"
+alias nivm="nvim"  # For typo.
 alias en="cd ~/hpf_Linux_Config/nvim && nvim"
 
-alias lls="du -h -d 1 ."
 
-########## fzf related alias ###########
-
+# fzf related
 # Use bat to preview file contents when using fzf.
 alias f="fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}'"
 
-############### zoxide #################
+# zoxide related
 if command -v zoxide >/dev/null 2>&1; then
-    # 启用alias
-    alias cd="z"
+    alias cd="z"  # Only use zoxide when it's installed.
     eval "$(~/.local/bin/zoxide init bash)"
 fi
 
-alias lg="lazygit"
 
 #eval "$(zoxide init bash)"
+
+
+################################# Envrionment Variables ##########################
+export PATH=$PATH:~/.local/bin
+export PATH=$PATH:~/.local/share/nvim/mason/bin/   # For mason installed binaries.(LSP)
+export PATH=$PATH:~/bin
+
+
+
 #############################  Bashrc Already Set  ##############################

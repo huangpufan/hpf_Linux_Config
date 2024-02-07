@@ -4,8 +4,8 @@
 sudo apt -y install -y gcc wget iputils-ping python3-pip git bear tig shellcheck ripgrep
 sudo apt -y install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
 sudo apt -y install ccls npm cargo xclip
-sudo snap install marksman --classic
-sudo snap install pyright --classic
+# sudo snap install marksman --classic
+# sudo snap install pyright --classic
 # cp ./../install_package/marksman-linux-x64 ~/.local/bin/
 sudo npm install -g vim-language-server
 pip3 install --user pynvim
