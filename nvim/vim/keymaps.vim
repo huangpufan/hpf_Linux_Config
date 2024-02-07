@@ -14,7 +14,9 @@ noremap<A-k> :bn<CR>
 " noremap<A-h> :bp<CR>
 " noremap<A-l> :bn<CR>
 
-
+" Ensure the cursor is always in the middle of the screen.
+nnoremap <C-o> <C-o>zz
+nnoremap <C-i> <C-i>zz
 
 " use esc to enable nohilight.
 noremap<Esc> :noh<CR>
