@@ -18,3 +18,13 @@ if ! command -v lazygit >/dev/null 2>&1; then
 else
     echo "lazygit is already installed."
 fi
+
+# Check if nvm is installed and install it if it is not
+# Mainly used for copilot.lua(Nvim plugin)
+if ! command -v nvm >/dev/null 2>&1; then
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+    nvm install 18.0.0
+    nvm use 18.0.0
+else
+    echo "nvm is already installed."
+fi
