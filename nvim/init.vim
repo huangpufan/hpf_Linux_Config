@@ -42,7 +42,7 @@ let s:core_conf_files = [
       \ 'misc.vim',
       \ 'debug.vim',
       \ 'wilder.vim',
-      \ 'keymap.vim',
+      \ 'keymaps.vim',
       \ ]
 
 for s:fname in s:core_conf_files
