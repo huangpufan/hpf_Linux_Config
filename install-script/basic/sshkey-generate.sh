@@ -5,7 +5,7 @@ SSH_KEY_PATH="$HOME/.ssh/id_ed25519"
 
 # 检查 SSH 密钥是否已经存在，如果不存在则创建一个
 if [ ! -f "$SSH_KEY_PATH.pub" ]; then
-  ssh-keygen -t ed25519 -C "$GIT_EMAIL" -f "$SSH_KEY_PATH" -N ""
+  ssh-keygen -t ed25519 -C "$GIT_EMAIL" -f "$SSH_KEY_PATH" -q -N ""
 fi
 
 # 配置 Git 用户名和邮箱

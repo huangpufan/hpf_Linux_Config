@@ -5,7 +5,7 @@ if command -v cargo &> /dev/null; then
   exit 0
 fi
 
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
-cargo install stylua
+# cargo install stylua
 # cargo install --locked bat
