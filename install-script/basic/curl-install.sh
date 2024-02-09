@@ -25,6 +25,7 @@ if ! command -v nvm >/dev/null 2>&1; then
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
     nvm install 18
     nvm use 18
+    nvm alias default v18
 else
     echo "nvm is already installed."
 fi
