@@ -1,2 +1,2 @@
-vim-install:
-	bash ./install.sh
+install:
+	bash ./vim-install.sh

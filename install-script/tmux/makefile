@@ -1,2 +1,2 @@
-tmux-config-install:
-	./tmux-config-install.sh
+install:
+	./install-tmux-config.sh
