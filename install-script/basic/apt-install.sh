@@ -8,4 +8,8 @@ if ! dpkg -s ranger >/dev/null 2>&1; then
     sudo apt install -y build-essential ranger
 
     sudo snap install btop
+
+    # Bat set.Cause 
+    mkdir -p ~/.local/bin
+    ln -s /usr/bin/batcat ~/.local/bin/bat
 fi
