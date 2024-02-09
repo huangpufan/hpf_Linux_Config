@@ -10,4 +10,4 @@ sshkey-genarate-and-cat:
 	cat $(SSH_KEY_PUB)
 
 install-after-sshkey-genarate:
-	./basic-install.sh
+	./install-after-sshkey.sh
