@@ -22,7 +22,7 @@ echo -e "\033[?25h"
 
 # Bashrc related
 # Use nvim by default,if no nvim,use vim.
-if command -v zoxide >/dev/null 2>&1; then
+if command -v nvim >/dev/null 2>&1; then
     alias eb="nvim ~/.bashrc"
 else
     alias eb="vim ~/.bashrc"
@@ -34,7 +34,8 @@ alias sb="source ~/.bashrc"
 # Misc
 alias lls="du -h -d 1 ."
 alias lg="lazygit"
-
+alias gitclonehpfconfighttps="git clone https://github.com/huangpufan/hpf_Linux_Config.git"
+alias gitclonehpfconfiggit="git clone git@github.com:huangpufan/hpf_Linux_Config.git"
 
 # tmux related
 alias a="tmux a -t"
@@ -43,7 +44,7 @@ alias kt="tmux kill-server"
 
 
 # nvim related
-alias clearsession="rm -rf~/.local/share/nvim/sessions/*"
+alias clearsession="rm -rf ~/.local/share/nvim/sessions/*"
 alias nivm="nvim"  # For typo.
 alias en="cd ~/hpf_Linux_Config/nvim && nvim"
 
