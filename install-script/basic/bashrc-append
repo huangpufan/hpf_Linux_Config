@@ -47,7 +47,7 @@ alias kt="tmux kill-server"
 alias clearsession="rm -rf ~/.local/share/nvim/sessions/*"
 alias nivm="nvim"  # For typo.
 alias en="cd ~/hpf_Linux_Config/nvim && nvim"
-
+alias n="nvim"
 
 # fzf related
 # Use bat to preview file contents when using fzf.

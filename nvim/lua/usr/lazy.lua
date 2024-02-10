@@ -447,7 +447,7 @@ require("lazy").setup({
 
 	{
 		"RRethy/vim-illuminate",
-    lazy=false,
+		lazy = false,
 		-- event = "VeryLazy",
 		opts = {
 			delay = 0,
@@ -482,4 +482,5 @@ require("lazy").setup({
 			{ "[[", desc = "Prev Reference" },
 		},
 	},
+  {"stevearc/dressing.nvim"},
 }, {})

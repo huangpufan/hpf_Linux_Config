@@ -123,6 +123,9 @@ wk.register({
 			q = { "<cmd>lua vim.diagnostic.setloclist()<cr>", "" },
 			r = { "<cmd>RunCode<cr>", "run code" },
 		},
+    r={
+      n={ "<cmd>IncRename<cr>", "rename" },
+    },
 		-- o 被 orgmode 使用
 		q = { "<cmd>qa<cr>", "close vim" },
 		s = {

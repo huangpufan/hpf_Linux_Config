@@ -57,9 +57,10 @@ vim.api.nvim_create_autocmd({ "VimLeave" }, {
 require("aerial").setup({
 	backends = { "markdown", "man", "lsp", "treesitter" },
 	layout = {
-		max_width = { 30, 0.15 },
+		max_width = { 35, 0.16 },
+    min_width = { 20, 0.1 },
 		placement = "edge",
-		default_direction = "left",
+		default_direction = "right",
 	},
 	attach_mode = "global",
 })
@@ -162,11 +163,23 @@ require("hlargs").setup({
 })
 
 require("nvim-tree").setup({
-  sync_root_with_cwd = true,
-  respect_buf_cwd = true,
-  update_focused_file = {
-    enable = true,
-    update_root = true
-  },
+	sync_root_with_cwd = true,
+	respect_buf_cwd = true,
+	update_focused_file = {
+		enable = true,
+		update_root = true,
+	},
+})
+require("inc_rename").setup({
+	input_buffer_type = "dressing",
+})
+require("dressing").setup({
+	input = {
+		override = function(conf)
+			conf.col = -1
+			conf.row = 0
+			return conf
+		end,
+	},
 })
 --[[ require('telescope').load_extension('projects') ]]
