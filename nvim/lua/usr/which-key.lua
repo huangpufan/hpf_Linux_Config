@@ -62,11 +62,11 @@ wk.register({
 			d = { "<cmd>call TrimWhitespace()<cr>", "remove trailing space" },
 			t = { "<Plug>Translate", "translate current word" },
 		},
-		b = {
-			name = "+buffer",
+		-- b = {
+			-- name = "+buffer",
 			-- c = { "<cmd>BDelete hidden<cr>", "close invisible buffers" },
-			d = { "<cmd>bdelete %<cr>", "close current buffers" },
-		},
+			-- d = { "<cmd>bdelete %<cr>", "close current buffers" },
+		-- },
 		c = {
 			-- only works in a c/cpp file
 			name = "+switch h/c",
@@ -145,7 +145,7 @@ wk.register({
 			m = { "<cmd>TableModeToggle<cr>", "markdown table edit mode" },
 			t = { "<cmd>set nocursorline<cr> <cmd>TransparentToggle<cr>", "make background transparent" },
 		},
-		x = { "<cmd>FloatermNew ipython<cr>", "calculated" },
+		-- x = { "<cmd>FloatermNew ipython<cr>", "calculated" },
 	},
 	q = { "<cmd>q<cr>", "close window" },
 	-- c = {

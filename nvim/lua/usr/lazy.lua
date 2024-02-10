@@ -120,6 +120,7 @@ require("lazy").setup({
 		lazy = false,
 		build = ":TSUpdate",
 	},
+	{ "ahmedkhalf/project.nvim", lazy = false },
 	{ "RRethy/nvim-treesitter-textsubjects", lazy = true },
 	{ "nvim-treesitter/nvim-treesitter-textobjects", lazy = true },
 	{
@@ -210,7 +211,35 @@ require("lazy").setup({
 	-- },
 	-- 颜色主题
 	{ "folke/tokyonight.nvim", lazy = true },
-	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+	{
+		"catppuccin/nvim",
+		name = "catppuccin",
+		priority = 1000,
+		aerial = true,
+		alpha = true,
+		cmp = true,
+		dashboard = true,
+		flash = true,
+		gitsigns = true,
+		headlines = true,
+		illuminate = true,
+		indent_blankline = { enabled = true },
+		leap = true,
+		lsp_trouble = true,
+		mason = true,
+		markdown = true,
+		mini = true,
+		native_lsp = {
+			enabled = true,
+			underlines = {
+				errors = { "undercurl" },
+				hints = { "undercurl" },
+				warnings = { "undercurl" },
+				information = { "undercurl" },
+			},
+		},
+		navic = { enabled = true, custom_bg = "lualine" },
+	},
 	{ "rebelot/kanagawa.nvim", lazy = true },
 	-- git 版本管理
 	{ "tpope/vim-fugitive", lazy = true }, -- 显示 git blame，实现一些基本操作的快捷执行
@@ -410,6 +439,47 @@ require("lazy").setup({
 					after = "int main() {}",
 				},
 			},
+		},
+	},
+
+	-- { "kevinhwang91/rnvimr", lazy = false },
+	{ "itchyny/vim-cursorword", lazy = false },
+
+	{
+		"RRethy/vim-illuminate",
+    lazy=false,
+		-- event = "VeryLazy",
+		opts = {
+			delay = 0,
+			large_file_cutoff = 2000,
+			large_file_overrides = {
+				providers = { "lsp" },
+			},
+		},
+		config = function(_, opts)
+			require("illuminate").configure(opts)
+
+			local function map(key, dir, buffer)
+				vim.keymap.set("n", key, function()
+					require("illuminate")["goto_" .. dir .. "_reference"](false)
+				end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. " Reference", buffer = buffer })
+			end
+
+			map("]]", "next")
+			map("[[", "prev")
+
+			-- also set it after loading ftplugins, since a lot overwrite [[ and ]]
+			vim.api.nvim_create_autocmd("FileType", {
+				callback = function()
+					local buffer = vim.api.nvim_get_current_buf()
+					map("]]", "next", buffer)
+					map("[[", "prev", buffer)
+				end,
+			})
+		end,
+		keys = {
+			{ "]]", desc = "Next Reference" },
+			{ "[[", desc = "Prev Reference" },
 		},
 	},
 }, {})
