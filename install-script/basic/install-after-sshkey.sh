@@ -2,6 +2,7 @@ hostip=$(cat /etc/resolv.conf | grep -oP '(?<=nameserver\ ).*')
 export all_proxy="socks5://${hostip}:7890"
 
 ./bashrc-init.sh
+./profile-set.sh
 ./folder-create.sh
 ./ubuntu-source-change.sh
 ./apt-install.sh
