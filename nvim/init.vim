@@ -92,3 +92,7 @@ set fillchars+=eob:\
     \ if line("'\"") > 1 && line("'\"") <= line("$") |
     \   exe "normal! g`\"" |
     \ endif
+
+
+" Set the color of the comment
+highlight Comment ctermfg=darkgray guifg=#a6d189
