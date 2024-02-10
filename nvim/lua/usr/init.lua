@@ -58,7 +58,7 @@ require("aerial").setup({
 	backends = { "markdown", "man", "lsp", "treesitter" },
 	layout = {
 		max_width = { 35, 0.16 },
-    min_width = { 20, 0.1 },
+		min_width = { 20, 0.1 },
 		placement = "edge",
 		default_direction = "right",
 	},
@@ -125,7 +125,27 @@ require("copilot").setup({
 })
 
 require("hlargs").setup({
-	color = "#ef9062",
+	color = "#FFE5B4",
+	-- backup choose:
+    -- Dusty Rose: #BC8F8F
+    -- Sage Green: #B8C4B1
+    -- Slate Blue: #6A7EAB
+    -- Mauve: #E0B0FF
+    -- Cream: #FFFDD0
+    -- Burnt Sienna: #E97451
+    -- Powder Blue: #B0E0E6
+    -- Pale Pink: #FADADD
+    -- Charcoal: #36454F
+    -- Teal: #008080
+    -- Soft Lavender: #BFA0CB
+    -- Warm Beige: #F5F5DC
+    -- Ocean Blue: #1CA9C9
+    -- Coral Pink: #FF7F7F
+    -- Olive Green: #6B8E23
+    -- Midnight Blue: #191970
+    -- Soft Peach: #FFE5B4
+    -- Lilac: #C8A2C8
+    -- Turquoise: #40E0D0
 	highlight = {},
 	excluded_filetypes = {},
 	-- disable = function(lang, bufnr) -- If changed, `excluded_filetypes` will be ignored
@@ -168,18 +188,6 @@ require("nvim-tree").setup({
 	update_focused_file = {
 		enable = true,
 		update_root = true,
-	},
-})
-require("inc_rename").setup({
-	input_buffer_type = "dressing",
-})
-require("dressing").setup({
-	input = {
-		override = function(conf)
-			conf.col = -1
-			conf.row = 0
-			return conf
-		end,
 	},
 })
 --[[ require('telescope').load_extension('projects') ]]

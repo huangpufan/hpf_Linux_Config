@@ -482,5 +482,5 @@ require("lazy").setup({
 			{ "[[", desc = "Prev Reference" },
 		},
 	},
-  {"stevearc/dressing.nvim"},
+  -- {"stevearc/dressing.nvim"},
 }, {})
