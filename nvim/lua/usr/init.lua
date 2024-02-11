@@ -229,4 +229,5 @@ require('incline').setup {
 --   -- Symbol Kinds that may have target symbol kinds as children
 --   wrapper_symbol_kinds = { SymbolKind.Class, SymbolKind.Struct },
 -- })
-require('overseer').setup()
+require("overseer").setup()
+-- require("ccc.nvim").setup()
