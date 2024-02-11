@@ -125,7 +125,7 @@ require("copilot").setup({
 })
 
 require("hlargs").setup({
-  color = "#FFE5B4",
+  color = "#FF7F7F",
   -- backup choose:
   -- Dusty Rose: #BC8F8F
   -- Sage Green: #B8C4B1
