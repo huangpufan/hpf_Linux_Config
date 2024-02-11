@@ -23,6 +23,16 @@ else
     exit 1
 fi
 
+
+# Git PPA
+sudo add-apt-repository -y ppa:git-core/ppa
+
+
+# LLVM GPG Key
+wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-14 main"
+
+
 # Update the source list
 sudo apt -y update
 sudo apt -y upgrade

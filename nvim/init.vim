@@ -88,10 +88,10 @@ set smartcase
 set fillchars+=eob:\ 
 
 " Open file and cursor at the last position
-  autocmd BufReadPost *
-    \ if line("'\"") > 1 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
+autocmd BufReadPost *
+   \ if line("'\"") > 1 && line("'\"") <= line("$") |
+   \   exe "normal! g`\"" |
+   \ endif
 
 
 " Set the color of the comment
