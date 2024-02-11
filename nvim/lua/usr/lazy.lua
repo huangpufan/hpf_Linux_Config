@@ -495,5 +495,11 @@ require("lazy").setup({
 		"stevearc/overseer.nvim",
 		opts = {},
 	},
-  {"uga-rosa/ccc.nvim",},
+	{ "uga-rosa/ccc.nvim" },
+
+	-- lazy.nvim
+	{
+		"chrisgrieser/nvim-spider",
+	},
+
 }, {})
