@@ -489,4 +489,10 @@ require("lazy").setup({
 		-- Optional: Lazy load Incline
 		event = "VeryLazy",
 	},
+
+	-- {"VidocqH/lsp-lens.nvim"},
+	{
+		"stevearc/overseer.nvim",
+		opts = {},
+	},
 }, {})

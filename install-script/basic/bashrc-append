@@ -49,6 +49,10 @@ alias nivm="nvim"  # For typo.
 alias en="cd ~/hpf_Linux_Config/nvim && nvim"
 alias n="nvim"
 
+
+# compile related
+alias ninjacompilejson="ninja -w dupbuild=warn -t compdb cxx cc > compile_commands.json"
+
 # fzf related
 # Use bat to preview file contents when using fzf.
 alias f="fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}'"
