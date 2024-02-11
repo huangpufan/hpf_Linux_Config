@@ -482,5 +482,11 @@ require("lazy").setup({
 			{ "[[", desc = "Prev Reference" },
 		},
 	},
-  -- {"stevearc/dressing.nvim"},
+	-- {"stevearc/dressing.nvim"},
+	{
+		"b0o/incline.nvim",
+		opts = {},
+		-- Optional: Lazy load Incline
+		event = "VeryLazy",
+	},
 }, {})
