@@ -63,9 +63,9 @@ wk.register({
 			t = { "<Plug>Translate", "translate current word" },
 		},
 		-- b = {
-			-- name = "+buffer",
-			-- c = { "<cmd>BDelete hidden<cr>", "close invisible buffers" },
-			-- d = { "<cmd>bdelete %<cr>", "close current buffers" },
+		-- name = "+buffer",
+		-- c = { "<cmd>BDelete hidden<cr>", "close invisible buffers" },
+		-- d = { "<cmd>bdelete %<cr>", "close current buffers" },
 		-- },
 		c = {
 			-- only works in a c/cpp file
@@ -96,7 +96,9 @@ wk.register({
 		m = {
 			d = { "<cmd>MarkdownPreview<cr>", "markdown preview" },
 		},
-		o = { "<cmd>AerialToggle!<cr>", "toggle navigator" },
+		o = {
+			l = { "<cmd>AerialToggle!<cr>", "code outline" },
+		},
 		--          {
 		--name = "+git",
 		--a = { "<cmd>Git add -A<cr>", "git stage all changes" },
@@ -123,9 +125,9 @@ wk.register({
 			q = { "<cmd>lua vim.diagnostic.setloclist()<cr>", "" },
 			r = { "<cmd>RunCode<cr>", "run code" },
 		},
-    r={
-      n={ "<cmd>IncRename<cr>", "rename" },
-    },
+		r = {
+			n = { "<cmd>IncRename<cr>", "rename" },
+		},
 		-- o 被 orgmode 使用
 		q = { "<cmd>qa<cr>", "close vim" },
 		s = {
