@@ -502,4 +502,10 @@ require("lazy").setup({
 		"chrisgrieser/nvim-spider",
 	},
 
+	{
+		"ThePrimeagen/harpoon",
+		branch = "harpoon2",
+		dependencies = { "nvim-lua/plenary.nvim" },
+	},
+
 }, {})

@@ -14,6 +14,12 @@ export hostip=$(cat /etc/resolv.conf |grep -oP '(?<=nameserver\ ).*')
 alias setss='export all_proxy="socks5://${hostip}:7890";'
 alias unsetss='unset all_proxy && unset ALL_PROXY'
 
+# To call setss automatically when WSL starts.
+if type setss &>/dev/null; then
+  setss
+fi
+
+
 # display cursor
 echo -e "\033[?25h"
 
@@ -44,7 +50,7 @@ alias kt="tmux kill-server"
 
 
 # nvim related
-alias clearsession="rm -rf ~/.local/share/nvim/sessions/*"
+alias cs="rm -rf ~/.local/share/nvim/sessions/*"
 alias nivm="nvim"  # For typo.
 alias en="cd ~/hpf_Linux_Config/nvim && nvim"
 alias n="nvim"
