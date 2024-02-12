@@ -25,6 +25,9 @@ local function on_attach(bufnr)
 end
 
 require("nvim-tree").setup({
+  -- project.nvim set:
+   respect_buf_cwd = true,
+
 	-- Netrw plugin related settings
 	disable_netrw = true, -- Disable the built-in netrw file explorer
 	hijack_netrw = true, -- Make nvim-tree take over netrw functionality
@@ -35,7 +38,7 @@ require("nvim-tree").setup({
 	-- Settings related to updating the focused file in the tree
 	update_focused_file = {
 		enable = true, -- Enable updating the focused file in the tree
-		update_root = false, -- Do not change the root of the tree when focusing a new file
+		update_root = true, -- Do not change the root of the tree when focusing a new file
 	},
 	-- Filesystem watcher settings
 	filesystem_watchers = {

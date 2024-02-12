@@ -266,14 +266,19 @@ vim.keymap.set({ "n", "o", "x" }, "e", "<cmd>lua require('spider').motion('e')<C
 vim.keymap.set({ "n", "o", "x" }, "b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
 
 _G.goto_first_buffer = function()
-  vim.cmd('BufferLineGoToBuffer 1')
+	vim.cmd("BufferLineGoToBuffer 1")
 end
 
 -- Go to the last buffer
 _G.goto_last_buffer = function()
-  -- This assumes that the maximum buffer number won't exceed 1000
-  -- You might need to adjust this if you work with more buffers
-  vim.cmd('BufferLineGoToBuffer 1000')
+	-- This assumes that the maximum buffer number won't exceed 1000
+	-- You might need to adjust this if you work with more buffers
+	vim.cmd("BufferLineGoToBuffer 1000")
 end
-vim.api.nvim_set_keymap('n', '<M-Home>', '<cmd>lua goto_first_buffer()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<M-End>', '<cmd>lua goto_last_buffer()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<M-Home>", "<cmd>lua goto_first_buffer()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<M-End>", "<cmd>lua goto_last_buffer()<CR>", { noremap = true, silent = true })
+require("project_nvim").setup({
+	-- your configuration comes here
+	-- or leave it empty to use the default settings
+	-- refer to the configuration section below
+})
