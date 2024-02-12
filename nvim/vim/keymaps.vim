@@ -7,10 +7,30 @@ nnoremap \ :split<CR>
 nnoremap <Bar> :vsplit<CR>
 
 " use alter + left/right to switch buffer.
-noremap<M-Left> :bp<CR>
-noremap<M-Right> :bn<CR>
-noremap<A-j> :bp<CR>
-noremap<A-k> :bn<CR>
+noremap<M-Left> :BufferLineCyclePrev<CR>
+noremap<M-Right> :BufferLineCycleNext<CR>
+
+noremap<A-j> :BufferLineCyclePrev<CR>
+noremap<A-k> :BufferLineCycleNext<CR>
+"" 使用 Alt + 数字 切换到对应编号的 buffer
+nnoremap <A-1> :BufferLineGoToBuffer 1<CR>
+nnoremap <A-2> :BufferLineGoToBuffer 2<CR>
+nnoremap <A-3> :BufferLineGoToBuffer 3<CR>
+nnoremap <A-4> :BufferLineGoToBuffer 4<CR>
+nnoremap <A-5> :BufferLineGoToBuffer 5<CR>
+nnoremap <A-6> :BufferLineGoToBuffer 6<CR>
+nnoremap <A-7> :BufferLineGoToBuffer 7<CR>
+nnoremap <A-8> :BufferLineGoToBuffer 8<CR>
+nnoremap <A-9> :BufferLineGoToBuffer 9<CR>
+
+" Pin the tab.
+nnoremap <A-p> :BufferLineTogglePin<CR>
+
+nnoremap <A-d> :BufferLineCloseRight<CR>
+
+nnoremap <A-i> :BufferLineMovePrev<CR>
+nnoremap <A-o> :BufferLineMoveNext<CR>
+
 " noremap<A-h> :bp<CR>
 " noremap<A-l> :bn<CR>
 
@@ -135,3 +155,5 @@ noremap <C-M> <C-V>
 tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
 nnoremap <silent> <M-o> :RnvimrToggle<CR>
 tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
+
+

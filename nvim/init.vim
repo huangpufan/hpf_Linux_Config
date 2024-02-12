@@ -1,3 +1,4 @@
+set termguicolors
 set autoread
 au FocusGained,BufEnter * :checktime
 " 当失去焦点或者离开当前的 buffer 的时候保存
@@ -94,12 +95,20 @@ autocmd BufReadPost *
    \ endif
 
 
+""""""""""""""""""""""""""  color set  """"""""""""""""""""""""""""""""""
 " Set the color of the comment
 highlight Comment ctermfg=darkgray guifg=#a6d189
 
 
+
+""""""""""""""""""""""""""  buffer set """"""""""""""""""""""""""""""""""
 " To ban the completion when the line is empty or no content before the cursor.
 augroup DisableCompletionOnEmptyLine
   autocmd!
   autocmd FileType * if getline('.') =~# '^\s*$' | setlocal complete-=k | endif
 augroup END
+
+hi BufferLineBufferSelected guifg=white guibg=none gui=bold,underline
+
+" 在 VimEnter 事件后检查并关闭名为 NvimTree_1 的空 buffer
+autocmd VimEnter * if bufexists("NvimTree_1") | bdelete NvimTree_1 | endif

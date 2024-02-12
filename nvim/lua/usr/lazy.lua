@@ -213,32 +213,6 @@ require("lazy").setup({
 	{ "folke/tokyonight.nvim", lazy = true },
 	{
 		"catppuccin/nvim",
-		name = "catppuccin",
-		priority = 1000,
-		aerial = true,
-		alpha = true,
-		cmp = true,
-		dashboard = true,
-		flash = true,
-		gitsigns = true,
-		headlines = true,
-		illuminate = true,
-		indent_blankline = { enabled = true },
-		leap = true,
-		lsp_trouble = true,
-		mason = true,
-		markdown = true,
-		mini = true,
-		native_lsp = {
-			enabled = true,
-			underlines = {
-				errors = { "undercurl" },
-				hints = { "undercurl" },
-				warnings = { "undercurl" },
-				information = { "undercurl" },
-			},
-		},
-		navic = { enabled = true, custom_bg = "lualine" },
 	},
 	{ "rebelot/kanagawa.nvim", lazy = true },
 	-- git 版本管理
@@ -507,5 +481,4 @@ require("lazy").setup({
 		branch = "harpoon2",
 		dependencies = { "nvim-lua/plenary.nvim" },
 	},
-
 }, {})
