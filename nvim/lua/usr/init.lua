@@ -240,48 +240,9 @@ require("incline").setup({
 		return buffer
 	end,
 })
--- local SymbolKind = vim.lsp.protocol.SymbolKind
--- require'lsp-lens'.setup({
---   enable = true,
---   include_declaration = true,      -- Reference include declaration
---   sections = {                      -- Enable / Disable specific request, formatter example looks 'Format Requests'
---     definition = false,
---     references = true,
---     implements = true,
---     git_authors = true,
---   },
---   ignore_filetype = {
---     "prisma",
---   },
---   -- Target Symbol Kinds to show lens information
---   target_symbol_kinds = { SymbolKind.Function, SymbolKind.Method, SymbolKind.Interface },
---   -- Symbol Kinds that may have target symbol kinds as children
---   wrapper_symbol_kinds = { SymbolKind.Class, SymbolKind.Struct },
--- })
+
 require("overseer").setup()
---
---
-vim.keymap.set({ "n", "o", "x" }, "w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w" })
-vim.keymap.set({ "n", "o", "x" }, "e", "<cmd>lua require('spider').motion('e')<CR>", { desc = "Spider-e" })
-vim.keymap.set({ "n", "o", "x" }, "b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
 
-_G.goto_first_buffer = function()
-	vim.cmd("BufferLineGoToBuffer 1")
-end
-
--- Go to the last buffer
-_G.goto_last_buffer = function()
-	-- This assumes that the maximum buffer number won't exceed 1000
-	-- You might need to adjust this if you work with more buffers
-	vim.cmd("BufferLineGoToBuffer 1000")
-end
-vim.api.nvim_set_keymap("n", "<M-Home>", "<cmd>lua goto_first_buffer()<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<M-End>", "<cmd>lua goto_last_buffer()<CR>", { noremap = true, silent = true })
-require("project_nvim").setup({
-	-- your configuration comes here
-	-- or leave it empty to use the default settings
-	-- refer to the configuration section below
-})
 
 local harpoon = require("harpoon")
 
@@ -289,17 +250,17 @@ local harpoon = require("harpoon")
 harpoon:setup()
 -- REQUIRED
 
-vim.keymap.set("n", "<A-a>", function() harpoon:list():append() end)
-vim.keymap.set("n", "<A-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+vim.keymap.set("n", "<space>ha", function() harpoon:list():append() end)
+vim.keymap.set("n", "<space>hl", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 
-vim.keymap.set("n", "<A-h>", function() harpoon:list():select(1) end)
-vim.keymap.set("n", "<A-t>", function() harpoon:list():select(2) end)
-vim.keymap.set("n", "<A-n>", function() harpoon:list():select(3) end)
-vim.keymap.set("n", "<A-s>", function() harpoon:list():select(4) end)
+-- vim.keymap.set("n", "<A-1>", function() harpoon:list():select(1) end)
+-- vim.keymap.set("n", "<A-2>", function() harpoon:list():select(2) end)
+-- vim.keymap.set("n", "<A-3>", function() harpoon:list():select(3) end)
+-- vim.keymap.set("n", "<A-4>", function() harpoon:list():select(4) end)
 
 -- Toggle previous & next buffers stored within Harpoon list
-vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
-vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
+vim.keymap.set("n", "<A-[>", function() harpoon:list():prev() end)
+vim.keymap.set("n", "<A-]>", function() harpoon:list():next() end)
 -- basic telescope configuration
 local conf = require("telescope.config").values
 local function toggle_telescope(harpoon_files)

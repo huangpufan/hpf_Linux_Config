@@ -122,7 +122,7 @@ function! CloseBuffersOnStart()
   " 逐行处理 buffer 列表
   for l:line in split(l:bufferlist, '\n')
     " 匹配 buffer 名称前缀为 'hpf/' 或者精确匹配 'NvimTree_1' 的 buffer
-    if l:line =~ 'hpf\/' || l:line =~ 'NvimTree_1'
+    if l:line =~ 'hpf*' || l:line =~ 'NvimTree_1'
       " 提取 buffer 编号
       let l:matched = matchlist(l:line, '^\s*\zs\d\+')
       if !empty(l:matched)

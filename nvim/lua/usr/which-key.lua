@@ -129,7 +129,7 @@ wk.register({
 			n = { "<cmd>IncRename<cr>", "rename" },
 		},
 		-- o 被 orgmode 使用
-		q = { "<cmd>xa<cr>", "save and close nvim" },
+		q = { "<cmd>qa<cr>", "save and close nvim" },
 		s = {
 			name = "+search",
 			P = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "search cursor word in project" },
@@ -215,3 +215,29 @@ end
 -- function MarkdownLeaderX()
 -- 	vim.api.nvim_set_keymap("n", "<leader>x", ":MarkdownPreview<CR>", { noremap = false, silent = true })
 -- end
+--
+--
+
+vim.keymap.set({ "n", "o", "x" }, "w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w" })
+vim.keymap.set({ "n", "o", "x" }, "e", "<cmd>lua require('spider').motion('e')<CR>", { desc = "Spider-e" })
+vim.keymap.set({ "n", "o", "x" }, "b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
+
+_G.goto_first_buffer = function()
+	vim.cmd("BufferLineGoToBuffer 1")
+end
+
+-- Go to the last buffer
+_G.goto_last_buffer = function()
+	-- This assumes that the maximum buffer number won't exceed 1000
+	-- You might need to adjust this if you work with more buffers
+	vim.cmd("BufferLineGoToBuffer 1000")
+end
+vim.api.nvim_set_keymap("n", "<M-Home>", "<cmd>lua goto_first_buffer()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<M-End>", "<cmd>lua goto_last_buffer()<CR>", { noremap = true, silent = true })
+require("project_nvim").setup({
+	-- your configuration comes here
+	-- or leave it empty to use the default settings
+	-- refer to the configuration section below
+})
+
+
