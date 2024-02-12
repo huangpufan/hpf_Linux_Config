@@ -96,3 +96,10 @@ autocmd BufReadPost *
 
 " Set the color of the comment
 highlight Comment ctermfg=darkgray guifg=#a6d189
+
+
+" To ban the completion when the line is empty or no content before the cursor.
+augroup DisableCompletionOnEmptyLine
+  autocmd!
+  autocmd FileType * if getline('.') =~# '^\s*$' | setlocal complete-=k | endif
+augroup END

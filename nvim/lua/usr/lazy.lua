@@ -121,8 +121,8 @@ require("lazy").setup({
 		build = ":TSUpdate",
 	},
 	{ "ahmedkhalf/project.nvim", lazy = false },
-	{ "RRethy/nvim-treesitter-textsubjects", lazy = true },
-	{ "nvim-treesitter/nvim-treesitter-textobjects", lazy = true },
+	{ "RRethy/nvim-treesitter-textsubjects", lazy = false },
+	{ "nvim-treesitter/nvim-treesitter-textobjects", lazy = false },
 	{
 		"cshuaimin/ssr.nvim",
 		lazy = true,
