@@ -129,7 +129,7 @@ wk.register({
 			n = { "<cmd>IncRename<cr>", "rename" },
 		},
 		-- o 被 orgmode 使用
-		q = { "<cmd>qa<cr>", "close vim" },
+		q = { "<cmd>xa<cr>", "save and close nvim" },
 		s = {
 			name = "+search",
 			P = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "search cursor word in project" },

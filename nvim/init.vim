@@ -111,4 +111,27 @@ augroup END
 hi BufferLineBufferSelected guifg=white guibg=none gui=bold,underline
 
 " 在 VimEnter 事件后检查并关闭名为 NvimTree_1 的空 buffer
-autocmd VimEnter * if bufexists("NvimTree_1") | bdelete NvimTree_1 | endif
+" autocmd VimEnter * if bufexists("NvimTree_1") | bdelete NvimTree_1 | endif
+
+function! CloseBuffersOnStart()
+  " 获取所有 buffer 的列表
+  redir => l:bufferlist
+  silent! ls
+  redir END
+
+  " 逐行处理 buffer 列表
+  for l:line in split(l:bufferlist, '\n')
+    " 匹配 buffer 名称前缀为 'hpf/' 或者精确匹配 'NvimTree_1' 的 buffer
+    if l:line =~ 'hpf\/' || l:line =~ 'NvimTree_1'
+      " 提取 buffer 编号
+      let l:matched = matchlist(l:line, '^\s*\zs\d\+')
+      if !empty(l:matched)
+        " 删除对应 buffer
+        execute 'bdelete' l:matched[0]
+      endif
+    endif
+  endfor
+endfunction
+
+" 启动 nvim 时，调用 CloseBuffersOnStart 函数
+autocmd VimEnter * call CloseBuffersOnStart()
