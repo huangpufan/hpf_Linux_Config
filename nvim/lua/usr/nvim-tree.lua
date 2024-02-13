@@ -25,9 +25,9 @@ local function on_attach(bufnr)
 end
 
 require("nvim-tree").setup({
-  -- project.nvim set:
-   respect_buf_cwd = true,
-
+	-- project.nvim set:
+	respect_buf_cwd = true,
+	auto_reload_on_write = true,
 	-- Netrw plugin related settings
 	disable_netrw = true, -- Disable the built-in netrw file explorer
 	hijack_netrw = true, -- Make nvim-tree take over netrw functionality
@@ -57,6 +57,17 @@ require("nvim-tree").setup({
 			},
 		},
 	},
+	filters = {
+		dotfiles = true,
+		custom = { "^.git$" },
+		exclude = {},
+	},
+	git = {
+		enable = true,
+		ignore = false,
+    timeout=500,
+	},
+
 	-- Renderer settings for the file tree
 	renderer = {
 		root_folder_label = false, -- Do not show a label for the root folder

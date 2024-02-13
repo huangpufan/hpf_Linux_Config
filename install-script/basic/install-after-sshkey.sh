@@ -8,6 +8,8 @@ export all_proxy="socks5://${hostip}:7890"
 ./apt-install.sh
 unset all_proxy 
 ./pip-install.sh
+export all_proxy="socks5://${hostip}:7890"
+./npm-install.sh
 ./hosts-adjust.sh
 ./curl-install.sh
 ./cargo-install.sh
