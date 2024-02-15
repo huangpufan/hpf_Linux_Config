@@ -107,7 +107,7 @@ require("goto-preview").setup({
 -- require("ibl").setup()
 require("mini.indentscope").setup()
 -- instances.
-require("neoscroll").setup()
+-- require("neoscroll").setup()
 require("copilot").setup({
 	panel = {
 		enabled = true,

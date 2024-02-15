@@ -98,9 +98,26 @@ autocmd BufReadPost *
 """"""""""""""""""""""""""  color set  """"""""""""""""""""""""""""""""""
 " Set the color of the comment
 highlight Comment ctermfg=darkgray guifg=#a6d189
-
-
-
+" #c5c8c6
+" #8abeb7
+" #b294bb
+" #a8a19f
+" #969896
+" #d5c4a1
+" #f2e5bc
+" #e0cfa9
+" #d7bd8d
+" #f4a460
+" #996515
+" #8b4513
+" #800000
+" #a0522d
+" #7e3300
+" #400000
+" #6f4e37
+" #d2691e
+" #b56a4c
+"
 """"""""""""""""""""""""""  buffer set """"""""""""""""""""""""""""""""""
 " To ban the completion when the line is empty or no content before the cursor.
 augroup DisableCompletionOnEmptyLine
