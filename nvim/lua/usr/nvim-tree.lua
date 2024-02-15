@@ -115,3 +115,11 @@ require("nvim-tree").setup({
 		},
 	},
 })
+
+local api = require("nvim-tree.api")
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true, -- 确保自动命令只执行一次
+  callback = function()
+    api.tree.toggle_gitignore_filter()
+  end,
+})
