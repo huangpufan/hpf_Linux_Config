@@ -135,3 +135,19 @@ endfunction
 
 " 启动 nvim 时，调用 CloseBuffersOnStart 函数
 autocmd VimEnter * call CloseBuffersOnStart()
+
+
+
+function! ZoxideQuery()
+    let dir = system('zoxide query ' . shellescape(input('z> ')))
+    if v:shell_error == 0
+        execute 'cd ' . fnameescape(trim(dir))
+    else
+        echohl ErrorMsg
+        echo "zoxide: directory not found"
+        echohl None
+    endif
+endfunction
+
+" 绑定到某个键，例如 <leader>z
+nnoremap <silent> <space>z :call ZoxideQuery()<CR>
