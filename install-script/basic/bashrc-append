@@ -47,6 +47,7 @@ alias gitclonehpfconfiggit="git clone git@github.com:huangpufan/hpf_Linux_Config
 alias a="tmux a -t"
 alias new="tmux new -s"
 alias kt="tmux kill-server"
+alias st="source-file ~/.tmux.conf"
 
 
 # nvim related
