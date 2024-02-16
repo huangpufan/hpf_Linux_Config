@@ -9,6 +9,7 @@ export all_proxy="socks5://${hostip}:7890"
 unset all_proxy 
 ./pip-install.sh
 export all_proxy="socks5://${hostip}:7890"
+./git-install.sh
 ./npm-install.sh
 ./hosts-adjust.sh
 ./curl-install.sh
