@@ -168,3 +168,5 @@ endfunction
 
 " 绑定到某个键，例如 <leader>z
 nnoremap <silent> <space>z :call ZoxideQuery()<CR>
+
+let g:nvim_tree_auto_refresh = 1
