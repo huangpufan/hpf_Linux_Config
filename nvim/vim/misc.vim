@@ -68,3 +68,79 @@ autocmd TextYankPost *
     \ execute 'OSCYankRegister +' |
     \ endif
 " 让远程的 server 内容拷贝到系统剪切板中，具体参考 https://github.com/ojroques/vim-oscyank
+
+""""""""""""""""""""""""""  color set  """"""""""""""""""""""""""""""""""
+" Set the color of the comment
+highlight Comment ctermfg=darkgray guifg=#a6d189
+" #c5c8c6
+" #8abeb7
+" #b294bb
+" #a8a19f
+" #969896
+" #d5c4a1
+" #f2e5bc
+" #e0cfa9
+" #d7bd8d
+" #f4a460
+" #996515
+" #8b4513
+" #800000
+" #a0522d
+" #7e3300
+" #400000
+" #6f4e37
+" #d2691e
+" #b56a4c
+"
+""""""""""""""""""""""""""  buffer set """"""""""""""""""""""""""""""""""
+" To ban the completion when the line is empty or no content before the cursor.
+augroup DisableCompletionOnEmptyLine
+  autocmd!
+  autocmd FileType * if getline('.') =~# '^\s*$' | setlocal complete-=k | endif
+augroup END
+
+hi BufferLineBufferSelected guifg=white guibg=none gui=bold,underline
+
+" 在 VimEnter 事件后检查并关闭名为 NvimTree_1 的空 buffer
+" autocmd VimEnter * if bufexists("NvimTree_1") | bdelete NvimTree_1 | endif
+
+function! CloseBuffersOnStart()
+  " 获取所有 buffer 的列表
+  redir => l:bufferlist
+  silent! ls
+  redir END
+
+  " 逐行处理 buffer 列表
+  for l:line in split(l:bufferlist, '\n')
+    " 匹配 buffer 名称前缀为 'hpf/' 或者精确匹配 'NvimTree_1' 的 buffer
+    if l:line =~ 'hpf*' || l:line =~ 'NvimTree_1'
+      " 提取 buffer 编号
+      let l:matched = matchlist(l:line, '^\s*\zs\d\+')
+      if !empty(l:matched)
+        " 删除对应 buffer
+        execute 'bdelete' l:matched[0]
+      endif
+    endif
+  endfor
+endfunction
+
+" 启动 nvim 时，调用 CloseBuffersOnStart 函数
+autocmd VimEnter * call CloseBuffersOnStart()
+
+
+
+function! ZoxideQuery()
+    let dir = system('zoxide query ' . shellescape(input('z> ')))
+    if v:shell_error == 0
+        execute 'cd ' . fnameescape(trim(dir))
+    else
+        echohl ErrorMsg
+        echo "zoxide: directory not found"
+        echohl None
+    endif
+endfunction
+
+" 绑定到某个键，例如 <leader>z
+nnoremap <silent> <space>z :call ZoxideQuery()<CR>
+
+let g:nvim_tree_auto_refresh = 1
