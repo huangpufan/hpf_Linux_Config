@@ -1,0 +1,94 @@
+---
+Language:    Cpp
+BasedOnStyle:    LLVM
+
+# 使用4个空格作为缩进单位
+IndentWidth:    4
+TabWidth:    4
+UseTab:    false
+
+# 控制语句(if, for, while, etc.)下的语句必须缩进
+IndentCaseLabels:    false
+IndentWrappedFunctionNames:    false
+
+# 控制单行语句的长度，超过限制则自动换行
+ColumnLimit:    100
+
+AllowShortFunctionsOnASingleLine:    false
+# if、for、do、while、case、switch、default等语句独占一行
+AllowShortIfStatementsOnASingleLine:    false
+AllowShortLoopsOnASingleLine:    false
+AllowShortCaseLabelsOnASingleLine:    false
+
+# 函数定义和调用的参数如果不能在一行显示完，则要求对齐或者逐个参数换行缩进
+AllowAllParametersOfDeclarationOnNextLine:    false
+AllowAllArgumentsOnNextLine:    false
+BinPackArguments:    false
+BinPackParameters:    false
+
+# 相对独立的程序块之间、变量说明之后加空行
+MaxEmptyLinesToKeep:    1
+
+# 按值对齐
+AlignConsecutiveMacros:    true
+AlignConsecutiveDeclarations:    true
+AlignConsecutiveAssignments:    true
+
+# 括号样式
+BreakBeforeBraces:     Custom
+BraceWrapping:
+  AfterCaseLabel:    false
+  AfterClass:    false
+  AfterControlStatement:    false
+  AfterEnum:    false
+  AfterFunction:    true
+  SplitEmptyFunction:    true
+  AfterNamespace:    false
+  AfterObjCDeclaration:    false
+  AfterStruct:    false
+  AfterUnion:    false
+  AfterExternBlock:    false
+  BeforeCatch:    false
+  BeforeElse:    false
+  IndentBraces:    false
+
+# 函数返回类型和函数名在不同行
+# AlwaysBreakAfterReturnType:    true
+# AlwaysBreakAfterDefinitionReturnType:    true
+
+# 指针和引用的对齐方式
+DerivePointerAlignment:    false
+PointerAlignment:    Left
+
+# 控制语句(if, while, for, do, switch)后面必须有一个空格
+SpaceAfterCStyleCast:    true
+SpaceBeforeParens: ControlStatements
+SpacesBeforeTrailingComments:    1
+SpaceBeforeParens:    ControlStatements
+
+# 不要在单行注释前留出空格
+SpacesInCStyleCastParentheses:    false
+
+# 控制逗号后面的空格
+SpaceAfterTemplateKeyword:    true
+SpaceBeforeAssignmentOperators:    true
+SpaceBeforeCpp11BracedList:    true
+
+# 控制操作符前后的空格
+SpaceBeforeAssignmentOperators:    true
+
+# 控制代码的紧凑程度
+CompactNamespaces:    false
+
+# 控制注释的格式
+ReflowComments:    true
+SpacesInContainerLiterals:    true
+
+# 控制头文件的排序和分组
+IncludeBlocks:    Preserve
+IncludeCategories:
+  - Regex:           '.*'
+    Priority:        1
+
+# 控制宏定义后的反斜杠是否对齐
+AlignEscapedNewlinesLeft:    true
