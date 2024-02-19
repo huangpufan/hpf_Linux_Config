@@ -10,17 +10,20 @@ Including config:
     - Change download source for Chinese users.
     - Mkdir root directory folder :
         -  project、install、download、bin、.config
-    - Install cargo.
     - Bat to replace cat.
-    - Lazygit for version control.
     - Zoxide to replace cd.
-    - Fzf to boost many components searching ability.
+    - Lazygit for version control.
     - Ranger as vim-style file manager .
+    - Fzf to boost many components searching ability such as command line history.
     - Nvm to upgrade node.js >= 18.0 for copilot.lua using.
+    - Install cargo for potential software install by cargo
     - Ensure git version late enough for diffview.nvim.
 
 
 - Modern neovim config for C/C++ programming.
+
 - Tmux config. 
+
 - Ranger install script.
+
 - Wezterm config.(Fork from github)
