@@ -155,17 +155,6 @@ require("lazy").setup({
 		},
 	},
 
-	-- Yank Improve
-	-- {
-	--   "gbprod/yanky.nvim",
-	--   opts = {
-	--     -- your configuration comes here
-	--     -- or leave it empty to use the default settings
-	--     -- refer to the configuration section below
-	--   },
-	-- },
-	--
-	--
 	{ "abecodes/tabout.nvim", lazy = false },
 	------------------------------------- User Interface -----------------------
 	---
@@ -181,19 +170,9 @@ require("lazy").setup({
 	-- 	dependencies = { { "nvim-tree/nvim-web-devicons" } },
 	-- },
 	{ "stevearc/aerial.nvim", lazy = false }, -- 导航栏
-	"kyazdani42/nvim-tree.lua", -- 文件树
-	-- {
-	-- 	"nvim-neo-tree/neo-tree.nvim",
-	-- 	branch = "v3.x",
-	-- 	dependencies = {
-	-- 		"nvim-lua/plenary.nvim",
-	-- 		"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-	-- 		"MunifTanjim/nui.nvim",
-	-- 		-- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
-	-- 	},
-	-- },
-	"akinsho/bufferline.nvim", -- buffer
-	"nvim-lualine/lualine.nvim", -- 状态栏
+	{ "kyazdani42/nvim-tree.lua" }, -- 文件树
+	{ "akinsho/bufferline.nvim" }, -- buffer
+	{ "nvim-lualine/lualine.nvim" }, -- 状态栏
 	{
 		"kazhala/close-buffers.nvim",
 		lazy = false,
@@ -245,6 +224,7 @@ require("lazy").setup({
 	{ "akinsho/toggleterm.nvim", lazy = false }, -- 性能好点，但是易用性和稳定性都比较差
 	{ "CRAG666/code_runner.nvim", lazy = true }, -- 一键运行代码
 	{ "samjwill/nvim-unception", lazy = true }, -- 嵌套 nvim 自动 offload 到 host 中
+
 	-- markdown
 	-- 如果发现插件有问题， 可以进入到 ~/.local/share/nvim/lazy/markdown-preview.nvim/app && npm install
 	{
@@ -289,29 +269,10 @@ require("lazy").setup({
 	{ "ojroques/vim-oscyank", lazy = false }, -- 让 nvim 在远程 server 上拷贝到本地剪切板上
 	{ "azabiong/vim-highlighter", lazy = false }, -- 高亮多个搜索内容
 	-- "dstein64/vim-startuptime", -- 分析 nvim 启动时间
-	--"vldikss/vim-translator", -- 翻译
 	-- {
 	-- 	"OscarCreator/rsync.nvim", -- 自动同步代码远程
 	-- 	build = "make", -- 实在不行，进入到 ~/.local/share/nvim/lazy/rsync.nvim 中执行下 make
 	-- },
-	--"kkharji/sqlite.lua", -- for Trans.nvim
-	--{
-	--	"JuanZoran/Trans.nvim",
-	--	build = function()
-	--		require("Trans").install()
-	--	end,
-	--	keys = {
-	--		-- 可以换成其他你想映射的键
-	--		{ "dt", mode = { "n", "x" }, "<Cmd>Translate<CR>", desc = " Translate" },
-	--		{ "mk", mode = { "n", "x" }, "<Cmd>TransPlay<CR>", desc = " Auto Play" },
-	--		-- 目前这个功能的视窗还没有做好，可以在配置里将view.i改成hover
-	--		{ "mi", "<Cmd>TranslateInput<CR>", desc = " Translate From Input" },
-	--	},
-	--	dependencies = { "kkharji/sqlite.lua" },
-	--	opts = {
-	--		-- your configuration there
-	--	},
-	--},
 
 	{
 		"folke/flash.nvim",
@@ -361,14 +322,6 @@ require("lazy").setup({
 			options = { try_as_border = true },
 		},
 	},
-	-- tokyonight
-	-- {
-	--   "folke/tokyonight.nvim",
-	--   lazy = true,
-	--   opts = { style = "moon" },
-	-- },
-	-- instances.
-	--"RRethy/vim-illuminate",
 	{
 		"danymat/neogen",
 		lazy = false,
@@ -456,7 +409,6 @@ require("lazy").setup({
 			{ "[[", desc = "Prev Reference" },
 		},
 	},
-	-- {"stevearc/dressing.nvim"},
 	{
 		"b0o/incline.nvim",
 		opts = {},
@@ -464,14 +416,12 @@ require("lazy").setup({
 		event = "VeryLazy",
 	},
 
-	-- {"VidocqH/lsp-lens.nvim"},
 	{
 		"stevearc/overseer.nvim",
 		opts = {},
 	},
 	{ "uga-rosa/ccc.nvim" },
 
-	-- lazy.nvim
 	{
 		"chrisgrieser/nvim-spider",
 	},
@@ -481,5 +431,4 @@ require("lazy").setup({
 		branch = "harpoon2",
 		dependencies = { "nvim-lua/plenary.nvim" },
 	},
-
 }, {})
