@@ -14,4 +14,5 @@ git config --global user.email "$GIT_EMAIL"
 
 # 打印换行（正确的方式）
 printf "\n"
-echo 'Enter: https://github.com/settings/ssh/new'
+echo 'Github: https://github.com/settings/ssh/new'
+echo 'Gitee: https://gitee.com/profile/sshkeys'
