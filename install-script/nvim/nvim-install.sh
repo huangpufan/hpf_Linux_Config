@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Cause the user may not source the .bashrc file, so we need to source it manually
+source ~/.bashrc
 setss
 # Basic dependencies install
 sudo apt -y install gcc wget iputils-ping python3-pip git bear tig 
@@ -31,4 +33,5 @@ rm -rf ~/.config/nvim
 rm -rf ~/.local/share/nvim/
 # Link the new nvim config
 ln -s ~/hpf_Linux_Config/nvim ~/.config/nvim
+cd -
 ./clipboard-prepare.sh
