@@ -95,4 +95,11 @@ autocmd BufReadPost *
    \ endif
 
 
+" Use 'j' and 'k' to move up and down, and use 'gj' and 'gk' to move up and down by line.
+" Move down with 'j' or <Down>, using 'gj' in non-numeric modes
+nnoremap <expr> j v:count == 0 && mode(1)[0:1] != 'no' ? 'gj' : 'j'
+nnoremap <expr> <Down> v:count == 0 && mode(1)[0:1] != 'no' ? 'gj' : 'j'
 
+" Move up with 'k' or <Up>, using 'gk' in non-numeric modes
+nnoremap <expr> k v:count == 0 && mode(1)[0:1] != 'no' ? 'gk' : 'k'
+nnoremap <expr> <Up> v:count == 0 && mode(1)[0:1] != 'no' ? 'gk' : 'k'
