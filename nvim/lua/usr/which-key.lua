@@ -234,8 +234,4 @@ _G.goto_last_buffer = function()
 end
 vim.api.nvim_set_keymap("n", "<M-Home>", "<cmd>lua goto_first_buffer()<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<M-End>", "<cmd>lua goto_last_buffer()<CR>", { noremap = true, silent = true })
-require("project_nvim").setup({
-  -- your configuration comes here
-  -- or leave it empty to use the default settings
-  -- refer to the configuration section below
-})
+
