@@ -9,7 +9,7 @@ if ! dpkg -s ranger >/dev/null 2>&1; then
     sudo apt install -y cppman
     sudo apt install -y ncdu
     
-
+    sudo apt install -y git wget rpm rpm2cpio cpio make build-essential binutils m4
     sudo snap install btop
 
     # Bat set.Cause 
