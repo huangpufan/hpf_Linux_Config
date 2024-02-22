@@ -1,6 +1,6 @@
 require("orgmode").setup_ts_grammar()
 
-require("orgmode").setup({
+require("orgmode").setup {
   org_agenda_files = { "~/core/org-mode/*" },
   org_default_notes_file = "~/core/org-mode/refile.org",
   mappings = {
@@ -20,11 +20,11 @@ require("orgmode").setup({
   },
   org_capture_templates = {
     j = {
-      description = 'Journal',
+      description = "Journal",
       template = "\n*** %<%Y-%m-%d> %<%A>\n**** %U\n\n%?",
       target = "~/core/org-mode/journal.org",
     },
-    t= "TODO",
+    t = "TODO",
     tw = {
       description = "Work Task",
       template = "* TODO %?\n SCHEDULED: %t",
@@ -36,4 +36,4 @@ require("orgmode").setup({
       target = "~/core/org-mode/study.org",
     },
   },
-})
+}

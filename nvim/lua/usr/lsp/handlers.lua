@@ -13,9 +13,9 @@ M.setup = function()
   local signs = {
 
     { name = "DiagnosticSignError", text = "" },
-    { name = "DiagnosticSignWarn",  text = "" },
-    { name = "DiagnosticSignHint",  text = "󰬏" },
-    { name = "DiagnosticSignInfo",  text = "" },
+    { name = "DiagnosticSignWarn", text = "" },
+    { name = "DiagnosticSignHint", text = "󰬏" },
+    { name = "DiagnosticSignInfo", text = "" },
   }
 
   for _, sign in ipairs(signs) do
@@ -25,7 +25,7 @@ M.setup = function()
   local config = {
     virtual_text = true, -- disable virtual text
     signs = {
-      active = signs,    -- show signs
+      active = signs, -- show signs
     },
     update_in_insert = false,
     underline = true,
@@ -51,7 +51,7 @@ M.setup = function()
   })
 end
 
-local navic = require("nvim-navic")
+local navic = require "nvim-navic"
 
 M.on_attach = function(client, bufnr)
   if client.name == "tsserver" then

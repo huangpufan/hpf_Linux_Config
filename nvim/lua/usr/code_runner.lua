@@ -6,7 +6,7 @@ local function microsoft_edge()
   end
 end
 
-require("code_runner").setup({
+require("code_runner").setup {
   term = {
     position = "belowright",
     size = 15,
@@ -24,4 +24,4 @@ require("code_runner").setup({
     lua = "lua $file",
     nix = "nix eval -f $file",
   },
-})
+}

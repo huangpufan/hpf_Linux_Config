@@ -1,16 +1,16 @@
-local Hydra = require("hydra")
+local Hydra = require "hydra"
 
 -- 首先按 c a ，然后就可以使用 hjkl 来调整窗口大小
 
 local hint = [[
  Adjust window size
        ^ ^ _k_ ^ ^
-       _h_ ^ ^ _l_    
-       ^ ^ _j_ ^ ^   
+       _h_ ^ ^ _l_
+       ^ ^ _j_ ^ ^
 _<CR>_ or _<Esc>_ to exit
 ]]
 
-Hydra({
+Hydra {
   name = "Adjust Window Size",
   hint = hint,
   config = {
@@ -33,6 +33,6 @@ Hydra({
     { "<Esc>", nil, { exit = true } },
     { "<CR>", nil, { exit = true } },
   },
-})
+}
 
 -- 当想要修改一块代码的缩进的时候，使用 < 或者 > ，然后使用 . 来重复，这是 vim 的默认行为。

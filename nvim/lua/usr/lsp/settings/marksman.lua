@@ -1,14 +1,14 @@
-local util = require 'lspconfig.util'
+local util = require "lspconfig.util"
 
-local bin_name = 'marksman'
-local cmd = { bin_name, 'server' }
+local bin_name = "marksman"
+local cmd = { bin_name, "server" }
 
 return {
   default_config = {
     cmd = cmd,
-    filetypes = { 'markdown', 'markdown.mdx' },
+    filetypes = { "markdown", "markdown.mdx" },
     root_dir = function(fname)
-      local root_files = { '.marksman.toml' }
+      local root_files = { ".marksman.toml" }
       return util.root_pattern(unpack(root_files))(fname) or util.find_git_ancestor(fname)
     end,
     single_file_support = true,

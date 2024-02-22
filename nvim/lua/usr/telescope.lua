@@ -36,8 +36,8 @@
 -- })
 --
 
-local telescope = require("telescope").setup({
-defaults = {
+local telescope = require("telescope").setup {
+  defaults = {
     vimgrep_arguments = {
       "rg",
       "-L",
@@ -88,21 +88,20 @@ defaults = {
   },
 
   extensions_list = { "themes", "terms" },
-  })
-
+}
 
 --   local function find_files_by_type()
 --   -- 获取用户输入的搜索内容
 --   local query = vim.fn.input("Search for: ")
 --   -- 获取用户输入的文件类型
 --   local types = vim.fn.input("Filetypes (separated by ','): ")
---   
+--
 --   -- 如果用户没有输入文件类型，则搜索所有文件
 --   if types == "" then
 --     require('telescope.builtin').find_files({search = query})
 --     return
 --   end
---   
+--
 --   -- 分割文件类型字符串为一个数组
 --   local type_list = vim.split(types, ',', true)
 --   -- 构建rg命令的参数
@@ -111,7 +110,7 @@ defaults = {
 --     table.insert(rg_type_args, '-g')
 --     table.insert(rg_type_args, '*.' .. t)
 --   end
---   
+--
 --   -- 调用Telescope的find_files函数并传递参数
 --   require('telescope.builtin').find_files({
 --     search = query,
@@ -171,10 +170,10 @@ defaults = {
 --
 -- To get fzf loaded and working with telescope, you need to call
 -- load_extension, somewhere after setup function:
-require("telescope").load_extension("fzf")
-require("telescope").load_extension("emoji")
-require("telescope").load_extension("neoclip")
+require("telescope").load_extension "fzf"
+require("telescope").load_extension "emoji"
+require("telescope").load_extension "neoclip"
 -- require('telescope').load_extension("frecency")
-require("telescope").load_extension("lsp_handlers")
-require("telescope").load_extension("bookmarks")
-require("telescope").load_extension('projects')
+require("telescope").load_extension "lsp_handlers"
+require("telescope").load_extension "bookmarks"
+require("telescope").load_extension "projects"
