@@ -291,3 +291,11 @@ end
 vim.keymap.set("n", "<A-e>", function()
   toggle_telescope(harpoon:list())
 end, { desc = "Open harpoon window" })
+
+require("diffview").setup {
+  hooks = {
+    diff_buf_win_enter = function()
+      vim.opt_local.foldenable = false
+    end,
+  },
+}
