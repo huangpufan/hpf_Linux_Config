@@ -299,3 +299,13 @@ require("diffview").setup {
     end,
   },
 }
+
+-- To avoid the error message warning: multiple different client offset_encodings
+local notify = vim.notify
+vim.notify = function(msg, ...)
+    if msg:match("warning: multiple different client offset_encodings") then
+        return
+    end
+
+    notify(msg, ...)
+end
