@@ -26,19 +26,20 @@ end
 
 require("nvim-tree").setup {
   -- project.nvim set:
-  respect_buf_cwd = true,
-  auto_reload_on_write = true,
+  -- respect_buf_cwd = true,
+  -- auto_reload_on_write = true,
   -- Netrw plugin related settings
   disable_netrw = true, -- Disable the built-in netrw file explorer
   hijack_netrw = true, -- Make nvim-tree take over netrw functionality
   hijack_cursor = true, -- Move the cursor to the new file when opened
   hijack_unnamed_buffer_when_opening = false, -- Do not open the tree if no file is selected
-  sync_root_with_cwd = true, -- Synchronize the root of the tree with the current working directory
+  sync_root_with_cwd = false, -- Synchronize the root of the tree with the current working directory
 
   -- Settings related to updating the focused file in the tree
   update_focused_file = {
     enable = true, -- Enable updating the focused file in the tree
-    update_root = true, -- Do not change the root of the tree when focusing a new file
+    update_cwd = true,
+    update_root =false, -- Do not change the root of the tree when focusing a new file
   },
   -- Filesystem watcher settings
   filesystem_watchers = {
