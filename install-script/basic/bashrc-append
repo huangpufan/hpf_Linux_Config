@@ -43,6 +43,8 @@ alias lg="lazygit"
 alias gitclonehpfconfighttps="git clone https://github.com/huangpufan/hpf_Linux_Config.git"
 alias gitclonehpfconfiggit="git clone git@github.com:huangpufan/hpf_Linux_Config.git"
 alias cb="xclip -selection clipboard"
+alias chmodxsh='find . -type f -name "*.sh" -exec chmod +x {} \;'
+
 
 # git related
 alias gitinitwithcommit="bash ~/hpf_Linux_Config/install-script/tools/git/init-my-repo-with-history.sh"
