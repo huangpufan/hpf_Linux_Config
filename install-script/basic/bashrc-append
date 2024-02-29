@@ -44,6 +44,10 @@ alias gitclonehpfconfighttps="git clone https://github.com/huangpufan/hpf_Linux_
 alias gitclonehpfconfiggit="git clone git@github.com:huangpufan/hpf_Linux_Config.git"
 alias cb="xclip -selection clipboard"
 
+# git related
+alias gitinitwithcommit="bash ~/hpf_Linux_Config/install-script/tools/git/init-my-repo-with-history.sh"
+alias gitinitwithoutcommit="bash ~/hpf_Linux_Config/install-script/tools/git/init-my-repo-with-no-history.sh"
+
 # tmux related
 alias a="tmux a -t"
 alias new="tmux new -s"
