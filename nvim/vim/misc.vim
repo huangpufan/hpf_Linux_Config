@@ -92,6 +92,26 @@ highlight Comment ctermfg=darkgray guifg=#a6d189
 " #d2691e
 " #b56a4c
 "
+"
+
+""""""""""""""""""""""""""  flash.nvim """"""""""""""""""""""""""""""""""
+" highlight FlashMatch gui=none guibg=#4870d9 guifg=#ffffff 
+" highlight FlashCurrent guibg=#ff966c guifg=#000000 
+" highlight FlashBackdrop guibg=#333333 guifg=#d1dddd 
+highlight FlashLabel  guifg=#dddddd guibg=#ff966c
+
+
+" 热情的红色: #FF2D55 (红-粉色调)
+" 明亮的橙色: #FF9500 (鲜橙色)
+" 鲜黄色: #FFCC00 (柠檬黄)
+" 酸橙色: #7CFC00 (草坪绿)
+" 亮绿色: #4CD964 (绿色)
+" 鲜蓝色: #007AFF (亮蓝色)
+" 深天蓝色: #5856D6 (深蓝色)
+" 紫罗兰色: #AF52DE (中紫色)
+" 粉红色: #FF2D95 (亮粉色)
+" 水蓝色: #34AADC (天蓝色)
+
 """"""""""""""""""""""""""  buffer set """"""""""""""""""""""""""""""""""
 " To ban the completion when the line is empty or no content before the cursor.
 augroup DisableCompletionOnEmptyLine
