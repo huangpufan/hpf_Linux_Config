@@ -1,5 +1,16 @@
 local options = {
-  ensure_installed = { "lua-language-server", "efm", "vim-language-server", "marksman", "clangd", "stylua" },
+  ensure_installed = {
+    "lua-language-server",
+    "efm",
+    "vim-language-server",
+    "marksman",
+    "clangd",
+    "stylua",
+    "pyright",
+    "bash-language-server",
+    -- "clang-format",
+    "json-lsp",
+  },
 
   PATH = "skip",
 
