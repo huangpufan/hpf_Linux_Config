@@ -1,19 +1,20 @@
 local servers = {
   "lua_ls",
-  -- "nixd",
-  -- "rnix",
   "cssls",
   "html",
-  -- "tsserver",
   "pyright",
   "rust_analyzer",
-  -- "bashls",
-  -- "jsonls",
-  -- "yamlls",
+  "bashls",
+  "jsonls",
+  "yamlls",
   "efm",
   "vimls",
-  "ccls",
+  -- "ccls",
   "marksman",
+  "clangd",
+  -- "nixd",
+  -- "rnix",
+  -- "tsserver",
 }
 
 -- local settings = {
