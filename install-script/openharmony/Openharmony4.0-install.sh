@@ -12,10 +12,10 @@ mv "$folder_name" ~/project/
 rm -rf ~/download/code-v4.0-Release.tar.gz 
 
 # The 4.0 has fatal git error,we need to handly clone some repo
-wget -p ~/project/OpenHarmony-v4.0-Release/OpenHarmony/base/sensors/miscdevice/ https://gitee.com/openharmony/sensors_miscdevice/repository/archive/OpenHarmony-4.0-Release.zip
 cd ~/project/OpenHarmony-v4.0-Release/OpenHarmony/base/sensors/miscdevice/
-unzip OpenHarmony-4.0-Release.zip
-mv ./OpenHarmony-4.0-Release/* ./
+wget https://gitee.com/openharmony/sensors_miscdevice/repository/archive/OpenHarmony-4.0-Release.zip
+unzip OpenHarmony-4.0-Release.zip 
+mv ./sensors_miscdevice-OpenHarmony-4.0-Release/* ./
 rm -rf OpenHarmony-4.0-Release.zip
 
 cd ~/project/OpenHarmony-v4.0-Release/OpenHarmony/
