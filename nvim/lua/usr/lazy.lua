@@ -292,13 +292,6 @@ require("lazy").setup({
         desc =
         "Treesitter Search"
       },
-      {
-        "<c-s>",
-        mode = { "c" },
-        function() require("flash").toggle() end,
-        desc =
-        "Toggle Flash Search"
-      },
     },
   },
   {
@@ -426,9 +419,4 @@ require("lazy").setup({
     "chrisgrieser/nvim-spider",
   },
 
-  {
-    "ThePrimeagen/harpoon",
-    branch = "harpoon2",
-    dependencies = { "nvim-lua/plenary.nvim" },
-  },
 }, {})
