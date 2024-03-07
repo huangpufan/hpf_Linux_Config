@@ -418,5 +418,5 @@ require("lazy").setup({
   {
     "chrisgrieser/nvim-spider",
   },
-
+  { "AckslD/nvim-FeMaco.lua" },
 }, {})
