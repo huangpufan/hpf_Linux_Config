@@ -104,4 +104,3 @@ nnoremap <expr> <Down> v:count == 0 && mode(1)[0:1] != 'no' ? 'gj' : 'j'
 " Move up with 'k' or <Up>, using 'gk' in non-numeric modes
 nnoremap <expr> k v:count == 0 && mode(1)[0:1] != 'no' ? 'gk' : 'k'
 nnoremap <expr> <Up> v:count == 0 && mode(1)[0:1] != 'no' ? 'gk' : 'k'
-highlight FlashLabel guibg=#ff007c guifg=#ccc0ea

@@ -95,10 +95,10 @@ highlight Comment ctermfg=darkgray guifg=#a6d189
 "
 
 """"""""""""""""""""""""""  flash.nvim """"""""""""""""""""""""""""""""""
-" highlight FlashMatch gui=none guibg=#4870d9 guifg=#ffffff 
+highlight FlashMatch gui=none guibg=#4870d9 guifg=#ffffff 
 " highlight FlashCurrent guibg=#ff966c guifg=#000000 
 " highlight FlashBackdrop guibg=#333333 guifg=#d1dddd 
-highlight FlashLabel  guifg=#dddddd guibg=#ff966c
+highlight FlashLabel  guibg=#ff966c guifg=#000000 
 
 
 " 热情的红色: #FF2D55 (红-粉色调)
