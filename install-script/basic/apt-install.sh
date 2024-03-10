@@ -12,6 +12,8 @@ if ! dpkg -s ranger >/dev/null 2>&1; then
     sudo apt install -y git wget rpm rpm2cpio cpio make build-essential binutils m4
     sudo snap install btop 
     sudo snap install emacs --classic
+    
+    bash ./latestgccg++-install.sh
 
     # Bat set.Cause 
     mkdir -p ~/.local/bin
