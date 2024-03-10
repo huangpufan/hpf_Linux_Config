@@ -1,6 +1,6 @@
 #!/bin/bash
 
-directories=("project" "install" "download" "bin" ".config" ".config/nvim")
+directories=("project" "install" "download" "picture" "bin" ".config" ".config/nvim")
 
 for dir in "${directories[@]}"
 do
