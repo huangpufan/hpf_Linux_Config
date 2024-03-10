@@ -92,7 +92,7 @@ wk.register({
       -- leader p used for paste from system clipboard
       s = { "<cmd>Telescope lsp_dynamic_workspace_symbols <cr>", "search symbols in project" },
     },
-    g = { "<cmd>FloatermToggle<cr>lazygit<cr>", "lazygit" },
+    -- g = { "<cmd>FloatermToggle<cr>lazygit<cr>", "lazygit" },
     m = {
       d = { "<cmd>MarkdownPreview<cr>", "markdown preview" },
     },

@@ -164,3 +164,13 @@ endfunction
 nnoremap <silent> <space>z :call ZoxideQuery()<CR>
 
 let g:nvim_tree_auto_refresh = 1
+
+" Lazygit exit settings.
+" 定义一个新的命令来启动 lazygit 在 floaterm 中
+command! LazyGit FloatermNew --height=0.9 --width=0.9 lazygit
+
+" 设置自动命令，在退出 lazygit 时关闭 floaterm
+autocmd! TermClose term://*lazygit* FloatermKill
+
+" 绑定 g= 快捷键到 LazyGit 命令
+nnoremap g= :LazyGit<CR>
