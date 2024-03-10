@@ -5,8 +5,6 @@ au FocusGained,BufEnter * :checktime
 set autowrite
 autocmd FocusLost,BufLeave * silent! update
 
-" Use ESC to enter normal mode in terminal.
-" tnoremap  <Esc>  <C-\><C-n>
 
 " leader set as ','
 let g:mapleader = ','
@@ -27,7 +25,8 @@ map <leader>d "+d
 " set foldmethod=expr
 " set foldexpr=nvim_treesitter#foldexpr()
 
-" floaterm 永远的神
+
+" floaterm setting
 let g:floaterm_width = 0.90
 let g:floaterm_height = 0.90
 let g:floaterm_keymap_prev = '<C-left>'
@@ -35,6 +34,7 @@ let g:floaterm_keymap_next = '<C-right>'
 let g:floaterm_keymap_new = '<C-p>'
 let g:floaterm_keymap_toggle = '<C-u>'
 inoremap <C-u> <Esc>:FloatermToggle<cr>
+
 
 " load lua config
 lua require 'usr'

@@ -122,30 +122,30 @@ augroup END
 hi BufferLineBufferSelected guifg=white guibg=none gui=bold,underline
 
 " 在 VimEnter 事件后检查并关闭名为 NvimTree_1 的空 buffer
-" autocmd VimEnter * if bufexists("NvimTree_1") | bdelete NvimTree_1 | endif
+autocmd VimEnter * if bufexists("NvimTree_1") | bdelete NvimTree_1 | endif
 
-function! CloseBuffersOnStart()
-  " 获取所有 buffer 的列表
-  redir => l:bufferlist
-  silent! ls
-  redir END
-
-  " 逐行处理 buffer 列表
-  for l:line in split(l:bufferlist, '\n')
-    " 匹配 buffer 名称前缀为 'hpf/' 或者精确匹配 'NvimTree_1' 的 buffer
-    if l:line =~ 'hpf*' || l:line =~ 'NvimTree_1'
-      " 提取 buffer 编号
-      let l:matched = matchlist(l:line, '^\s*\zs\d\+')
-      if !empty(l:matched)
-        " 删除对应 buffer
-        execute 'bdelete' l:matched[0]
-      endif
-    endif
-  endfor
-endfunction
-
-" 启动 nvim 时，调用 CloseBuffersOnStart 函数
-autocmd VimEnter * call CloseBuffersOnStart()
+" function! CloseBuffersOnStart()
+"   " 获取所有 buffer 的列表
+"   redir => l:bufferlist
+"   silent! ls
+"   redir END
+"
+"   " 逐行处理 buffer 列表
+"   for l:line in split(l:bufferlist, '\n')
+"     " 匹配 buffer 名称前缀为 'hpf/' 或者精确匹配 'NvimTree_1' 的 buffer
+"     if l:line =~ 'hpf*' || l:line =~ 'NvimTree_1'
+"       " 提取 buffer 编号
+"       let l:matched = matchlist(l:line, '^\s*\zs\d\+')
+"       if !empty(l:matched)
+"         " 删除对应 buffer
+"         execute 'bdelete' l:matched[0]
+"       endif
+"     endif
+"   endfor
+" endfunction
+"
+" " 启动 nvim 时，调用 CloseBuffersOnStart 函数
+" autocmd VimEnter * call CloseBuffersOnStart()
 
 
 
@@ -160,10 +160,17 @@ function! ZoxideQuery()
     endif
 endfunction
 
-" 绑定到某个键，例如 <leader>z
+" zoxide setting
 nnoremap <silent> <space>z :call ZoxideQuery()<CR>
 
+" nvim tree setting.
 let g:nvim_tree_auto_refresh = 1
+
+
+
+
+" Use ESC to enter normal mode in terminal.
+tnoremap  <Esc>  <C-\><C-n>
 
 " Lazygit exit settings.
 " 定义一个新的命令来启动 lazygit 在 floaterm 中
@@ -172,5 +179,13 @@ command! LazyGit FloatermNew --height=0.9 --width=0.9 lazygit
 " 设置自动命令，在退出 lazygit 时关闭 floaterm
 autocmd! TermClose term://*lazygit* FloatermKill
 
+" set 'enter' as i in floaterm mode.
+autocmd FileType floaterm vnoremap <buffer> <Enter> :normal! i<Enter><CR>
+autocmd FileType floaterm nnoremap <buffer> <Enter> i<CR>
+
+
+
 " 绑定 g= 快捷键到 LazyGit 命令
 nnoremap g= :LazyGit<CR>
+nnoremap <C-e> 3<C-e>
+nnoremap <C-y> 3<C-y>
