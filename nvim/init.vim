@@ -30,10 +30,11 @@ map <leader>d "+d
 " floaterm 永远的神
 let g:floaterm_width = 0.90
 let g:floaterm_height = 0.90
-" let g:floaterm_keymap_prev = '<C-k>'
-" let g:floaterm_keymap_new = '<C-j>'
-let g:floaterm_keymap_toggle = '<C-t>'
-inoremap <C-t> <Esc>:FloatermToggle<cr>
+let g:floaterm_keymap_prev = '<C-left>'
+let g:floaterm_keymap_next = '<C-right>'
+let g:floaterm_keymap_new = '<C-p>'
+let g:floaterm_keymap_toggle = '<C-u>'
+inoremap <C-u> <Esc>:FloatermToggle<cr>
 
 " load lua config
 lua require 'usr'
@@ -103,3 +104,4 @@ nnoremap <expr> <Down> v:count == 0 && mode(1)[0:1] != 'no' ? 'gj' : 'j'
 " Move up with 'k' or <Up>, using 'gk' in non-numeric modes
 nnoremap <expr> k v:count == 0 && mode(1)[0:1] != 'no' ? 'gk' : 'k'
 nnoremap <expr> <Up> v:count == 0 && mode(1)[0:1] != 'no' ? 'gk' : 'k'
+highlight FlashLabel guibg=#ff007c guifg=#ccc0ea
