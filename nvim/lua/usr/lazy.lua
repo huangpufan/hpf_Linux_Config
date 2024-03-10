@@ -157,18 +157,7 @@ require("lazy").setup({
 
   { "abecodes/tabout.nvim", lazy = false },
   ------------------------------------- User Interface -----------------------
-  ---
-  ---
-  -- {
-  -- 	"nvimdev/dashboard-nvim",
-  -- 	event = "VimEnter",
-  -- 	config = function()
-  -- 		require("dashboard").setup({
-  -- 			-- config
-  -- 		})
-  -- 	end,
-  -- 	dependencies = { { "nvim-tree/nvim-web-devicons" } },
-  -- },
+
   { "stevearc/aerial.nvim", lazy = false }, -- 导航栏
   { "kyazdani42/nvim-tree.lua" }, -- 文件树
   { "akinsho/bufferline.nvim" }, -- buffer

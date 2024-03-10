@@ -45,7 +45,7 @@ require "usr.alpha"
 require("colorizer").setup { "css", "javascript", "vim", "lua", html = { mode = "foreground" } }
 require("nvim-surround").setup()
 require("persisted").setup { autoload = true }
-require("gitsigns").setup { signcolumn = false, numhl = true }
+require("gitsigns").setup { signcolumn = true, numhl = true }
 require("nvim-autopairs").setup()
 require("fidget").setup()
 require("nvim-navic").setup()
