@@ -170,7 +170,7 @@ let g:nvim_tree_auto_refresh = 1
 
 
 " Use ESC to enter normal mode in terminal.
-tnoremap  <Esc>  <C-\><C-n>
+" tnoremap  <Esc>  <C-\><C-n>
 
 " Lazygit exit settings.
 " 定义一个新的命令来启动 lazygit 在 floaterm 中
