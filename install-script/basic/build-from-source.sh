@@ -1,10 +1,9 @@
 cd ~/download/
 
-# Cmake 3.22.1
-
-wget https://cmake.org/files/v3.22/cmake-3.22.1.tar.gz
-tar -xvzf cmake-3.22.1.tar.gz
-cd cmake-3.22.1
+# Cmake 3.28.3
+wget https://sourceforge.net/projects/cmake.mirror/files/v3.28.3/cmake-3.28.3.tar.gz
+tar -xvzf cmake-3.28.3.tar.gz
+cd cmake-3.28.3
 chmod 777 ./configure
 ./configure   
 make -j
