@@ -31,9 +31,9 @@ let g:floaterm_width = 0.90
 let g:floaterm_height = 0.90
 let g:floaterm_keymap_prev = '<C-left>'
 let g:floaterm_keymap_next = '<C-right>'
-let g:floaterm_keymap_new = '<C-p>'
-let g:floaterm_keymap_toggle = '<C-u>'
-inoremap <C-u> <Esc>:FloatermToggle<cr>
+let g:floaterm_keymap_new = '<C-q>'
+let g:floaterm_keymap_toggle = '<C-p>'
+inoremap <C-p> <Esc>:FloatermToggle<cr>
 
 
 " load lua config
