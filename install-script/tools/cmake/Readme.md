@@ -1,3 +1,7 @@
+To produce the cmake compile commands json:
+`````` cmake
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+``````
 
 When faced stddef.h not found:
 
