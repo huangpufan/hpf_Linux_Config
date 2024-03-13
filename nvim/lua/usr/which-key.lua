@@ -97,7 +97,7 @@ wk.register({
       d = { "<cmd>MarkdownPreview<cr>", "markdown preview" },
     },
     o = {
-      l = { "<cmd>AerialToggle!<cr>", "code outline" },
+      t = { "<cmd>AerialToggle!<cr>", "code outline" },
     },
     --          {
     --name = "+git",
