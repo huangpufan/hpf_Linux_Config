@@ -37,11 +37,14 @@ fi
 alias sb="source ~/.bashrc"
 
 
+# config related
+alias scfg="cd ~/hpf_Linux_Config && git pull && cd ~/project/self-learning-project/ && git pull"
+alias gitclonehpfconfighttps="cd ~ && git clone https://github.com/huangpufan/hpf_Linux_Config.git --depth=1"
+alias gitclonehpfconfiggit="cd ~ && git clone git@github.com:huangpufan/hpf_Linux_Config.git --depth=1"
+alias lg="lazygit"
+
 # Misc
 alias lls="du -h -d 1 ."
-alias lg="lazygit"
-alias gitclonehpfconfighttps="git clone https://github.com/huangpufan/hpf_Linux_Config.git"
-alias gitclonehpfconfiggit="git clone git@github.com:huangpufan/hpf_Linux_Config.git"
 alias cb="xclip -selection clipboard"
 alias chmodxsh='find . -type f -name "*.sh" -exec chmod +x {} \;'
 
