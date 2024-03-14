@@ -95,6 +95,7 @@ wk.register({
     -- g = { "<cmd>FloatermToggle<cr>lazygit<cr>", "lazygit" },
     m = {
       d = { "<cmd>MarkdownPreview<cr>", "markdown preview" },
+      p = { "<cmd>PasteImage<cr>", "paste image" },
     },
     o = {
       t = { "<cmd>AerialToggle!<cr>", "code outline" },
