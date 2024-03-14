@@ -33,7 +33,6 @@ let g:floaterm_keymap_prev = '<C-left>'
 let g:floaterm_keymap_next = '<C-right>'
 let g:floaterm_keymap_new = '<C-q>'
 let g:floaterm_keymap_toggle = '<C-p>'
-inoremap <C-p> <Esc>:FloatermToggle<cr>
 
 
 " load lua config

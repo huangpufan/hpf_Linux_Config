@@ -10,86 +10,23 @@ export LESS_TERMCAP_se=$'\E[0m'        # reset reverse video
 export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
 export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
 
-export hostip=$(cat /etc/resolv.conf |grep -oP '(?<=nameserver\ ).*')
-alias setss='export all_proxy="socks5://${hostip}:7890";'
-alias unsetss='unset all_proxy && unset ALL_PROXY'
+# display cursor
+echo -e "\033[?25h"
+
+############################## Aliases file load ###############################
+if [ -f ~/.bash-aliases ]; then
+    . ~/.bash_aliases
+fi
+
+############################  Envrionment file load ############################
+if [ -f ~/.bash-env ]; then
+    . ~/.bash-env
+fi
 
 # To call setss automatically when WSL starts.
 if type setss &>/dev/null; then
   setss
 fi
-
-
-# display cursor
-echo -e "\033[?25h"
-
-
-################################## My Alias #####################################
-
-# Bashrc related
-# Use nvim by default,if no nvim,use vim.
-if command -v nvim >/dev/null 2>&1; then
-    alias eb="nvim ~/.bashrc"
-else
-    alias eb="vim ~/.bashrc"
-fi
-
-alias sb="source ~/.bashrc"
-
-
-# config related
-alias scfg="cd ~/hpf_Linux_Config && git pull && cd ~/project/self-learning-project/ && git pull"
-alias gitclonehpfconfighttps="cd ~ && git clone https://github.com/huangpufan/hpf_Linux_Config.git --depth=1"
-alias gitclonehpfconfiggit="cd ~ && git clone git@github.com:huangpufan/hpf_Linux_Config.git --depth=1"
-alias lg="lazygit"
-
-# Misc
-alias lls="du -h -d 1 ."
-alias cb="xclip -selection clipboard"
-alias chmodxsh='find . -type f -name "*.sh" -exec chmod +x {} \;'
-
-
-# git related
-alias gitinitwithcommit="bash ~/hpf_Linux_Config/install-script/tools/git/init-my-repo-with-history.sh"
-alias gitinitwithoutcommit="bash ~/hpf_Linux_Config/install-script/tools/git/init-my-repo-with-no-history.sh"
-
-# tmux related
-alias a="tmux a -t"
-alias new="tmux new -s"
-alias kt="tmux kill-server"
-alias st="source-file ~/.tmux.conf"
-
-
-# nvim related
-alias cs="rm -rf ~/.local/share/nvim/sessions/*"
-alias nivm="nvim"  # For typo.
-alias en="cd ~/hpf_Linux_Config/nvim && nvim"
-alias n="nvim"
-
-
-# compile related
-alias ninjacompilejson="ninja -w dupbuild=warn -t compdb cxx cc > compile_commands.json"
-
-# fzf related
-# Use bat to preview file contents when using fzf.
-alias f="fzf --preview 'bat --color=always --style=numbers --line-range=:500 {}'"
-
-# zoxide related
-if command -v zoxide >/dev/null 2>&1; then
-    alias cd="z"  # Only use zoxide when it's installed.
-    eval "$(~/.local/bin/zoxide init bash)"
-fi
-
-
-#eval "$(zoxide init bash)"
-
-
-################################# Envrionment Variables ##########################
-export PATH=$PATH:~/.local/bin
-export PATH=$PATH:~/.local/share/nvim/mason/bin/   # For mason installed binaries.(LSP)
-export PATH=$PATH:~/bin
-export PATH=$PATH:~/hpf_Linux_Config/install-script/tools/
-export PATH=$PATH:~/hpf_Linux_Config/install-script/tools/git/
 
 
 #############################  Bashrc Already Set  ##############################
