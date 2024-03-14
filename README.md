@@ -11,6 +11,8 @@ Including config:
     - Mkdir root directory folder :
         -  project、install、download、bin、.config
     - Bat to replace cat.
+    - ncdu/dust to replace du.
+    - duf to replace df.
     - Zoxide to replace cd.
     - Lazygit for version control.
     - Ranger as vim-style file manager .
