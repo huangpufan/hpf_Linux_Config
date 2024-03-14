@@ -95,10 +95,12 @@ highlight Comment ctermfg=darkgray guifg=#a6d189
 "
 
 """"""""""""""""""""""""""  flash.nvim """"""""""""""""""""""""""""""""""
-highlight FlashMatch gui=none guibg=#4870d9 guifg=#ffffff 
-" highlight FlashCurrent guibg=#ff966c guifg=#000000 
+highlight FlashMatch guibg=#4870d9 guifg=#ffffff 
+highlight FlashCurrent guibg=#ff966c guifg=#ffffff 
 " highlight FlashBackdrop guibg=#333333 guifg=#d1dddd 
-highlight FlashLabel  guibg=#ff966c guifg=#000000 
+highlight FlashLabel  guibg=#ff966c guifg=#ffffff 
+highlight FlashCursor guibg=#ca3311 guifg=#ffffff
+" highlight FlashCursor guibg=#ff446c guifg=#ffffff
 
 
 " 热情的红色: #FF2D55 (红-粉色调)
@@ -113,7 +115,7 @@ highlight FlashLabel  guibg=#ff966c guifg=#000000
 " 水蓝色: #34AADC (天蓝色)
 
 """"""""""""""""""""""""""  buffer set """"""""""""""""""""""""""""""""""
-" To ban the completion when the line is empty or no content before the cursor.
+" To ban the completion when the line is empty or no content before the cursor.misc
 augroup DisableCompletionOnEmptyLine
   autocmd!
   autocmd FileType * if getline('.') =~# '^\s*$' | setlocal complete-=k | endif
