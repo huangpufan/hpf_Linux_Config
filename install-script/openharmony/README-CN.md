@@ -30,5 +30,7 @@ kernel_module(module_name) {
 
    - standard:
     
-      - sdk 
+      - rk3568
+        在手动下载了 miscdevice 目录中的内容后，该选项能够编译
+         
 
