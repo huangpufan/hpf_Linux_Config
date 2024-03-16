@@ -10,4 +10,6 @@ source "$HOME/.cargo/env"
 # cargo install stylua
 # cargo install --locked bat
 cargo install bat
+cargo install --locked zellij
+cargo install --locked ouch
 cargo install --locked yazi-fm

@@ -15,6 +15,9 @@ fi
 
 alias sb="source ~/.bashrc"
 
+# ouch related
+alias compress="ouch -c"
+alias decompress="ouch -d"
 
 # config related
 alias scfg="cd ~/hpf_Linux_Config && git pull && cd ~/project/self-learning-project/ && git pull"
