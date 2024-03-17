@@ -16,3 +16,4 @@ export all_proxy="socks5://${hostip}:7890"
 ./hosts-adjust.sh
 ./curl-install.sh
 ./cargo-install.sh
+./linux-repository-install
