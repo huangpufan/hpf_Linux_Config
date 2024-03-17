@@ -9,7 +9,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source "$HOME/.cargo/env"
 # cargo install stylua
 # cargo install --locked bat
-cargo install bat
+cargo install bat exa
 cargo install --locked zellij
 cargo install --locked ouch
 cargo install --locked yazi-fm
