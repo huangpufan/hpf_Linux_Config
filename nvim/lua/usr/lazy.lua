@@ -51,7 +51,7 @@ require("lazy").setup({
   { "nvim-lua/plenary.nvim" }, -- 很多 lua 插件依赖的库
   { "kyazdani42/nvim-web-devicons" }, -- 显示图标
   { "folke/which-key.nvim", lazy = true }, -- 用于配置和提示快捷键
-  -- "kkharji/sqlite.lua",           -- 数据库
+  "kkharji/sqlite.lua",           -- 数据库
 
   --------------------------------------- Edit Related ----------------------------------
   -- 补全
@@ -120,7 +120,6 @@ require("lazy").setup({
     lazy = false,
     build = ":TSUpdate",
   },
-  -- { "ahmedkhalf/project.nvim", lazy = false },
   { "RRethy/nvim-treesitter-textsubjects", lazy = false },
   { "nvim-treesitter/nvim-treesitter-textobjects", lazy = false },
   {
@@ -170,19 +169,11 @@ require("lazy").setup({
   { "gelguy/wilder.nvim", lazy = false }, -- 更加智能的命令窗口
   { "romgrk/fzy-lua-native", lazy = false }, -- wilder.nvim 的依赖
   { "xiyaowong/nvim-transparent", lazy = true }, -- 可以移除掉背景色，让 vim 透明
-  --{ "lukas-reineke/virt-column.nvim", opts = {} }, -- not know why no effect.
   { "goolord/alpha-nvim", event = "VimEnter" },
-  -- Good looking dressing.nvim. To be updating.
-  -- {
-  -- 	"stevearc/dressing.nvim",
-  -- 	opts = {},
-  -- },
   -- 颜色主题
-  { "folke/tokyonight.nvim", lazy = true },
   {
     "catppuccin/nvim",
   },
-  { "rebelot/kanagawa.nvim", lazy = true },
   -- git 版本管理
   { "tpope/vim-fugitive", lazy = true }, -- 显示 git blame，实现一些基本操作的快捷执行
   { "rhysd/git-messenger.vim", lazy = false }, -- 利用 git blame 显示当前行的 commit message
@@ -244,7 +235,7 @@ require("lazy").setup({
   { "samjwill/nvim-unception", lazy = true }, -- 嵌套 nvim 自动 offload 到 host 中
 
   -- markdown
-  -- 如果发现插件有问题， 可以进入到 ~/.local/share/nvim/lazy/markdown-preview.nvim/app && npm install
+  -- WARNING: 如果发现插件有问题， 可以进入到 ~/.local/share/nvim/lazy/markdown-preview.nvim/app && npm install
   {
     "iamcco/markdown-preview.nvim",
     lazy = false,
@@ -256,7 +247,6 @@ require("lazy").setup({
   { "dhruvasagar/vim-table-mode", lazy = true }, -- 快速编辑 markdown 的表格
   { "xiyaowong/telescope-emoji.nvim", lazy = false }, -- 使用 telescope 搜索 emoji 表情
   -- 高效编辑
-  -- "tpope/vim-commentary", -- 快速注释代码
   { "kylechui/nvim-surround", lazy = false }, -- 快速编辑单词两侧的符号
   -- "tpope/vim-sleuth",               -- 自动设置 tabstop 之类的
   { "tpope/vim-repeat", lazy = false }, -- 更加强大的 `.`
@@ -285,7 +275,7 @@ require("lazy").setup({
   { "olimorris/persisted.nvim", lazy = true }, -- 打开 vim 的时候，自动回复上一次打开的样子
   { "anuvyklack/hydra.nvim", lazy = false }, -- 消除重复快捷键，可以用于调整 window 大小等
   { "ojroques/vim-oscyank", lazy = false }, -- 让 nvim 在远程 server 上拷贝到本地剪切板上
-  { "azabiong/vim-highlighter", lazy = false }, -- 高亮多个搜索内容
+  -- { "azabiong/vim-highlighter", lazy = false }, -- 高亮多个搜索内容
   -- "dstein64/vim-startuptime", -- 分析 nvim 启动时间
   -- {
   -- 	"OscarCreator/rsync.nvim", -- 自动同步代码远程
@@ -351,7 +341,6 @@ require("lazy").setup({
     -- Uncomment next line if you want to follow only stable versions
     -- version = "*"
   },
-  -- { "karb94/neoscroll.nvim", lazy = false },
   {
     "zbirenbaum/copilot.lua",
     lazy = false,
@@ -414,21 +403,21 @@ require("lazy").setup({
         end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. " Reference", buffer = buffer })
       end
 
-      map("]]", "next")
-      map("[[", "prev")
+      -- map("]]", "next")
+      -- map("[[", "prev")
 
       -- also set it after loading ftplugins, since a lot overwrite [[ and ]]
       vim.api.nvim_create_autocmd("FileType", {
         callback = function()
           local buffer = vim.api.nvim_get_current_buf()
-          map("]]", "next", buffer)
-          map("[[", "prev", buffer)
+          -- map("]]", "next", buffer)
+          -- map("[[", "prev", buffer)
         end,
       })
     end,
     keys = {
-      { "]]", desc = "Next Reference" },
-      { "[[", desc = "Prev Reference" },
+      -- { "]]", desc = "Next Reference" },
+      -- { "[[", desc = "Prev Reference" },
     },
   },
   {

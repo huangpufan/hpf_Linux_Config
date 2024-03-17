@@ -71,6 +71,7 @@
   "overseer.nvim": { "branch": "master", "commit": "b72f6d23ce47ccd427be2341f389c63448278f17" },
   "persisted.nvim": { "branch": "main", "commit": "c157b89b5c6e057c17a562ebcf02f0577405ad57" },
   "plenary.nvim": { "branch": "master", "commit": "f7adfc4b3f4f91aab6caebf42b3682945fbc35be" },
+  "sqlite.lua": { "branch": "master", "commit": "40701b6151f8883980c1548647116de39b763540" },
   "ssr.nvim": { "branch": "main", "commit": "bb323ba621ac647b4ac5638b47666e3ef3c279e1" },
   "tabout.nvim": { "branch": "master", "commit": "6a8f4e67a9bfc9bfc9989cc45253180598cc4339" },
   "telescope-emoji.nvim": { "branch": "master", "commit": "86248d97be84a1ce83f0541500ef9edc99ea2aa1" },
