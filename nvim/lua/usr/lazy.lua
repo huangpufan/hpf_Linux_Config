@@ -290,7 +290,6 @@ require("lazy").setup({
         end,
         desc = "Flash Treesitter",
       },
-
     },
   },
   {
@@ -360,6 +359,8 @@ require("lazy").setup({
       },
     },
   },
+
+  { "max397574/better-escape.nvim" },
 
   -- { "kevinhwang91/rnvimr", lazy = false },
   { "itchyny/vim-cursorword", lazy = false },

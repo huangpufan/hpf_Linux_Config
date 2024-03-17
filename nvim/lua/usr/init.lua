@@ -263,3 +263,4 @@ vim.notify = function(msg, ...)
     notify(msg, ...)
 end
 require("femaco").setup()
+require("better_escape").setup()
