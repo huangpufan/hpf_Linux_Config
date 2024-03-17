@@ -103,3 +103,25 @@ nnoremap <expr> <Down> v:count == 0 && mode(1)[0:1] != 'no' ? 'gj' : 'j'
 " Move up with 'k' or <Up>, using 'gk' in non-numeric modes
 nnoremap <expr> k v:count == 0 && mode(1)[0:1] != 'no' ? 'gk' : 'k'
 nnoremap <expr> <Up> v:count == 0 && mode(1)[0:1] != 'no' ? 'gk' : 'k'
+
+
+
+" Fix toggle term related bug: Ensure cursor to be normal mode.
+" 定义一个全局变量来确保 EnsureNormalMode 只在启动时执行一次
+let g:has_ensured_normal_mode = 0
+
+function! EnsureNormalMode(timer)
+  " 检查是否已经执行过此函数
+  if g:has_ensured_normal_mode
+    return
+  endif
+  " 如果当前处于插入模式，则停止插入模式
+  if mode() == 'i'
+    stopinsert
+  endif
+  " 设置变量以避免再次执行此函数
+  let g:has_ensured_normal_mode = 1
+endfunction
+
+" 使用 VimEnter 事件设置定时器，仅在 Neovim 启动时调用 EnsureNormalMode 函数
+autocmd VimEnter * if g:has_ensured_normal_mode == 0 | call timer_start(30, 'EnsureNormalMode') | endif

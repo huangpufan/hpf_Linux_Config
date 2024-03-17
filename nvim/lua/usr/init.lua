@@ -243,8 +243,6 @@ require("incline").setup {
 
 require("overseer").setup()
 
-
-
 require("diffview").setup {
   hooks = {
     diff_buf_win_enter = function()
@@ -256,11 +254,13 @@ require("diffview").setup {
 -- To avoid the error message warning: multiple different client offset_encodings
 local notify = vim.notify
 vim.notify = function(msg, ...)
-    if msg:match("warning: multiple different client offset_encodings") then
-        return
-    end
+  if msg:match "warning: multiple different client offset_encodings" then
+    return
+  end
 
-    notify(msg, ...)
+  notify(msg, ...)
 end
 require("femaco").setup()
 require("better_escape").setup()
+require("toggleterm").setup()
+

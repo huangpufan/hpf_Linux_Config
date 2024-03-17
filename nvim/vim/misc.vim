@@ -181,13 +181,39 @@ command! LazyGit FloatermNew --height=0.9 --width=0.9 lazygit
 " 设置自动命令，在退出 lazygit 时关闭 floaterm
 autocmd! TermClose term://*lazygit* FloatermKill
 
-" set 'enter' as i in floaterm mode.
+" " set 'enter' as i in floaterm mode.
 autocmd FileType floaterm vnoremap <buffer> <Enter> :normal! i<Enter><CR>
-autocmd FileType floaterm nnoremap <buffer> <Enter> i<CR>
+" autocmd FileType floaterm nnoremap <buffer> <Enter> i<CR>
 
+autocmd TermOpen * nnoremap <buffer> <Enter> a
+autocmd TermOpen * vnoremap <buffer> <Enter> a
 
 
 " 绑定 g= 快捷键到 LazyGit 命令
 nnoremap g= :LazyGit<CR>
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
+
+" Map C-d as Esc in terminal mode
+tnoremap <C-d> <C-\><C-n>
+
+
+function! ToggleTermWithNvimTree()
+  NvimTreeClose
+
+  " 打开或关闭 ToggleTerm
+  execute 'ToggleTerm size=10 direction=horizontal'
+  " 可能需要稍微延迟打开 NvimTree，以确保它在 ToggleTerm 之后显示
+  " 使用 100 毫秒的延迟，根据需要调整
+  execute 'sleep 5m | NvimTreeOpen'
+  let term_win_id = win_getid(winnr('#'))
+  call win_gotoid(term_win_id)
+endfunction
+
+" 映射 '-' 键来调用上面定义的函数
+nnoremap - :call ToggleTermWithNvimTree()<CR>
+
+"
+" 设置垂直分割的终端快捷键为 '='
+nnoremap = :ToggleTerm size=80 direction=vertical<CR>
+

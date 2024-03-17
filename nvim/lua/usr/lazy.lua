@@ -210,7 +210,31 @@ require("lazy").setup({
   { "nvim-telescope/telescope-frecency.nvim", lazy = false }, -- 查找最近打开的文件
   -- 命令执行
   { "voldikss/vim-floaterm", lazy = false }, -- 终端
-  { "akinsho/toggleterm.nvim", lazy = false }, -- 性能好点，但是易用性和稳定性都比较差
+  {
+    "akinsho/toggleterm.nvim",
+    cmd = { "ToggleTerm", "TermExec" },
+    opts = {
+      highlights = {
+        Normal = { link = "Normal" },
+        NormalNC = { link = "NormalNC" },
+        NormalFloat = { link = "NormalFloat" },
+        FloatBorder = { link = "FloatBorder" },
+        StatusLine = { link = "StatusLine" },
+        StatusLineNC = { link = "StatusLineNC" },
+        WinBar = { link = "WinBar" },
+        WinBarNC = { link = "WinBarNC" },
+      },
+      size = 10,
+      ---@param t Terminal
+      on_create = function()
+        vim.opt_local.foldcolumn = "0"
+        vim.opt_local.signcolumn = "no"
+      end,
+      shading_factor = 2,
+      direction = "float",
+      float_opts = { border = "rounded" },
+    },
+  },
   { "CRAG666/code_runner.nvim", lazy = true }, -- 一键运行代码
   { "samjwill/nvim-unception", lazy = true }, -- 嵌套 nvim 自动 offload 到 host 中
 

@@ -1,22 +1,22 @@
 -- whichkey configuration
-local wk = require("which-key")
-wk.setup({
+local wk = require "which-key"
+wk.setup {
   plugins = {
-    marks = false,  -- shows a list of your marks on ' and `
+    marks = false, -- shows a list of your marks on ' and `
     registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mo
   },
-})
+}
 
 ------------------------------------------ Ctrl related. ------------------------------------------
-wk.register({
+wk.register {
   ["<C-A-l>"] = { "<cmd> lua vim.lsp.buf.format{ async = true }<cr>", "format current buffer" },
   -- ["<C-_>"] = { "<cmd> Commentary<cr>", "comment code" },
   ["<C-n>"] = { "<cmd>NvimTreeToggle<cr>", "toggle file tree" },
-})
+}
 
-wk.register({
+wk.register {
   -- lsp
-  ["K"] = { "<cmd>lua vim.lsp.buf.hover()<cr>", "document" },
+  ["K"] = { "<cmd>lua vim.lsp.buf.hover()<cr>", "document" },
 
   ["g"] = {
     d = { "<cmd>lua vim.lsp.buf.definition()<cr>", "go to definition" },
@@ -147,7 +147,12 @@ wk.register({
       s = { "<cmd>set spell!<cr>", "spell check" },
       w = { "<cmd>set wrap!<cr>", "wrap line" },
       -- h = { "<cmd>noh<cr>", "Stop the highlighting" },
-      h = { "<cmd>Telescope colorscheme<cr>", "Theme switch" },
+      h = {
+        function()
+          require("telescope.builtin").colorscheme { enable_preview = true }
+        end,
+        "search theme",
+      },
       m = { "<cmd>TableModeToggle<cr>", "markdown table edit mode" },
       t = { "<cmd>set nocursorline<cr> <cmd>TransparentToggle<cr>", "make background transparent" },
     },
@@ -178,7 +183,7 @@ wk.register({
   ["<C-h>"] = { "<cmd>wincmd W<cr>", "switch window" },
   ["<C-j>"] = { "<C-w>j", "switch to window below" },
   ["<C-k>"] = { "<C-w>k", "switch to window above" },
-})
+}
 
 -- Shortcut under visual mode
 wk.register({
@@ -194,20 +199,20 @@ wk.register({
 -- 部分格式化，which-key 的设置方法有问题，似乎只是语法没有理解到位
 -- https://vi.stackexchange.com/questions/36946/how-to-add-keymapping-for-lsp-code-formatting-in-visual-mode
 function FormatFunction()
-  vim.lsp.buf.format({
+  vim.lsp.buf.format {
     async = true,
     range = {
       ["start"] = vim.api.nvim_buf_get_mark(0, "<"),
       ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
     },
-  })
+  }
 end
 
 -- Code format
 -- vim.api.nvim_set_keymap("v", "<space>lf", "<Esc><cmd>lua FormatFunction()<CR>", { noremap = true })
 
 -- Add executable permission to bash file
-vim.cmd("autocmd FileType sh lua BashLeaderX()")
+vim.cmd "autocmd FileType sh lua BashLeaderX()"
 function BashLeaderX()
   vim.api.nvim_set_keymap("n", "<leader>x", ":!chmod +x %<CR>", { noremap = false, silent = true })
 end
@@ -224,15 +229,14 @@ vim.keymap.set({ "n", "o", "x" }, "e", "<cmd>lua require('spider').motion('e')<C
 vim.keymap.set({ "n", "o", "x" }, "b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
 
 _G.goto_first_buffer = function()
-  vim.cmd("BufferLineGoToBuffer 1")
+  vim.cmd "BufferLineGoToBuffer 1"
 end
 
 -- Go to the last buffer
 _G.goto_last_buffer = function()
   -- This assumes that the maximum buffer number won't exceed 1000
   -- You might need to adjust this if you work with more buffers
-  vim.cmd("BufferLineGoToBuffer 1000")
+  vim.cmd "BufferLineGoToBuffer 1000"
 end
 vim.api.nvim_set_keymap("n", "<M-Home>", "<cmd>lua goto_first_buffer()<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<M-End>", "<cmd>lua goto_last_buffer()<CR>", { noremap = true, silent = true })
-
