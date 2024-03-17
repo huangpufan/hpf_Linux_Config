@@ -240,3 +240,28 @@ _G.goto_last_buffer = function()
 end
 vim.api.nvim_set_keymap("n", "<M-Home>", "<cmd>lua goto_first_buffer()<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<M-End>", "<cmd>lua goto_last_buffer()<CR>", { noremap = true, silent = true })
+
+
+function LiveGrepWithExtension()
+  -- 询问用户想要搜索的文件后缀
+  local extension = vim.fn.input("Enter file extension(s) (e.g. lua,py): ")
+  -- 如果用户没有输入，不添加任何 glob 参数
+  local glob_args = {}
+  if extension ~= "" then
+    -- 拆分用户输入的后缀，并为每个后缀创建一个 glob 参数
+    for match in extension:gmatch("[^,%s]+") do
+      table.insert(glob_args, "--glob")
+      table.insert(glob_args, "*." .. match)
+    end
+  end
+
+  -- 启动 live_grep 时传递 glob 参数
+  require('telescope.builtin').live_grep({
+    additional_args = function(opts)
+      return glob_args
+    end
+  })
+end
+
+-- 将该函数绑定到一个快捷键
+vim.api.nvim_set_keymap('n', '<space>fg', ":lua LiveGrepWithExtension()<CR>", { noremap = true, silent = true })
