@@ -13,7 +13,7 @@ wk.register {
   -- ["<C-_>"] = { "<cmd> Commentary<cr>", "comment code" },
   ["<C-n>"] = { "<cmd>NvimTreeToggle<cr>", "toggle file tree" },
 }
-
+vim.keymap.set("n", "<space><space>", "<Cmd>Telescope frecency workspace=CWD<CR>")
 wk.register {
   -- lsp
   ["K"] = { "<cmd>lua vim.lsp.buf.hover()<cr>", "document" },
@@ -80,7 +80,7 @@ wk.register {
       o = { "<cmd>NvimTreeFindFile<cr>", "open file in dir" },
       b = { "<cmd>Telescope buffers<cr>", "searcher buffers" },
       f = { "<cmd>Telescope find_files<cr>", "search files (include submodules)" },
-      F = { "<cmd>Telescope git_files<cr>", "search files (exclude submodules)" },
+      F = { "<cmd>Telescope git_files<cr>", "search files (exclude gitignore)" },
       w = { "<cmd>Telescope live_grep<cr>", "live grep" },
       c = { "<cmd>Telescope grep_string<cr>", "live grep cursor word" },
 

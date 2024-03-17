@@ -1,5 +1,5 @@
+export PATH=$PATH:~/bin
 export PATH=$PATH:~/.local/bin
 export PATH=$PATH:~/.local/share/nvim/mason/bin/   # For mason installed binaries.(LSP)
-export PATH=$PATH:~/bin
 export PATH=$PATH:~/hpf_Linux_Config/install-script/tools/
 export PATH=$PATH:~/hpf_Linux_Config/install-script/tools/git/

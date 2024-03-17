@@ -29,7 +29,7 @@ alias lg="lazygit"
 alias lls="du -h -d 1 ."
 alias cb="xclip -selection clipboard"
 alias chmodxsh='find . -type f -name "*.sh" -exec chmod +x {} \;'
-alias ls="exa"
+alias ls="eza"
 
 # git related
 alias gitinitwithcommit="bash ~/hpf_Linux_Config/install-script/tools/git/init-my-repo-with-history.sh"

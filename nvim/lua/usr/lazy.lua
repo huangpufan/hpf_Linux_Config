@@ -207,7 +207,12 @@ require("lazy").setup({
       return vim.fn.executable "make" == 1
     end,
   },
-  { "nvim-telescope/telescope-frecency.nvim", lazy = false }, -- 查找最近打开的文件
+  {
+    "nvim-telescope/telescope-frecency.nvim",
+    config = function()
+      require("telescope").load_extension "frecency"
+    end,
+  },
   -- 命令执行
   { "voldikss/vim-floaterm", lazy = false }, -- 终端
   {
@@ -456,11 +461,11 @@ require("lazy").setup({
     },
   },
   {
-  "zeioth/garbage-day.nvim",
-  dependencies = "neovim/nvim-lspconfig",
-  event = "VeryLazy",
-  opts = {
-    -- your options here
+    "zeioth/garbage-day.nvim",
+    dependencies = "neovim/nvim-lspconfig",
+    event = "VeryLazy",
+    opts = {
+      -- your options here
+    },
   },
-},
 }, {})
