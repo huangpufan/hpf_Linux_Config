@@ -5,10 +5,8 @@ export all_proxy="socks5://${hostip}:7890"
 ./profile-set.sh
 ./folder-create.sh
 ./ubuntu-source-change.sh
-./apt-install.sh
-unset all_proxy 
+./apt-snap-install.sh
 ./pip-install.sh
-export all_proxy="socks5://${hostip}:7890"
 ./git-install.sh
 ./optional/clang13-install.sh
 ./npm-install.sh

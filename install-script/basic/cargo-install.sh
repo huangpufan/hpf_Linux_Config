@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if command -v cargo &> /dev/null; then
+if command -v yazi &> /dev/null; then
   echo "cargo is already installed. Exiting..."
   exit 0
 fi

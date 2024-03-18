@@ -8,7 +8,7 @@ else
     ln -s ~/hpf_Linux_Config/install-script/basic/env ~/.bash-env
     ln -s ~/hpf_Linux_Config/install-script/basic/aliases ~/.bash-aliases
 
-    cat ./bashrc-append >> ~/.bashrc
+    cat ./bashrcappend >> ~/.bashrc
     source ~/.bashrc
     export hostip=$(cat /etc/resolv.conf | grep -oP '(?<=nameserver\ ).*')
     export all_proxy="socks5://${hostip}:7890"

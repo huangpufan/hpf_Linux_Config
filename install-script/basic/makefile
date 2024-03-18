@@ -5,9 +5,9 @@ SSH_KEY_PUB=$(SSH_KEY_PATH).pub
 # 	./sshkey-generate.sh $(SSH_KEY_PATH)
 # cat-sshkey:
 # 	cat $(SSH_KEY_PUB)
-sshkey-genarate-and-cat: 
+first-sshkey-genarate-and-cat: 
 	./sshkey-generate.sh $(SSH_KEY_PATH)
 	cat $(SSH_KEY_PUB)
 
-install-after-sshkey-genarate:
+second-install-after-sshkey-genarate:
 	./install-after-sshkey.sh

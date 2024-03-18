@@ -13,14 +13,13 @@ export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
 # display cursor
 echo -e "\033[?25h"
 
-############################## Aliases file load ###############################
-if [ -f ~/.bash-aliases ]; then
-    . ~/.bash_aliases
-fi
-
 ############################  Envrionment file load ############################
 if [ -f ~/.bash-env ]; then
     . ~/.bash-env
+fi
+############################## Aliases file load ###############################
+if [ -f ~/.bash-aliases ]; then
+    . ~/.bash-aliases
 fi
 
 # To call setss automatically when WSL starts.
