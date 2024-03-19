@@ -287,3 +287,10 @@ require("lsp-lens").setup {
     end,
     git_authors = false },
 }
+
+require("inc_rename").setup {
+  input_buffer_type = "dressing",
+}
+vim.keymap.set("n", "<space>rn", function()
+  return ":IncRename " .. vim.fn.expand("<cword>")
+end, { expr = true })

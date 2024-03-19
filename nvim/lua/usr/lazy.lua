@@ -460,4 +460,8 @@ require("lazy").setup({
   {
     "VidocqH/lsp-lens.nvim",
   },
+  {
+    "stevearc/dressing.nvim",
+    opts = {},
+  },
 }, {})

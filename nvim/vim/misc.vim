@@ -216,4 +216,3 @@ nnoremap - :call ToggleTermWithNvimTree()<CR>
 "
 " 设置垂直分割的终端快捷键为 '='
 nnoremap = :ToggleTerm size=80 direction=vertical<CR>
-
