@@ -51,7 +51,7 @@ require("lazy").setup({
   { "nvim-lua/plenary.nvim" }, -- 很多 lua 插件依赖的库
   { "kyazdani42/nvim-web-devicons" }, -- 显示图标
   { "folke/which-key.nvim", lazy = true }, -- 用于配置和提示快捷键
-  "kkharji/sqlite.lua",           -- 数据库
+  "kkharji/sqlite.lua", -- 数据库
 
   --------------------------------------- Edit Related ----------------------------------
   -- 补全
@@ -456,5 +456,8 @@ require("lazy").setup({
     opts = {
       -- your options here
     },
+  },
+  {
+    "VidocqH/lsp-lens.nvim",
   },
 }, {})
