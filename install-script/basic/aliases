@@ -20,7 +20,7 @@ alias compress="ouch -c"
 alias decompress="ouch -d"
 
 # config related
-alias scfg="cd ~/hpf_Linux_Config && git pull && cd ~/project/self-learning-project/ && git pull"
+alias scfg="cd ~/hpf_Linux_Config && git pull && cd ~/project/self-learning-project/ && git pull&& cd ~/hpf_Linux_Config/install-script/linux-package-repository/ && git pull"
 alias gitclonehpfconfighttps="cd ~ && git clone https://github.com/huangpufan/hpf_Linux_Config.git --depth=1"
 alias gitclonehpfconfiggit="cd ~ && git clone git@github.com:huangpufan/hpf_Linux_Config.git --depth=1"
 alias lg="lazygit"
