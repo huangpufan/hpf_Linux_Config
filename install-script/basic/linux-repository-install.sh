@@ -1,4 +1,4 @@
-REPO_DIR="../linux-package-repository"
+REPO_DIR="./linux-package-repository"
 # 检查目录是否存在，如果不存在，克隆仓库
 if [ ! -d "$REPO_DIR" ]; then
     echo "Cloning linux-package-repository..."
