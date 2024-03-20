@@ -7,6 +7,7 @@ sudo apt-get install -y tldr
 sudo apt-get install -y cppman
 sudo apt-get install -y ncdu
 sudo apt-get install -y silversearcher-ag
+sudo apt-get install -y neofetch
 sudo apt-get install -y git wget rpm rpm2cpio cpio make build-essential binutils m4
 
 # snap install
