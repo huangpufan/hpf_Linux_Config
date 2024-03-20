@@ -11,3 +11,6 @@ first-sshkey-genarate-and-cat:
 
 second-install-after-sshkey-genarate:
 	./install-after-sshkey.sh
+
+sync:
+	./sync.sh

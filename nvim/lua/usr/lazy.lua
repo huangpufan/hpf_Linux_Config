@@ -446,7 +446,7 @@ require("lazy").setup({
     },
     keys = {
       -- suggested keymap
-      { "<leader>p", "<cmd>PasteImage<cr>", desc = "Paste clipboard image" },
+      -- { "<leader>p", "<cmd>PasteImage<cr>", desc = "Paste clipboard image" },
     },
   },
   {
