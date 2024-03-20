@@ -4,7 +4,7 @@
 if grep -q "Already Done" /etc/apt/sources.list; then
   echo "The script will not be executed as /etc/apt/sources.list contains 'Already Done'."
 else
-  rm -rf /etc/apt/sources.list.backup
+  sudo rm -rf /etc/apt/sources.list.backup
   sudo mv /etc/apt/sources.list /etc/apt/sources.list.backup
   
   # Get the version of Ubuntu
