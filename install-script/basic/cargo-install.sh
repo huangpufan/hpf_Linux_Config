@@ -23,6 +23,6 @@ fi
 
 # Install software by cargo
 echo "Installing cargo packages..."
-cargo install mprocs eza sd
+cargo install mprocs eza sd broot
 cargo install --locked ouch
 cargo install --locked yazi-fm
