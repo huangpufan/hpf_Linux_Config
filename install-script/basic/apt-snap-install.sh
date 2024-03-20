@@ -6,11 +6,11 @@ sudo apt-get install -y build-essential ranger xclip
 sudo apt-get install -y tldr
 sudo apt-get install -y cppman
 sudo apt-get install -y ncdu
-
+sudo apt-get install -y silversearcher-ag
 sudo apt-get install -y git wget rpm rpm2cpio cpio make build-essential binutils m4
 
 # snap install
-sudo snap install btop dust procs bandwhich
+sudo snap install btop dust procs bandwhich lnav
 
 sudo snap install zellij --classic
 sudo snap install emacs --classic
