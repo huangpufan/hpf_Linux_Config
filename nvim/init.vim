@@ -88,6 +88,11 @@ set smartcase
 " Set ~ as invisible char to make nvim tree show better.
 set fillchars+=eob:\ 
 
+" Fold set
+set foldmethod=indent
+set foldminlines=1 
+set foldlevel=1024
+
 " Open file and cursor at the last position
 autocmd BufReadPost *
    \ if line("'\"") > 1 && line("'\"") <= line("$") |
