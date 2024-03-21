@@ -7,3 +7,4 @@ git pull
 cd ~/project/self-learning-project/ 
 echo "Sync self-learning-project"
 make sync
+

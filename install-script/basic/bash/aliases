@@ -20,7 +20,8 @@ alias compress="ouch -c"
 alias decompress="ouch -d"
 
 # config related
-alias scfg="bash sync-personal.sh"
+alias scfg="bash sync-personal-config.sh"
+alias syncall="bash sync-personal-all-file.sh"
 
 alias gitclonehpfconfighttps="cd ~ && git clone https://github.com/huangpufan/hpf_Linux_Config.git --depth=1"
 alias gitclonehpfconfiggit="cd ~ && git clone git@github.com:huangpufan/hpf_Linux_Config.git --depth=1"
