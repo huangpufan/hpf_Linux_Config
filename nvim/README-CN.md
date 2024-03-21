@@ -8,7 +8,7 @@
 
 2. vim 是时代的垃圾，我们拥有 VSCode/Jetbrains 等极其现代，并且用户友好的现代 ide，不应该浪费任何一点时间在学习成本很高又没什么用的 vim 上面，垃圾就该被放到垃圾堆里。
 
-很有趣的一点是，虽然这两种言论都很极端，但是随处可见。
+很有趣的一点是，虽然这两种言论都很极端，但是随处可见，尤其以抨击终端编辑器的居多。
 
 自从在阿里云的暑期实习接触到纯 vim 开发之后，我逐渐被它无限的可定制性以及高效的编程模式所吸引，综合学习了几个出名的配置框架，慢慢得出自己喜欢的配置。
 
@@ -138,8 +138,22 @@
 
 而 nvim 从能力上与 VSCode 基本没有差异，在 LSP 推出之后，各大主流编辑器都是基于 LSP 做代码补全和跳转了。也可以选择将 nvim 相关的配置存到 github 上，同样是一次配置，到处使用。
 
-而 nvim 能额外提供的能力需要一定的学习成本，也是必然的。
+nvim 能额外提供的能力需要一定的学习成本，也是必然的。
 
 
+
+# 安装须知
+
+1. 如果 markdown preview 不生效
+``````
+cd ~/.local/share/nvim/lazy/markdown-preview.nvim/app/ && npm install
+Lazy build markdown-preview.nvim
+``````
+2. 如果 copilot 无法登录 [你的网络可能很烂，可以尝试用手机热点]
+``````
+Copilot auth signout
+Copilot auth signin
+``````
+如果你没有 copilot 账号，请注释掉 copolit 相关设置
 
 # To be continue.
