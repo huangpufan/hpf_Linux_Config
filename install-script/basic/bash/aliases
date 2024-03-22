@@ -64,5 +64,8 @@ if command -v zoxide >/dev/null 2>&1; then
     eval "$(~/.local/bin/zoxide init bash)"
 fi
 
+# just related
+alias j="just"
+
 
 #eval "$(zoxide init bash)"

@@ -63,7 +63,7 @@ require("lazy").setup({
   { "hrsh7th/cmp-nvim-lua",               lazy = false },
   { "ray-x/cmp-treesitter",               lazy = false },
   { "folke/neodev.nvim",                  lazy = false, opts = {} },
-  { "f3fora/cmp-spell",                   lazy = false },
+  -- { "f3fora/cmp-spell",                   lazy = false },
   { "lukas-reineke/cmp-under-comparator", },
   
   { "folke/neodev.nvim", lazy = false, opts = {} },
