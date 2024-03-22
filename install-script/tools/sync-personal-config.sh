@@ -1,3 +1,4 @@
+ehco "Start to sync personal config"
 cd ~/hpf_Linux_Config
 echo "Sync hpf_Linux_Config"
 git pull

@@ -14,7 +14,8 @@ local check_backspace = function()
   local col = vim.fn.col "." - 1
   return col == 0 or vim.fn.getline("."):sub(col, col):match "%s"
 end
-
+vim.opt.spell = true
+vim.opt.spelllang = { "en_us" }
 --   פּ ﯟ   some other good icons
 local kind_icons = {
   Text = "",
@@ -114,9 +115,31 @@ cmp.setup {
     { name = "luasnip" },
     { name = "buffer" },
     { name = "path" },
+    { name = "treesitter" },
     {
       name = "dictionary",
       keyword_length = 2,
+    },
+    {
+      name = "spell",
+      option = {
+        keep_all_entries = false,
+        enable_in_context = function()
+          return true
+        end,
+      },
+    },
+  },
+ sorting = {
+    comparators = {
+      cmp.config.compare.offset,
+      cmp.config.compare.exact,
+      cmp.config.compare.score,
+      require("cmp-under-comparator").under,
+      cmp.config.compare.kind,
+      cmp.config.compare.sort_text,
+      cmp.config.compare.length,
+      cmp.config.compare.order,
     },
   },
   confirm_opts = {
