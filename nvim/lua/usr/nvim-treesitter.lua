@@ -1,4 +1,4 @@
-require("nvim-treesitter.configs").setup({
+require("nvim-treesitter.configs").setup {
   -- If TS highlights are not enabled at all, or disabled via `disable` prop, highlighting will fallback to default Vim syntax highlighting
   highlight = {
     enable = true,
@@ -10,9 +10,14 @@ require("nvim-treesitter.configs").setup({
   ensure_installed = {
     --
     ---------------------------- Basic Languages ----------------------------
+    "asm",
     "vim",
+    "vimdoc",
     "bash",
-    "lua",
+    "strace",
+    "make",
+    "regex",
+    "cmake",
     ---------------------------- Web Languages ----------------------------
     "yaml",
     "html",
@@ -20,25 +25,31 @@ require("nvim-treesitter.configs").setup({
     ---------------------------- Misc Languages ----------------------------
     "markdown",
     "markdown_inline", -- 让 markdown 里面的代码段可以高亮
-    "comment",       -- 更好的高亮 TODO XXX NOTE FIXME ，但是其让 url 的高亮过于明显
+    "comment", -- 更好的高亮 TODO XXX NOTE FIXME ，但是其让 url 的高亮过于明显
     "diff",
     "json",
+    "just",
+    "dockerfile",
+    "doxygen",
+    "sql",
     -- "org",
     ---------------------------- Advanced Languages ----------------------------
     "c",
     "cpp",
-    -- "java",
-    -- "rust",
+    "cuda",
+    "lua",
+    "python",
+    "java",
+    "rust",
+    "go",
     -- "nix",
-    -- "go",
     -- "scala",
     -- "rst",
-    -- "python",
   },
-})
+}
 
 -- 从 https://github.com/nvim-treesitter/nvim-treesitter-textobjects 拷贝过来的配置
-require("nvim-treesitter.configs").setup({
+require("nvim-treesitter.configs").setup {
   textsubjects = {
     enable = true,
     prev_selection = ",", -- (Optional) keymap to select the previous selection
@@ -48,9 +59,9 @@ require("nvim-treesitter.configs").setup({
       ["i;"] = "textsubjects-container-inner",
     },
   },
-})
+}
 
-require("nvim-treesitter.configs").setup({
+require("nvim-treesitter.configs").setup {
   textobjects = {
     select = {
       enable = true,
@@ -97,4 +108,4 @@ require("nvim-treesitter.configs").setup({
       },
     },
   },
-})
+}

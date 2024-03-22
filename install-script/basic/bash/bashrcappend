@@ -22,6 +22,11 @@ if [ -f ~/.bash-aliases ]; then
     . ~/.bash-aliases
 fi
 
+#################################  Source file  ################################
+if [ -f ~/.bash-source ]; then
+    . ~/.bash-source
+fi
+
 # To call setss automatically when WSL starts.
 if type setss &>/dev/null; then
   setss

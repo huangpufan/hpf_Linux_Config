@@ -294,3 +294,5 @@ require("inc_rename").setup {
 vim.keymap.set("n", "<space>rn", function()
   return ":IncRename " .. vim.fn.expand("<cword>")
 end, { expr = true })
+
+require"tree-sitter-just".setup({})

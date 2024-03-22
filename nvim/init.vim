@@ -91,7 +91,7 @@ set fillchars+=eob:\
 " Fold set
 set foldmethod=indent
 set foldminlines=1 
-set foldlevel=1024
+set foldlevel=999
 
 " Open file and cursor at the last position
 autocmd BufReadPost *

@@ -7,6 +7,7 @@ else
     # Add the bashrc-append to the end of ~/.bashrc
     ln -s ~/hpf_Linux_Config/install-script/basic/bash/env ~/.bash-env
     ln -s ~/hpf_Linux_Config/install-script/basic/bash/aliases ~/.bash-aliases
+    ln -s ~/hpf_Linux_Config/install-script/basic/bash/source ~/.bash-source 
 
     cat ./bash/bashrcappend >> ~/.bashrc
     source ~/.bashrc
