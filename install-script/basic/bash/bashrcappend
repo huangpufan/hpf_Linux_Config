@@ -13,6 +13,9 @@ export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
 # display cursor
 echo -e "\033[?25h"
 
+# Color set only for root user
+PS1='\[\e[32m\]\u@\h:\[\e[34m\]\w\[\e[0m\]\$ '
+
 ############################  Envrionment file load ############################
 if [ -f ~/.bash-env ]; then
     . ~/.bash-env
