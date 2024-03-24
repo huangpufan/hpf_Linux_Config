@@ -8,6 +8,8 @@
 ./optional/clang13-install.sh
 ./npm-install.sh
 ./hosts-adjust.sh
+./config-install.sh
+./config-install.sh
 ./curl-install.sh
 ./cargo-install.sh
 ./linux-repository-install.sh

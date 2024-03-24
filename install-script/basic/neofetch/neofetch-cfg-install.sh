@@ -2,7 +2,7 @@
 
 # Define the file paths
 NEOFETCH_CONFIG="$HOME/.config/neofetch/config.conf"
-NEW_PRINT_INFO="./neofetch/conf"
+NEW_PRINT_INFO="./conf"
 
 # Check if the new print_info configuration file exists
 if [ ! -f "$NEW_PRINT_INFO" ]; then

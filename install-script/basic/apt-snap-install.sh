@@ -17,7 +17,6 @@ sudo snap install zellij --classic
 sudo snap install emacs --classic
 bash ./latestgccg++-install.sh
 bash ./clang13-install.sh
-bash ./neofetch-cfg-install.sh
 # Bat set.Cause 
 # Check if the symlink already exists
 if [ ! -L ~/.local/bin/bat ]; then

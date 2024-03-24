@@ -156,4 +156,6 @@ Copilot auth signin
 ``````
 如果你没有 copilot 账号，请注释掉 copolit 相关设置
 
+3. `TSUpdate just`
+
 # To be continue.
