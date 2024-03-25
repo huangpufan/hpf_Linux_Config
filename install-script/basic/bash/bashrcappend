@@ -31,8 +31,11 @@ if [ -f ~/.bash-source ]; then
 fi
 
 # To call setss automatically when WSL starts.
-if type setss &>/dev/null; then
-  setss
+if grep -qi microsoft /proc/version; then
+  # Only for WSL
+  if type setss &>/dev/null; then
+    setss
+  fi
 fi
 
 
