@@ -85,6 +85,7 @@ local telescope = require("telescope").setup {
     mappings = {
       n = { ["q"] = require("telescope.actions").close },
     },
+    db_safe_mode = false
   },
 
   extensions_list = { "themes", "terms" },
