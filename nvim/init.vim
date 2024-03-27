@@ -89,7 +89,7 @@ set smartcase
 set fillchars+=eob:\ 
 
 " Fold set
-set foldmethod=indent
+set foldmethod=manual
 set foldminlines=1 
 set foldlevel=999
 
