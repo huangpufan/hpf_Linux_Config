@@ -13,3 +13,5 @@
 ./curl-install.sh
 ./cargo-install.sh
 ./linux-repository-install.sh
+cd ./neofetch/ 
+bash ./neofetch-cfg-install.sh
