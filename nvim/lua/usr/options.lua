@@ -26,6 +26,7 @@ local options = {
 
   wrap = true, -- 不要自动 wrap
   laststatus = 3, -- 只有一个全局的 status line，而不是每一个 window 一个
+  splitkeep = "screen",
 }
 
 for k, v in pairs(options) do
