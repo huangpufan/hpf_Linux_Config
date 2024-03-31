@@ -296,3 +296,4 @@ vim.keymap.set("n", "<space>rn", function()
 end, { expr = true })
 
 require"tree-sitter-just".setup({})
+require("colorful-winsep").setup({})
