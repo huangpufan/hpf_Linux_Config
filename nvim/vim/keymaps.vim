@@ -12,6 +12,7 @@ noremap<M-Right> :BufferLineCycleNext<CR>
 
 noremap<A-j> :BufferLineCyclePrev<CR>
 noremap<A-k> :BufferLineCycleNext<CR>
+
 "" 使用 Alt + 数字 切换到对应编号的 buffer
 nnoremap <A-1> :BufferLineGoToBuffer 1<CR>
 nnoremap <A-2> :BufferLineGoToBuffer 2<CR>
@@ -30,9 +31,6 @@ nnoremap <A-d> :BufferLineCloseRight<CR>
 
 nnoremap <A-i> :BufferLineMovePrev<CR>
 nnoremap <A-o> :BufferLineMoveNext<CR>
-
-" noremap<A-h> :bp<CR>
-" noremap<A-l> :bn<CR>
 
 " Ensure the cursor is always in the middle of the screen.
 nnoremap <C-o> <C-o>zz
@@ -111,11 +109,6 @@ function! CloseBuffer()
 endfunction
 nnoremap <C-w> :wa<CR>:call CloseBuffer()<CR>
 
-" Close current buffer.
-" nnoremap <C-w> :w<CR>:bdelete<CR>
-" ctrl r 在插入模式下，redo 也生效
-"inoremap <C-r> <C-o><C-r>
-
 " Close all the other buffer.
 nnoremap <A-x> :BDelete hidden<cr>
 inoremap <A-x> <C-o>:BDelete hidden<cr>
@@ -137,9 +130,6 @@ inoremap <S-Down>  <Esc>lv<Down>
 inoremap <S-Left>  <Esc>v<Left>
 inoremap <S-Right> <Esc>lv<Right>
 
-" Delete a line.
-" nnoremap <C-l> dd
-" inoremap <C-l> <Esc>:normal! dd<CR>i
 " Delete
 vnoremap <BS> "_d
 
@@ -152,7 +142,5 @@ inoremap <A-Left> <Esc>bi
 " Multi-line editting mode.
 noremap <C-M> <C-V>
 
-" tnoremap <silent> <M-i> <C-\><C-n>:RnvimrResize<CR>
-" nnoremap <silent> <M-o> :RnvimrToggle<CR>
-" tnoremap <silent> <M-o> <C-\><C-n>:RnvimrToggle<CR>
+" For Lsp restart case.
 nnoremap <Space>rs :LspRestart clangd<CR>

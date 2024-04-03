@@ -9,7 +9,6 @@ local servers = {
   -- "yamlls",
   "efm",
   "vimls",
-  -- "ccls",
   "marksman",
   "clangd",
   -- "nixd",
