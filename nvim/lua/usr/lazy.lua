@@ -491,7 +491,7 @@ require("lazy").setup({
         priority = 128,
         disable = {},
       }
-    end,
+    end, 
   },
   { "IndianBoy42/tree-sitter-just" },
   {
