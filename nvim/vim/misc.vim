@@ -25,9 +25,9 @@ let g:bookmark_save_per_working_dir = 1
 let g:bookmark_no_default_key_mappings = 1
 
 
-" 自动关闭 vim 如果 window 中只有一个 filetree
+" 自动关闭 vim 如果 window 中只有一个 filetree, 没必要关闭吧
 " https://github.com/kyazdani42/nvim-tree.lua
-autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif
+" autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif
 
 " 定义预先录制的 macro
 let @j = 'ysiw`\<Esc>' " 在一个 word 两侧添加上 `，例如将 abc 变为 `abc`

@@ -55,13 +55,20 @@ require("lazy").setup({
 
   --------------------------------------- Edit Related ----------------------------------
   -- 补全
-  { "hrsh7th/nvim-cmp", lazy = false }, -- The completion plugin
-  { "hrsh7th/cmp-buffer", lazy = false }, -- buffer completions
-  { "hrsh7th/cmp-path", lazy = false }, -- path completions
-  { "saadparwaiz1/cmp_luasnip", lazy = false }, -- snippet completions
-  { "hrsh7th/cmp-nvim-lsp", lazy = false },
-  { "hrsh7th/cmp-nvim-lua", lazy = false },
-  { "ray-x/cmp-treesitter", lazy = false },
+  {
+    "hrsh7th/nvim-cmp",
+    lazy = true,
+    event = "InsertEnter",
+  }, -- The completion plugin
+  { "hrsh7th/cmp-buffer",
+    lazy = true,
+    event = "InsertEnter",
+}, -- buffer completions
+  { "hrsh7th/cmp-path", lazy = true,event = "InsertEnter", }, -- path completions
+  { "saadparwaiz1/cmp_luasnip", lazy = true, event = "InsertEnter" }, -- snippet completions
+  { "hrsh7th/cmp-nvim-lsp", lazy = true, event = "InsertEnter" },
+  { "hrsh7th/cmp-nvim-lua", lazy = true, event = "InsertEnter"},
+  { "ray-x/cmp-treesitter", lazy = true, event = "InsertEnter" },
   { "folke/neodev.nvim", lazy = false, opts = {} },
   -- { "f3fora/cmp-spell",                   lazy = false },
   { "lukas-reineke/cmp-under-comparator" },
@@ -79,8 +86,8 @@ require("lazy").setup({
     end,
   },
   -- Snippets
-  { "L3MON4D3/LuaSnip", lazy = false }, --snippet engine
-  { "rafamadriz/friendly-snippets", lazy = false }, -- a bunch of snippets to use
+  { "L3MON4D3/LuaSnip", lazy = true, event = "InsertEnter" }, --snippet engine
+  { "rafamadriz/friendly-snippets", lazy = true, event = "InsertEnter" }, -- a bunch of snippets to use
 
   -- LSP
   { "neovim/nvim-lspconfig", lazy = false }, -- enable LSP
@@ -111,8 +118,8 @@ require("lazy").setup({
 
   {
     "ray-x/lsp_signature.nvim",
-    lazy = false,
-    event = "VeryLazy",
+    lazy = true,
+    event = "InsertEnter",
     opts = {},
     config = function(_, opts)
       require("lsp_signature").setup(opts)
@@ -184,7 +191,7 @@ require("lazy").setup({
   { "rhysd/git-messenger.vim", lazy = false }, -- 利用 git blame 显示当前行的 commit message
   { "lewis6991/gitsigns.nvim", lazy = false }, -- 显示改动的信息
   { "f-person/git-blame.nvim", lazy = false }, -- 显示 git blame 信息
-  { "sindrets/diffview.nvim", lazy = false },
+  { "sindrets/diffview.nvim", lazy = true, event = "InsertEnter" },
   {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
@@ -207,6 +214,7 @@ require("lazy").setup({
   { "voldikss/vim-floaterm", lazy = false }, -- 终端
   {
     "akinsho/toggleterm.nvim",
+    lazy = true,
     cmd = { "ToggleTerm", "TermExec" },
     opts = {
       highlights = {
@@ -254,7 +262,7 @@ require("lazy").setup({
   --"mbbill/undotree", -- 显示编辑的历史记录
   { "mg979/vim-visual-multi", lazy = false }, -- 同时编辑多个位置
   { "AckslD/nvim-neoclip.lua", lazy = true }, -- 保存 macro
-  { "windwp/nvim-spectre", lazy = false }, -- 媲美 vscode 的多文件替换
+  { "windwp/nvim-spectre", lazy = true, cmd = "Spectre" }, -- 媲美 vscode 的多文件替换
   -- 高亮
   { "norcalli/nvim-colorizer.lua", lazy = false }, -- 显示 #FFFFFF
   { "andymass/vim-matchup", lazy = false }, -- 高亮匹配的元素，例如 #if 和 #endif
@@ -377,8 +385,11 @@ require("lazy").setup({
     },
   },
 
-  { "max397574/better-escape.nvim" },
-
+  {
+    "max397574/better-escape.nvim",
+    lazy = false,
+    event = "InsertEnter",
+  },
   -- { "kevinhwang91/rnvimr", lazy = false },
   { "itchyny/vim-cursorword", lazy = false },
 
@@ -406,13 +417,13 @@ require("lazy").setup({
       -- map("[[", "prev")
 
       -- also set it after loading ftplugins, since a lot overwrite [[ and ]]
-      vim.api.nvim_create_autocmd("FileType", {
-        callback = function()
-          local buffer = vim.api.nvim_get_current_buf()
-          -- map("]]", "next", buffer)
-          -- map("[[", "prev", buffer)
-        end,
-      })
+      -- vim.api.nvim_create_autocmd("FileType", {
+      --   callback = function()
+      --     local buffer = vim.api.nvim_get_current_buf()
+      --     -- map("]]", "next", buffer)
+      --     -- map("[[", "prev", buffer)
+      --   end,
+      -- })
     end,
     keys = {
       -- { "]]", desc = "Next Reference" },
@@ -428,7 +439,9 @@ require("lazy").setup({
 
   {
     "stevearc/overseer.nvim",
+    lazy = true,
     opts = {},
+    event = "InsertEnter",
   },
   { "uga-rosa/ccc.nvim" },
 
@@ -485,12 +498,13 @@ require("lazy").setup({
         priority = 128,
         disable = {},
       }
-    end, 
+    end,
   },
   { "IndianBoy42/tree-sitter-just" },
   {
     "nvim-zh/colorful-winsep.nvim",
     config = true,
-    event = { "WinNew" },
+    lazy = true,
+    event = { "InsertEnter" },
   },
 }, {})

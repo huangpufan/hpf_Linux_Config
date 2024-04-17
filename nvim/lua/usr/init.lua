@@ -44,7 +44,13 @@ require "usr.colorscheme"
 require "usr.alpha"
 require("colorizer").setup { "css", "javascript", "vim", "lua", html = { mode = "foreground" } }
 require("nvim-surround").setup()
-require("persisted").setup { autoload = true }
+
+require("persisted").setup {
+  autoload = true,
+}
+vim.o.sessionoptions = "buffers,curdir,folds,tabpages,winpos,winsize"
+
+
 require("gitsigns").setup { signcolumn = true, numhl = true }
 require("nvim-autopairs").setup()
 require("fidget").setup()
@@ -285,15 +291,16 @@ require("lsp-lens").setup {
     implements = function(count)
       return "Implements: " .. count
     end,
-    git_authors = false },
+    git_authors = false,
+  },
 }
 
 require("inc_rename").setup {
   input_buffer_type = "dressing",
 }
 vim.keymap.set("n", "<space>rn", function()
-  return ":IncRename " .. vim.fn.expand("<cword>")
+  return ":IncRename " .. vim.fn.expand "<cword>"
 end, { expr = true })
 
-require"tree-sitter-just".setup({})
-require("colorful-winsep").setup({})
+require("tree-sitter-just").setup {}
+require("colorful-winsep").setup {}
