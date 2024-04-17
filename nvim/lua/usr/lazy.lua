@@ -203,12 +203,6 @@ require("lazy").setup({
       return vim.fn.executable "make" == 1
     end,
   },
-  {
-    "nvim-telescope/telescope-frecency.nvim",
-    config = function()
-      require("telescope").load_extension "frecency"
-    end,
-  },
   -- 命令执行
   { "voldikss/vim-floaterm", lazy = false }, -- 终端
   {
@@ -444,7 +438,7 @@ require("lazy").setup({
   { "AckslD/nvim-FeMaco.lua" },
   {
     "HakonHarnes/img-clip.nvim",
-    event = "BufEnter",
+    event = "InsertEnter",
     opts = {
       -- add options here
       -- or leave it empty to use the default settings
