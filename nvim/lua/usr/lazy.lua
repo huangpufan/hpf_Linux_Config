@@ -69,11 +69,11 @@ require("lazy").setup({
   { "hrsh7th/cmp-nvim-lsp", lazy = true, event = "InsertEnter" },
   { "hrsh7th/cmp-nvim-lua", lazy = true, event = "InsertEnter"},
   { "ray-x/cmp-treesitter", lazy = true, event = "InsertEnter" },
-  { "folke/neodev.nvim", lazy = false, opts = {} },
+  -- { "folke/neodev.nvim", lazy = false, opts = {} },
+
   -- { "f3fora/cmp-spell",                   lazy = false },
   { "lukas-reineke/cmp-under-comparator" },
 
-  { "folke/neodev.nvim", lazy = false, opts = {} },
 
   -- Eazily add bracket
   {
