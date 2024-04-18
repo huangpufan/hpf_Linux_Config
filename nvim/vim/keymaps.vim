@@ -1,3 +1,11 @@
+"""""""""""""""""""""""""""" Macro Setting """"""""""""""""""""""""""""""""""
+" bracket macro
+let @j = 'ysiw`' " 在一个 word 两侧添加上 `，例如将 abc 变为 `abc`
+let @k = 'ysiw"'
+
+
+
+
 """""""""""""""""""""""""""" Shortcut Setting """"""""""""""""""""""""""""""""
 
 " Window Split
@@ -6,6 +14,8 @@ nnoremap \ :split<CR>
 " Map '|' to split the window vertically
 nnoremap <Bar> :vsplit<CR>
 
+
+""""""""""""" Buffer Switch """"""""""""""
 " use alter + left/right to switch buffer.
 noremap<M-Left> :BufferLineCyclePrev<CR>
 noremap<M-Right> :BufferLineCycleNext<CR>
@@ -31,6 +41,8 @@ nnoremap <A-d> :BufferLineCloseRight<CR>
 
 nnoremap <A-i> :BufferLineMovePrev<CR>
 nnoremap <A-o> :BufferLineMoveNext<CR>
+
+""""""""""""""" Buffer Switch """"""""""""
 
 " Ensure the cursor is always in the middle of the screen.
 nnoremap <C-o> <C-o>zz
