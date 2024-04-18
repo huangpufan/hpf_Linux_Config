@@ -1,9 +1,14 @@
+
+"""""""""""""""""""""""" Markdown Preview Setting""""""""""""""""""""""
 " 在 markdown 中间编辑 table
 let g:table_mode_corner='|'
 
 " 默认 markdown preview 在切换到其他的 buffer 或者 vim
 " 失去焦点的时候会自动关闭 preview
 let g:mkdp_auto_close = 0
+""""""""""""""""""""""" Markdown Preview End """"""""""""""""""""""""""
+
+
 " 书签选中之后自动关闭 quickfix window
 let g:bookmark_auto_close = 1
 
@@ -23,14 +28,6 @@ vmap gx <Plug>(openbrowser-smart-search)
 
 let g:bookmark_save_per_working_dir = 1
 let g:bookmark_no_default_key_mappings = 1
-
-
-" 自动关闭 vim 如果 window 中只有一个 filetree, 没必要关闭吧
-" https://github.com/kyazdani42/nvim-tree.lua
-" autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif
-
-
-
 
 """""""""""""""" Clipboard Related Setting """"""""""""""""""""""""""""
 " Config 1 
@@ -66,50 +63,6 @@ autocmd TextYankPost *
     \ endif
 " 让远程的 server 内容拷贝到系统剪切板中，具体参考 https://github.com/ojroques/vim-oscyank
 
-""""""""""""""""""""""""""  color set  """"""""""""""""""""""""""""""""""
-" Set the color of the comment
-highlight Comment ctermfg=darkgray guifg=#a6d189
-" #c5c8c6
-" #8abeb7
-" #b294bb
-" #a8a19f
-" #969896
-" #d5c4a1
-" #f2e5bc
-" #e0cfa9
-" #d7bd8d
-" #f4a460
-" #996515
-" #8b4513
-" #800000
-" #a0522d
-" #7e3300
-" #400000
-" #6f4e37
-" #d2691e
-" #b56a4c
-"
-"
-
-""""""""""""""""""""""""""  flash.nvim """"""""""""""""""""""""""""""""""
-highlight FlashMatch guibg=#4870d9 guifg=#ffffff 
-highlight FlashCurrent guibg=#ff966c guifg=#ffffff 
-" highlight FlashBackdrop guibg=#333333 guifg=#d1dddd 
-highlight FlashLabel  guibg=#ff966c guifg=#ffffff 
-highlight FlashCursor guibg=#ca3311 guifg=#ffffff
-" highlight FlashCursor guibg=#ff446c guifg=#ffffff
-
-
-" 热情的红色: #FF2D55 (红-粉色调)
-" 明亮的橙色: #FF9500 (鲜橙色)
-" 鲜黄色: #FFCC00 (柠檬黄)
-" 酸橙色: #7CFC00 (草坪绿)
-" 亮绿色: #4CD964 (绿色)
-" 鲜蓝色: #007AFF (亮蓝色)
-" 深天蓝色: #5856D6 (深蓝色)
-" 紫罗兰色: #AF52DE (中紫色)
-" 粉红色: #FF2D95 (亮粉色)
-" 水蓝色: #34AADC (天蓝色)
 
 """"""""""""""""""""""""""  buffer set """"""""""""""""""""""""""""""""""
 " To ban the completion when the line is empty or no content before the cursor.misc
@@ -121,31 +74,7 @@ augroup END
 hi BufferLineBufferSelected guifg=white guibg=none gui=bold,underline
 
 " 在 VimEnter 事件后检查并关闭名为 NvimTree_1 的空 buffer
-autocmd VimEnter * if bufexists("NvimTree_1") | bdelete NvimTree_1 | endif
-
-" function! CloseBuffersOnStart()
-"   " 获取所有 buffer 的列表
-"   redir => l:bufferlist
-"   silent! ls
-"   redir END
-"
-"   " 逐行处理 buffer 列表
-"   for l:line in split(l:bufferlist, '\n')
-"     " 匹配 buffer 名称前缀为 'hpf/' 或者精确匹配 'NvimTree_1' 的 buffer
-"     if l:line =~ 'hpf*' || l:line =~ 'NvimTree_1'
-"       " 提取 buffer 编号
-"       let l:matched = matchlist(l:line, '^\s*\zs\d\+')
-"       if !empty(l:matched)
-"         " 删除对应 buffer
-"         execute 'bdelete' l:matched[0]
-"       endif
-"     endif
-"   endfor
-" endfunction
-"
-" " 启动 nvim 时，调用 CloseBuffersOnStart 函数
-" autocmd VimEnter * call CloseBuffersOnStart()
-
+" autocmd VimEnter * if bufexists("NvimTree_1") | bdelete NvimTree_1 | endif
 
 
 function! ZoxideQuery()
@@ -195,21 +124,57 @@ nnoremap <C-y> 3<C-y>
 tnoremap <C-d> <C-\><C-n>
 
 
+
+""""""""""""""""""""""""""" Floaterm """"""""""""""""""""""""""""
+let g:floaterm_width = 0.90
+let g:floaterm_height = 0.90
+let g:floaterm_keymap_prev = '<C-left>'
+let g:floaterm_keymap_next = '<C-right>'
+let g:floaterm_keymap_new = '<C-q>'
+let g:floaterm_keymap_toggle = '<C-p>'
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+""""""""""""""""""""""""""  ToggleTerm """"""""""""""""""""""""""
 function! ToggleTermWithNvimTree()
   NvimTreeClose
 
+  let height = float2nr(winheight(0) * 0.32)
+
   " 打开或关闭 ToggleTerm
-  execute 'ToggleTerm size=10 direction=horizontal'
+  execute 'ToggleTerm size=' . height . ' direction=horizontal'
   " 可能需要稍微延迟打开 NvimTree，以确保它在 ToggleTerm 之后显示
   " 使用 100 毫秒的延迟，根据需要调整
-  execute 'sleep 5m | NvimTreeOpen'
+  execute 'sleep 1m | NvimTreeOpen'
   let term_win_id = win_getid(winnr('#'))
   call win_gotoid(term_win_id)
 endfunction
 
-" 映射 '-' 键来调用上面定义的函数
+" 打开位于布局下侧的 ToggleTerm ：Press -
 nnoremap - :call ToggleTermWithNvimTree()<CR>
 
+" 打开位于布局右侧的 ToggleTerm ：Press =
+nnoremap = :let width=float2nr(winwidth(0) * 0.5) \| execute 'ToggleTerm size=' . width . ' direction=vertical'<CR>
+
+" Fix toggle term related bug: Ensure cursor to be normal mode.
+" 定义一个全局变量来确保 EnsureNormalMode 只在启动时执行一次
+" let g:has_ensured_normal_mode = 0
 "
-" 设置垂直分割的终端快捷键为 '='
-nnoremap = :ToggleTerm size=80 direction=vertical<CR>
+" function! EnsureNormalMode(timer)
+"   " 检查是否已经执行过此函数
+"   if g:has_ensured_normal_mode
+"     return
+"   endif
+"   " 如果当前处于插入模式，则停止插入模式
+"   if mode() == 'i'
+"     stopinsert
+"   endif
+"   " 设置变量以避免再次执行此函数
+"   let g:has_ensured_normal_mode = 1
+" endfunction
+
+" 使用 VimEnter 事件设置定时器，仅在 Neovim 启动时调用 EnsureNormalMode 函数
+" autocmd VimEnter * if g:has_ensured_normal_mode == 0 | call timer_start(30, 'EnsureNormalMode') | endif
+
+"""""""""""""""""""""""" ToggleTerm End """"""""""""""""""""""""""
+

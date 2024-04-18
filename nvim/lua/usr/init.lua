@@ -47,6 +47,9 @@ require("nvim-surround").setup()
 
 require("persisted").setup {
   autoload = true,
+  before_save = function()
+    vim.cmd "NvimTreeClose"
+  end,
 }
 vim.o.sessionoptions = "buffers,curdir,folds,tabpages,winpos,winsize"
 

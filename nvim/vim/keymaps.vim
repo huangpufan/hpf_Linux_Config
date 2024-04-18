@@ -2,11 +2,20 @@
 " bracket macro
 let @j = 'ysiw`' " 在一个 word 两侧添加上 `，例如将 abc 变为 `abc`
 let @k = 'ysiw"'
+"""""""""""""""""""""""""""" Macro end """"""""""""""""""""""""""""""""""""""
 
 
 
+"""""""""""""""""""""""""""" Shortcut Setting """""""""""""""""""""""""""""""
+" Quitting the window is very common for me.
+" As recording the macro is not common at the same time
+noremap <leader>q q
 
-"""""""""""""""""""""""""""" Shortcut Setting """"""""""""""""""""""""""""""""
+" 访问系统剪切板
+map <leader>y "+y
+map <leader>p "+p
+map <leader>d "+d
+
 
 " Window Split
 " Map '\' to split the window horizontally
@@ -15,7 +24,8 @@ nnoremap \ :split<CR>
 nnoremap <Bar> :vsplit<CR>
 
 
-""""""""""""" Buffer Switch """"""""""""""
+"""""""""""""""""""""""""""" Buffer Switch """"""""""""""""""""""""""""""""""
+
 " use alter + left/right to switch buffer.
 noremap<M-Left> :BufferLineCyclePrev<CR>
 noremap<M-Right> :BufferLineCycleNext<CR>
@@ -42,7 +52,8 @@ nnoremap <A-d> :BufferLineCloseRight<CR>
 nnoremap <A-i> :BufferLineMovePrev<CR>
 nnoremap <A-o> :BufferLineMoveNext<CR>
 
-""""""""""""""" Buffer Switch """"""""""""
+""""""""""""""""""""""""""" Buffer Switch end """"""""""""""""""""""""""""""""
+
 
 " Ensure the cursor is always in the middle of the screen.
 nnoremap <C-o> <C-o>zz
@@ -51,38 +62,43 @@ nnoremap <C-i> <C-i>zz
 " use esc to enable nohilight.
 noremap<Esc> :noh<CR>
 
-" Copy
+
+""""""""""""""""""""""""" Modern Editing shortcuts """"""""""""""""""""""""""
+" Copy : Ctrl + c
 nnoremap <C-c> "+y
 vnoremap <C-c> "+y
 
-" Store the file
-noremap <C-s> :wall<CR>
-inoremap <C-s> <C-o>:wall<CR>
-
-" Visual mode choose all the text.
-nnoremap <C-a> ggVG
-inoremap <C-a> <Esc> ggVG
-
-" Cut the content
+" Cut the content : Ctrl + x
 nnoremap <C-x> "+x
 vnoremap <C-x> "+x
 inoremap <C-x> <C-o>dd
 
-" Copy and paste immediately.
+" Store the file : Ctrl + s
+noremap <C-s> :wall<CR>
+inoremap <C-s> <C-o>:wall<CR>
+
+" Visual mode choose all the text : Ctrl + a
+nnoremap <C-a> ggVG
+inoremap <C-a> <Esc> ggVG
+
+" Copy and paste immediately : Ctrl + d
 " nnoremap <C-d> yyp
 vnoremap <C-d> y<Esc>o<C-R>"<CR>
 inoremap <C-d> <Esc>:normal! yy<CR>p`[A
 
 
-" Reload the config file.
+" Reload the config file : F5
 noremap <F5> :source $MYVIMRC<CR>
 inoremap <F5> <C-O>:source $MYVIMRC<CR>
 
-" Undo.
+" Undo : Ctrl + z
 inoremap <C-z> <C-O>u
 noremap <C-z> <C-O>u
 
-" Very important function.
+" Delete : Backspace
+vnoremap <BS> "_d
+
+" Close : Ctrl + w
 " Unless using this function,the nvimtree will cause random bug to 
 " collaps the whole nvim.
 function! CloseBuffer()
@@ -121,11 +137,14 @@ function! CloseBuffer()
 endfunction
 nnoremap <C-w> :wa<CR>:call CloseBuffer()<CR>
 
-" Close all the other buffer.
+
+"""""""""""""""""""""""""" Modern Editing shortcuts end """"""""""""""""""""""
+
+" Close all the other buffer : Alt + x
 nnoremap <A-x> :BDelete hidden<cr>
 inoremap <A-x> <C-o>:BDelete hidden<cr>
 
-" Format the code.
+" Format the code : Ctrl + a + l
 inoremap <C-A-l> <C-o>:lua vim.lsp.buf.format{ async = true }<CR>
 
 " Use shift to visually choose text.
@@ -142,17 +161,27 @@ inoremap <S-Down>  <Esc>lv<Down>
 inoremap <S-Left>  <Esc>v<Left>
 inoremap <S-Right> <Esc>lv<Right>
 
-" Delete
-vnoremap <BS> "_d
-
-" Alt + left right to move by word in insert mode.
-inoremap <A-Right> <C-\><C-O>e<C-\><C-O>a
-inoremap <A-Left> <Esc>bi
 
 " 注意，映射的命令后必须要有空格，不然后面的全部不生效
 
-" Multi-line editting mode.
+" Multi-line editting mode : Ctrl + m
 noremap <C-M> <C-V>
 
 " For Lsp restart case.
 nnoremap <Space>rs :LspRestart clangd<CR>
+
+
+"""""""""""""""""""""""""" Visual line jk """"""""""""""""""""""""""""
+
+" Use 'j' and 'k' to move up and down, 
+" and use 'gj' and 'gk' to move up and down by line.
+" Move down with 'j' or <Down>, using 'gj' in non-numeric modes
+nnoremap <expr> j v:count == 0 && mode(1)[0:1] != 'no' ? 'gj' : 'j'
+nnoremap <expr> <Down> v:count == 0 && mode(1)[0:1] != 'no' ? 'gj' : 'j'
+
+" Move up with 'k' or <Up>, using 'gk' in non-numeric modes
+nnoremap <expr> k v:count == 0 && mode(1)[0:1] != 'no' ? 'gk' : 'k'
+nnoremap <expr> <Up> v:count == 0 && mode(1)[0:1] != 'no' ? 'gk' : 'k'
+
+""""""""""""""""""""""" Visual line jk end """""""""""""""""""""""""""
+
