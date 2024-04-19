@@ -125,14 +125,6 @@ tnoremap <C-d> <C-\><C-n>
 
 
 
-""""""""""""""""""""""""""" Floaterm """"""""""""""""""""""""""""
-let g:floaterm_width = 0.90
-let g:floaterm_height = 0.90
-let g:floaterm_keymap_prev = '<C-left>'
-let g:floaterm_keymap_next = '<C-right>'
-let g:floaterm_keymap_new = '<C-q>'
-let g:floaterm_keymap_toggle = '<C-p>'
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 """"""""""""""""""""""""""  ToggleTerm """"""""""""""""""""""""""

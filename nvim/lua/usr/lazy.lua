@@ -436,8 +436,9 @@ require("lazy").setup({
   {
     "b0o/incline.nvim",
     opts = {},
+    lazy = false,
     -- Optional: Lazy load Incline
-    event = "VeryLazy",
+    -- event = "VeryLazy",
   },
 
   {

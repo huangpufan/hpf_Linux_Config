@@ -56,7 +56,6 @@ require("persisted").setup {
 }
 vim.o.sessionoptions = "buffers,curdir,folds,tabpages,winpos,winsize"
 
-
 require("gitsigns").setup { signcolumn = true, numhl = true }
 require("nvim-autopairs").setup()
 require("fidget").setup()

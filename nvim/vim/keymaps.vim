@@ -144,7 +144,8 @@ nnoremap <A-x> :BDelete hidden<cr>
 inoremap <A-x> <C-o>:BDelete hidden<cr>
 
 " Format the code : Ctrl + a + l
-inoremap <C-A-l> <C-o>:lua vim.lsp.buf.format{ async = true }<CR>
+" noremap <C-A-l> <C-o>:lua vim.lsp.buf.format{ async = true }<CR>
+" inoremap <C-A-l> <C-o>:lua vim.lsp.buf.format{ async = true }<CR>
 
 " Use shift to visually choose text.
 noremap <S-Up>    <Esc>v<Up>

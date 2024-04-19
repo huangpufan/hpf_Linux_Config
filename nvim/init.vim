@@ -2,6 +2,24 @@
 let g:mapleader = "\<Space>"
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+set termguicolors
+set autoread
+au FocusGained,BufEnter * :checktime
+" 当失去焦点或者离开当前的 buffer 的时候保存
+set autowrite
+autocmd FocusLost,BufLeave * silent! update
+
+
+""""""""""""""""""""""""""" Floaterm """"""""""""""""""""""""""""
+let g:floaterm_width = 0.90
+let g:floaterm_height = 0.90
+let g:floaterm_keymap_prev = '<C-left>'
+let g:floaterm_keymap_next = '<C-right>'
+let g:floaterm_keymap_new = '<C-q>'
+let g:floaterm_keymap_toggle = '<C-p>'
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"autocmd VimEnter * NvimTreeOpen
+" set tab = 5 space.
 
 " load lua config
 lua require 'usr'
@@ -18,16 +36,7 @@ let s:core_conf_files = [
 for s:fname in s:core_conf_files
   execute printf('source %s/vim/%s', stdpath('config'), s:fname)
 endfor
-
-set termguicolors
-set autoread
-au FocusGained,BufEnter * :checktime
-" 当失去焦点或者离开当前的 buffer 的时候保存
-set autowrite
-autocmd FocusLost,BufLeave * silent! update
-
-
-
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:loaded_perl_provider = 3
 
 " This keymapping originally set by whichkey doesn't work in neovim 3.8
@@ -35,17 +44,9 @@ let g:loaded_perl_provider = 3
 
 let g:gitblame_delay = 0
 "let g:gitblame_ignored_filetypes = ['lua', 'markdown', 'sh']
-
+"
 " 因为 nvim-treesitter-textobjects 使用 x 来跳转，原始的 x 被映射为 xx
 nn xx x
-
-
-"autocmd VimEnter * NvimTreeOpen
-" set tab = 5 space.
-"
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 """"""""""""""""""""""""""""""" Tab Setting """"""""""""""""""""""""""""""""

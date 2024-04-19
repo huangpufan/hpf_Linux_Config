@@ -9,9 +9,8 @@ wk.setup {
 
 ------------------------------------------ Ctrl related. ------------------------------------------
 wk.register {
-  ["<C-A-l>"] = { "<cmd> lua vim.lsp.buf.format{ async = true }<cr>", "format current buffer" },
-  -- ["<C-_>"] = { "<cmd> Commentary<cr>", "comment code" },
-  ["<C-n>"] = { "<cmd>NvimTreeToggle<cr>", "toggle file tree" },
+  -- ["<C-A-l>"] = { "<cmd> lua vim.lsp.buf.format{ async = true }<cr>", "format current buffer" },
+  ["<C-n>"] = { "<cmd>NvimTreeToggle<cr>", "Toggle file tree" },
 }
 wk.register {
   -- lsp
@@ -30,9 +29,7 @@ wk.register {
   -- search
   ["<leader>"] = {
     -- leader x used for map language specific function
-
   },
-  -- " 使用 space [number] 切换到第 [number] 个 window
   ["<space>"] = {
     a = {
       name = "+misc",
@@ -94,7 +91,6 @@ wk.register {
     l = {
       name = "+Language",
       a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code action" },
-      c = { "<cmd>Commentary<cr>", "Comment code" },
       f = { "<cmd> lua vim.lsp.buf.format{ async = true }<cr>", "Format current buffer" },
       j = { "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", "Lsp goto next" },
       k = { "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", "Lsp goto prev" },
@@ -105,6 +101,17 @@ wk.register {
     },
     -- o 被 orgmode 使用
     q = { "<cmd>qa<cr>", "Close nvim" },
+
+    r = {
+      name = "+rename",
+      n = {
+        function()
+          return ":IncRename " .. vim.fn.expand "<cword>"
+        end,
+        "Rename sign",
+        expr = true,
+      },
+    },
     s = {
       name = "+Search",
       P = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "Search cursor word by spectre" },
@@ -193,7 +200,7 @@ end
 
 -- vim.cmd("autocmd FileType markdown lua MarkdownLeaderX()")
 -- function MarkdownLeaderX()
--- 	vim.api.nvim_set_keymap("n", "<leader>x", ":MarkdownPreview<CR>", { noremap = false, silent = true })
+--  vim.api.nvim_set_keymap("n", "<leader>x", ":MarkdownPreview<CR>", { noremap = false, silent = true })
 -- end
 --
 --
@@ -215,27 +222,26 @@ end
 vim.api.nvim_set_keymap("n", "<M-Home>", "<cmd>lua goto_first_buffer()<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<M-End>", "<cmd>lua goto_last_buffer()<CR>", { noremap = true, silent = true })
 
-
 function LiveGrepWithExtension()
   -- 询问用户想要搜索的文件后缀
-  local extension = vim.fn.input("Enter file extension(s) (e.g. lua,py): ")
+  local extension = vim.fn.input "Enter file extension(s) (e.g. lua,py): "
   -- 如果用户没有输入，不添加任何 glob 参数
   local glob_args = {}
   if extension ~= "" then
     -- 拆分用户输入的后缀，并为每个后缀创建一个 glob 参数
-    for match in extension:gmatch("[^,%s]+") do
+    for match in extension:gmatch "[^,%s]+" do
       table.insert(glob_args, "--glob")
       table.insert(glob_args, "*." .. match)
     end
   end
 
   -- 启动 live_grep 时传递 glob 参数
-  require('telescope.builtin').live_grep({
+  require("telescope.builtin").live_grep {
     additional_args = function(opts)
       return glob_args
-    end
-  })
+    end,
+  }
 end
 
 -- 将该函数绑定到一个快捷键
-vim.api.nvim_set_keymap('n', '<space>fg', ":lua LiveGrepWithExtension()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<space>fg", ":lua LiveGrepWithExtension()<CR>", { noremap = true, silent = true })
