@@ -1,8 +1,8 @@
 local servers = {
   "lua_ls",
-  "cssls",
-  "html",
-  "pyright",
+  -- "cssls",
+  -- "html",
+  -- "pyright",
   -- "rust_analyzer",
   -- "bashls",
   -- "jsonls",
@@ -34,27 +34,23 @@ local servers = {
 -- 	ensure_installed = servers,
 -- 	automatic_installation = true,
 --  })
-
 local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")
-if not lspconfig_status_ok then
-  return
-end
+if lspconfig_status_ok then
+  local opts = {}
+    for _, server in pairs(servers) do
+      opts = {
+        on_attach = require("usr.lsp.handlers").on_attach,
+        capabilities = require("usr.lsp.handlers").capabilities,
+      }
 
-local opts = {}
+      server = vim.split(server, "@")[1]
 
-for _, server in pairs(servers) do
-  opts = {
-    on_attach = require("usr.lsp.handlers").on_attach,
-    capabilities = require("usr.lsp.handlers").capabilities,
-  }
+      local require_ok, conf_opts = pcall(require, "usr.lsp.settings." .. server)
+      if require_ok then
+        opts = vim.tbl_deep_extend("force", conf_opts, opts)
+      end
 
-  server = vim.split(server, "@")[1]
-
-  local require_ok, conf_opts = pcall(require, "usr.lsp.settings." .. server)
-  if require_ok then
-    opts = vim.tbl_deep_extend("force", conf_opts, opts)
-  end
-
-  -- vim.api.nvim_err_writeln(opts)
-  lspconfig[server].setup(opts)
+      -- vim.api.nvim_err_writeln(opts)
+      lspconfig[server].setup(opts)
+    end
 end

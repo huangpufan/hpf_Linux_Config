@@ -13,7 +13,6 @@ wk.register {
   -- ["<C-_>"] = { "<cmd> Commentary<cr>", "comment code" },
   ["<C-n>"] = { "<cmd>NvimTreeToggle<cr>", "toggle file tree" },
 }
-vim.keymap.set("n", "<space><space>", "<Cmd>Telescope frecency workspace=CWD<CR>")
 wk.register {
   -- lsp
   ["K"] = { "<cmd>lua vim.lsp.buf.hover()<cr>", "document" },
@@ -32,31 +31,9 @@ wk.register {
   ["<leader>"] = {
     -- leader x used for map language specific function
 
-    -- " 使用 <leader> [number] 切换到第 [number] 个 buffer
-    ["1"] = { "<cmd>BufferLineGoToBuffer 1<cr>", "jump to buffer 1" },
-    ["2"] = { "<cmd>BufferLineGoToBuffer 2<cr>", "jump to buffer 2" },
-    ["3"] = { "<cmd>BufferLineGoToBuffer 3<cr>", "jump to buffer 3" },
-    ["4"] = { "<cmd>BufferLineGoToBuffer 4<cr>", "jump to buffer 4" },
-    ["5"] = { "<cmd>BufferLineGoToBuffer 5<cr>", "jump to buffer 5" },
-    ["6"] = { "<cmd>BufferLineGoToBuffer 6<cr>", "jump to buffer 6" },
-    ["7"] = { "<cmd>BufferLineGoToBuffer 7<cr>", "jump to buffer 7" },
-    ["8"] = { "<cmd>BufferLineGoToBuffer 8<cr>", "jump to buffer 8" },
-    ["9"] = { "<cmd>BufferLineGoToBuffer 9<cr>", "jump to buffer 9" },
-    ["0"] = { "<cmd>BufferLineGoToBuffer 10<cr>", "jump to buffer 10" },
   },
   -- " 使用 space [number] 切换到第 [number] 个 window
   ["<space>"] = {
-    -- ["1"] = { "<cmd>1wincmd  w <cr>", "jump to window 1" },
-    -- ["2"] = { "<cmd>2wincmd  w <cr>", "jump to window 2" },
-    -- ["3"] = { "<cmd>3wincmd  w <cr>", "jump to window 3" },
-    -- ["4"] = { "<cmd>4wincmd  w <cr>", "jump to window 4" },
-    -- ["5"] = { "<cmd>5wincmd  w <cr>", "jump to window 5" },
-    -- ["6"] = { "<cmd>6wincmd  w <cr>", "jump to window 6" },
-    -- ["7"] = { "<cmd>7wincmd  w <cr>", "jump to window 7" },
-    -- ["8"] = { "<cmd>8wincmd  w <cr>", "jump to window 8" },
-    -- ["9"] = { "<cmd>9wincmd  w <cr>", "jump to window 9" },
-    -- ["0"] = { "<cmd>10wincmd w <cr>", "jump to window 0" },
-    --
     a = {
       name = "+misc",
       d = { "<cmd>call TrimWhitespace()<cr>", "remove trailing space" },
@@ -69,7 +46,7 @@ wk.register {
     -- },
     c = {
       -- only works in a c/cpp file
-      name = "+switch h/c",
+      name = "+Switch h/c",
       c = { "<cmd>Ouroboros<cr>", "open file in current window" },
       h = { "<cmd>split | Ouroboros<cr>", "open file in a horizontal split" },
       v = { "<cmd>vsplit | Ouroboros<cr>", "open file in a vertical split" },
@@ -77,28 +54,28 @@ wk.register {
     f = {
       name = "+Find",
       -- Mostly used for seaching.
-      o = { "<cmd>NvimTreeFindFile<cr>", "open file in dir" },
-      b = { "<cmd>Telescope buffers<cr>", "searcher buffers" },
-      f = { "<cmd>Telescope find_files<cr>", "search files (include submodules)" },
-      F = { "<cmd>Telescope git_files<cr>", "search files (exclude gitignore)" },
-      w = { "<cmd>Telescope live_grep<cr>", "live grep" },
-      c = { "<cmd>Telescope grep_string<cr>", "live grep cursor word" },
+      o = { "<cmd>NvimTreeFindFile<cr>", "Open file in dir" },
+      b = { "<cmd>Telescope buffers<cr>", "Searcher buffers" },
+      f = { "<cmd>Telescope find_files<cr>", "Search files (include submodules)" },
+      F = { "<cmd>Telescope git_files<cr>", "Search files (exclude gitignore)" },
+      w = { "<cmd>Telescope live_grep<cr>", "Search string" },
+      c = { "<cmd>Telescope grep_string<cr>", "Search word under cursor" },
 
       -- Seldom used.
-      v = { "<cmd>Telescope help_tags<cr>", "search vim manual" },
-      j = { "<cmd>Telescope jumplist<cr>", "search jumplist" },
-      e = { "<cmd>Telescope emoji<cr>", "search emoji" },
+      v = { "<cmd>Telescope help_tags<cr>", "Search vim manual" },
+      j = { "<cmd>Telescope jumplist<cr>", "Search jumplist" },
+      e = { "<cmd>Telescope emoji<cr>", "Search emoji" },
       -- o = { "<cmd>Telescope lsp_document_symbols<cr>", "search symbols in file" },
       -- leader p used for paste from system clipboard
-      s = { "<cmd>Telescope lsp_dynamic_workspace_symbols <cr>", "search symbols in project" },
+      s = { "<cmd>Telescope lsp_dynamic_workspace_symbols <cr>", "Search symbols in project" },
     },
     -- g = { "<cmd>FloatermToggle<cr>lazygit<cr>", "lazygit" },
     m = {
-      d = { "<cmd>MarkdownPreview<cr>", "markdown preview" },
-      p = { "<cmd>PasteImage<cr>", "paste image" },
+      d = { "<cmd>MarkdownPreview<cr>", "Markdown preview" },
+      p = { "<cmd>PasteImage<cr>", "Paste image in md" },
     },
     o = {
-      t = { "<cmd>AerialToggle!<cr>", "code outline" },
+      t = { "<cmd>AerialToggle!<cr>", "Code outline" },
     },
     --          {
     --name = "+git",
@@ -115,28 +92,28 @@ wk.register {
     -- 因为 ctrl-i 实际上等同于 tab
     --i = { "<c-i>", "go to newer jumplist" },
     l = {
-      name = "+language",
-      a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "code action" },
-      c = { "<cmd>Commentary<cr>", "comment code" },
-      f = { "<cmd> lua vim.lsp.buf.format{ async = true }<cr>", "format current buffer" },
-      j = { "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", "lsp goto next" },
-      k = { "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", "lsp goto prev" },
-      n = { "<cmd>lua vim.lsp.buf.rename()<cr>", "rename" },
-      s = { "<cmd>lua vim.lsp.buf.signature_help()<cr>", "signature help" },
-      q = { "<cmd>lua vim.diagnostic.setloclist()<cr>", "" },
+      name = "+Language",
+      a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code action" },
+      c = { "<cmd>Commentary<cr>", "Comment code" },
+      f = { "<cmd> lua vim.lsp.buf.format{ async = true }<cr>", "Format current buffer" },
+      j = { "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", "Lsp goto next" },
+      k = { "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", "Lsp goto prev" },
+      n = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
+      s = { "<cmd>lua vim.lsp.buf.signature_help()<cr>", "Signature help" },
+      q = { "<cmd>lua vim.diagnostic.setloclist()<cr>", "Set loc list" },
       r = { "<cmd>RunCode<cr>", "run code" },
     },
     -- o 被 orgmode 使用
-    q = { "<cmd>qa<cr>", "save and close nvim" },
+    q = { "<cmd>qa<cr>", "Close nvim" },
     s = {
-      name = "+search",
-      P = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "search cursor word in project" },
-      p = { "<cmd>lua require('spectre').open()<cr>", "search in project" },
-      b = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "search in current buffer" },
-      g = { "<cmd>Telescope git_status<cr>", "search git status" },
+      name = "+Search",
+      P = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "Search cursor word by spectre" },
+      p = { "<cmd>lua require('spectre').open()<cr>", "Search string by spectre" },
+      b = { "<cmd>Telescope current_buffer_fuzzy_find<cr>", "Search in current buffer by telescope" },
+      g = { "<cmd>Telescope git_status<cr>", "Search git status " },
     },
     t = {
-      name = "+toggle",
+      name = "+Toggle/Theme",
       ["7"] = { "<cmd>let &cc = &cc == '' ? '75' : ''<cr>", "highlight 75 line" },
       ["8"] = { "<cmd>let &cc = &cc == '' ? '81' : ''<cr>", "highlight 80 line" },
       b = { "<cmd>let &tw = &tw == '0' ? '80' : '0'<cr>", "automaticall break line at 80" },
@@ -176,9 +153,9 @@ wk.register {
     m = { "<cmd>lua require'bookmarks'.add_bookmarks()<cr>", "add bookmarks" },
     n = { "<cmd>lua require'bookmarks.list'.show_desc() <cr>", "Show bookmark note" },
   },
-  ["<C-l>"] = { "<cmd>wincmd w<cr>", "switch window" },
-  ["<C-h>"] = { "<cmd>wincmd W<cr>", "switch window" },
-  ["<C-j>"] = { "<C-w>j", "switch to window below" },
+  ["<C-l>"] = { "<cmd>wincmd w<cr>", "Switch to window right" },
+  ["<C-h>"] = { "<cmd>wincmd W<cr>", "Switch to window left" },
+  ["<C-j>"] = { "<C-w>j", "Switch to window below" },
   ["<C-k>"] = { "<C-w>k", "switch to window above" },
 }
 
@@ -190,7 +167,7 @@ wk.register({
       p = { "<cmd>lua require('spectre').open_visual()<cr>", "search" },
     },
   },
-  q = { "<cmd>q<cr>", "close window" },
+  q = { "<cmd>q<cr>", "Close window" },
 }, { mode = "v" })
 
 -- 部分格式化，which-key 的设置方法有问题，似乎只是语法没有理解到位

@@ -134,14 +134,14 @@ require("lazy").setup({
   },
   { "RRethy/nvim-treesitter-textsubjects", lazy = false },
   { "nvim-treesitter/nvim-treesitter-textobjects", lazy = false },
-  {
-    "cshuaimin/ssr.nvim",
-    lazy = true,
-    module = "ssr",
-    vim.keymap.set({ "n", "x" }, "<leader>r", function()
-      require("ssr").open()
-    end),
-  }, -- 结构化查询和替换
+  -- {
+  --   "cshuaimin/ssr.nvim",
+  --   lazy = true,
+  --   module = "ssr",
+  --   vim.keymap.set({ "n", "x" }, "<leader>r", function()
+  --     require("ssr").open()
+  --   end),
+  -- }, -- 结构化查询和替换
 
   {
     "smjonas/inc-rename.nvim",
@@ -245,13 +245,15 @@ require("lazy").setup({
   -- WARNING: 如果发现插件有问题， 可以进入到 ~/.local/share/nvim/lazy/markdown-preview.nvim/app && npm install
   {
     "iamcco/markdown-preview.nvim",
-    lazy = false,
+    lazy = true,
     cmd = { "MarkdownPreview" },
     ft = { "markdown" },
     build = "cd app && npm install",
   },
-  { "mzlogin/vim-markdown-toc", lazy = false }, -- 自动目录生成
-  { "dhruvasagar/vim-table-mode", lazy = true }, -- 快速编辑 markdown 的表格
+  { "mzlogin/vim-markdown-toc", lazy = true, 
+    ft = "markdown"}, -- 自动目录生成
+  { "dhruvasagar/vim-table-mode", lazy = true,
+    ft = "markdown"}, -- 快速编辑 markdown 的表格
   { "xiyaowong/telescope-emoji.nvim", lazy = false }, -- 使用 telescope 搜索 emoji 表情
   -- 高效编辑
   { "kylechui/nvim-surround", lazy = false }, -- 快速编辑单词两侧的符号
@@ -270,8 +272,9 @@ require("lazy").setup({
   -- "nvim-orgmode/orgmode", -- orgmode 日程管理
 
   -- lsp 增强
-  { "jackguo380/vim-lsp-cxx-highlight", lazy = false }, -- ccls 高亮
-  { "mattn/efm-langserver", lazy = false }, -- 支持 bash
+  -- { "jackguo380/vim-lsp-cxx-highlight", lazy = false }, -- ccls 高亮
+  { "mattn/efm-langserver", lazy = false ,
+    ft = "bash"}, -- 支持 bash
   { "gbrlsnchs/telescope-lsp-handlers.nvim", lazy = false },
   { "jakemason/ouroboros", lazy = false }, -- quickly switch between header and source file in C/C++ project
   -- 其他
@@ -283,7 +286,7 @@ require("lazy").setup({
   { "anuvyklack/hydra.nvim", lazy = false }, -- 消除重复快捷键，可以用于调整 window 大小等
   { "ojroques/vim-oscyank", lazy = false }, -- 让 nvim 在远程 server 上拷贝到本地剪切板上
   -- { "azabiong/vim-highlighter", lazy = false }, -- 高亮多个搜索内容
-  -- "dstein64/vim-startuptime", -- 分析 nvim 启动时间
+  "dstein64/vim-startuptime", -- 分析 nvim 启动时间
   -- {
   -- 	"OscarCreator/rsync.nvim", -- 自动同步代码远程
   -- 	build = "make", -- 实在不行，进入到 ~/.local/share/nvim/lazy/rsync.nvim 中执行下 make

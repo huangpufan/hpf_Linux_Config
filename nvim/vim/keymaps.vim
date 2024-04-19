@@ -9,12 +9,11 @@ let @k = 'ysiw"'
 """""""""""""""""""""""""""" Shortcut Setting """""""""""""""""""""""""""""""
 " Quitting the window is very common for me.
 " As recording the macro is not common at the same time
-noremap <leader>q q
 
 " 访问系统剪切板
-map <leader>y "+y
-map <leader>p "+p
-map <leader>d "+d
+" map <leader>y "+y
+" map <leader>p "+p
+" map <leader>d "+d
 
 
 " Window Split
