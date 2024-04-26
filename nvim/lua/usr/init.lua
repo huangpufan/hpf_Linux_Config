@@ -1,8 +1,6 @@
 require "usr.options"
 require "usr.lazy"
-vim.defer_fn(function()
-  require "usr.lsp"
-end, 0)
+require "usr.lsp"
 
 require "usr.cmp"
 require("catppuccin").setup {
