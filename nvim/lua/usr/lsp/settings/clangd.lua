@@ -5,6 +5,12 @@ local opts = {
     "clangd",
     "--fallback-style=Google",
     "--header-insertion=iwyu",
+    "--malloc-trim",
+    "--background-index",
+    "--pch-storage=disk",
+    "--limit-references=100",
+    "--limit-results=100",
+
     -- "--log=verbose",
   }, -- Command to start clangd
   filetypes = { "c", "cpp", "objc", "objcpp", "cuda", "proto" }, -- File types to handle
