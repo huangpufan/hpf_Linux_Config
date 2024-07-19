@@ -1,0 +1,16 @@
+{
+    "ignore_completely": [
+        ".git",
+        "node_modules"
+    ],
+    "ignore_contents": [
+        "build",
+        "dist"
+    ],
+    "exclude_files": [
+        ".DS_Store",
+        "Thumbs.db",
+        "*.pyc",
+        "*.log"
+    ]
+}
