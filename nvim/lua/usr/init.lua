@@ -307,3 +307,6 @@ end, { expr = true })
 
 require("tree-sitter-just").setup {}
 require("colorful-winsep").setup {}
+
+-- Close all spell check
+vim.opt.spell = false

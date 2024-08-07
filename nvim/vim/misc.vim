@@ -8,6 +8,7 @@ let g:table_mode_corner='|'
 let g:mkdp_auto_close = 0
 """"""""""""""""""""""" Markdown Preview End """"""""""""""""""""""""""
 
+let g:which_key_disable_health_check = 1
 
 " 书签选中之后自动关闭 quickfix window
 let g:bookmark_auto_close = 1
