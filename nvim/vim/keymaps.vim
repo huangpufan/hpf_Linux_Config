@@ -185,3 +185,6 @@ nnoremap <expr> <Up> v:count == 0 && mode(1)[0:1] != 'no' ? 'gk' : 'k'
 
 """"""""""""""""""""""" Visual line jk end """""""""""""""""""""""""""
 
+" > map to ealsily move the line.
+nnoremap > >>
+nnoremap < <<
