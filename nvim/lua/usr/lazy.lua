@@ -352,7 +352,7 @@ require("lazy").setup({
     -- version = "*"
   },
   {
-    "zbirenbaum/copilot.lua",
+    "git@github.com:zbirenbaum/copilot.lua.git",
     lazy = false,
     cmd = "Copilot",
     build = ":Copilot auth",
