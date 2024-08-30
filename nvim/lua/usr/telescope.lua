@@ -48,7 +48,27 @@ local telescope = require("telescope").setup {
       "--line-number",
       "--column",
       "--smart-case",
+      "--max-depth", "10",
+      "--max-count", "1000",  -- 每个文件最多返回 1000 个结果
+      -- "--no-ignore",  -- 搜索 gitignore 中的文件
+      -- "--hidden"      -- 如果也想搜索隐藏文件
     },
+    cache_picker = {
+      num_pickers = 5,
+    },
+    pickers = {
+      find_files = {
+        find_command = {
+          "fd",
+          "--type", "f",
+          "--strip-cwd-prefix",
+          "-i",
+          "--exclude", "build",
+          "--exclude", "out",
+          },     
+        },
+    },
+    -- find_command = { "fd", "--type", "f", "--strip-cwd-prefix"},
     prompt_prefix = "   ",
     selection_caret = "  ",
     entry_prefix = "  ",
@@ -70,7 +90,9 @@ local telescope = require("telescope").setup {
       preview_cutoff = 120,
     },
     file_sorter = require("telescope.sorters").get_fuzzy_file,
-    file_ignore_patterns = { "node_modules" },
+    file_ignore_patterns = { 
+      "node_modules" ,"*.lock","*.min.js","*.min.css",
+    },
     generic_sorter = require("telescope.sorters").get_generic_fuzzy_sorter,
     path_display = { "truncate" },
     winblend = 0,
