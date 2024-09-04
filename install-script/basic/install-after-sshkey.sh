@@ -10,6 +10,7 @@ export all_proxy="socks5://${hostip}:7890"
 ./git-install.sh
 ./npm-install.sh
 ./hosts-adjust.sh
+./dns-permanently-adjust.sh
 ./config-install.sh
 ./curl-install.sh
 ./cargo-install.sh
