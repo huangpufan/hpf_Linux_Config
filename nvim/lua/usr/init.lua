@@ -66,7 +66,12 @@ require("lualine").setup()
 require("Comment").setup()
 --require("virt-column").setup()
 -- require("neo-tree").paste_default_config()
-require("mason").setup()
+--
+
+vim.defer_fn(function()
+  require("usr.lsp.mason")
+end, 0)
+
 -- require("luasnip.loaders.from_lua").lazy_load({ paths = "~/.config/nvim/LuaSnip/" })
 require("luasnip.loaders.from_snipmate").lazy_load { paths = "~/.config/nvim/snippets/" }
 -- require("luasnip.loaders.from_vscode").load({paths = "~/.config/nvim/snippets"})
@@ -307,7 +312,6 @@ end, { expr = true })
 
 require("tree-sitter-just").setup {}
 require("colorful-winsep").setup {}
-
 
 
 

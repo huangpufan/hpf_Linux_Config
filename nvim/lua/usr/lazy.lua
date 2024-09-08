@@ -447,7 +447,9 @@ require("lazy").setup({
     opts = {},
     event = "InsertEnter",
   },
-  { "uga-rosa/ccc.nvim" },
+  { "uga-rosa/ccc.nvim",
+     event = "VeryLazy",},
+
 
   {
     "chrisgrieser/nvim-spider",
@@ -509,12 +511,13 @@ require("lazy").setup({
     "nvim-zh/colorful-winsep.nvim",
     config = true,
     lazy = true,
-    event = { "InsertEnter" },
+    -- event = { "InsertEnter" },
+    event = { "VeryLazy" },
   },
   {
     "OXY2DEV/markview.nvim",
-    lazy = false,      -- Recommended
-    -- ft = "markdown" -- If you decide to lazy-load anyway
+    -- lazy = false,      -- Recommended
+    ft = "markdown", -- If you decide to lazy-load anyway
 
     dependencies = {
         -- You will not need this if you installed the
