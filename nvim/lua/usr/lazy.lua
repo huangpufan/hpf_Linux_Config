@@ -483,29 +483,29 @@ require("lazy").setup({
     "stevearc/dressing.nvim",
     opts = {},
   },
-  {
-    "zbirenbaum/neodim",
-    event = "LspAttach",
-    config = function()
-      require("neodim").setup {
-        refresh_delay = 20,
-        alpha = 0,
-        blend_color = "#000000",
-        hide = {
-          -- underline = true,
-          -- virtual_text = true,
-          -- signs = true,
-        },
-        regex = {
-          "[uU]nused",
-          "[nN]ever [rR]ead",
-          "[nN]ot [rR]ead",
-        },
-        priority = 128,
-        disable = {},
-      }
-    end,
-  },
+  -- {
+  --   "zbirenbaum/neodim",
+  --   event = "LspAttach",
+  --   config = function()
+  --     require("neodim").setup {
+  --       refresh_delay = 20,
+  --       alpha = 0,
+  --       blend_color = "#000000",
+  --       hide = {
+  --         -- underline = true,
+  --         -- virtual_text = true,
+  --         -- signs = true,
+  --       },
+  --       regex = {
+  --         "[uU]nused",
+  --         "[nN]ever [rR]ead",
+  --         "[nN]ot [rR]ead",
+  --       },
+  --       priority = 128,
+  --       disable = {},
+  --     }
+  --   end,
+  -- },
   { "IndianBoy42/tree-sitter-just" },
   {
     "nvim-zh/colorful-winsep.nvim",
