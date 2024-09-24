@@ -67,5 +67,6 @@ fi
 # just related
 alias j="just"
 
-
+# python related
+alias va="source ./venv/bin/activate"
 #eval "$(zoxide init bash)"

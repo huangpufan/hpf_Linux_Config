@@ -323,4 +323,4 @@ vim.opt.spell = false
 
 
 -- Set the proxy for copilot
-vim.g.copilot_proxy = 'host.docker.internal:7890'
+-- vim.g.copilot_proxy = 'host.docker.internal:7890'
