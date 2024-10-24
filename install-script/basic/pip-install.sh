@@ -16,7 +16,7 @@ if python3 -c "import pysocks" >/dev/null 2>&1; then
     echo "pysocks is already installed."
 else
     unset_proxy
-    python3 -m pip install --user pysocks -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+    python3 -m pip install --user pysocks   -i https://pypi.tuna.tsinghua.edu.cn/simple
 fi
 
 # Cancel proxy
@@ -27,7 +27,7 @@ if python3 -m gdbfrontend --version >/dev/null 2>&1; then
     echo "gdbfrontend is already installed."
 else
     echo "Installing gdbfrontend..."
-    sudo python3 -m pip install gdbfrontend -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+    sudo python3 -m pip install gdbfrontend  -i https://pypi.tuna.tsinghua.edu.cn/simple
 fi
 
 # Check if pipx is already installed
@@ -35,7 +35,7 @@ if command -v pipx >/dev/null 2>&1; then
     echo "pipx is already installed."
 else
     echo "Installing pipx..."
-    python3 -m pip install --user pipx -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+    python3 -m pip install --user pipx -i https://pypi.tuna.tsinghua.edu.cn/simple
     sudo apt-get install python3-venv
 fi
 

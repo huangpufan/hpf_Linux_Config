@@ -12,7 +12,7 @@ sudo apt -y install ccls npm cargo xclip shellcheck ripgrep
 # sudo snap install pyright --classic
 # cp ./../install_package/marksman-linux-x64 ~/.local/bin/
 # sudo npm install -g vim-language-server
-pip3 install --user pynvim
+pip3 install --user pynvim  -i https://pypi.tuna.tsinghua.edu.cn/simple
 if [[ $ubuntu_version == "22.04" ]] ; then
   sudo apt -y install efm-langserver lua5.4
 fi

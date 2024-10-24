@@ -1,7 +1,7 @@
 ################################## My Alias #####################################
 
 # WSL only
-export hostip=$(cat /etc/resolv.conf |grep -oP '(?<=nameserver\ ).*')
+export hostip=$(ip route | grep default | awk '{print $3}')
 alias setss='export all_proxy="socks5://${hostip}:7890";'
 alias unsetss='unset all_proxy && unset ALL_PROXY'
 
