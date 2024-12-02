@@ -26,6 +26,7 @@ alias syncall="bash sync-personal-all-file.sh"
 alias gitclonehpfconfighttps="cd ~ && git clone https://github.com/huangpufan/hpf_Linux_Config.git --depth=1"
 alias gitclonehpfconfiggit="cd ~ && git clone git@github.com:huangpufan/hpf_Linux_Config.git --depth=1"
 alias lg="lazygit"
+alias ld="lazydocker"
 
 # Misc
 alias lls="du -h -d 1 ."
@@ -67,5 +68,6 @@ fi
 # just related
 alias j="just"
 
-
+# python related
+alias va="source ./.venv/bin/activate"
 #eval "$(zoxide init bash)"
