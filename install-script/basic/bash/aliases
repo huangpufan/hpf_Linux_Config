@@ -13,6 +13,10 @@ else
     alias eb="vim ~/.bashrc"
 fi
 
+alias rm="rm -i"
+alias cp="cp -i"
+alias mv="mv -i"
+
 alias sb="source ~/.bashrc"
 
 # ouch related
