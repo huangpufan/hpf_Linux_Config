@@ -10,7 +10,7 @@ sudo apt install -y apt-utils binutils bison flex bc build-essential make mtd-ut
 sudo apt install -y grsync xxd libglib2.0-dev libpixman-1-dev kmod jfsutils reiserfsprogs xfsprogs squashfs-tools  pcmciautils quota ppp libtinfo-dev libtinfo5 libncurses5 libncurses5-dev libncursesw5 libstdc++6  gcc-arm-none-eabi vim ssh locales doxygen
 sudo apt install -y libxinerama-dev libxcursor-dev libxrandr-dev libxi-dev
 sudo apt install -y gcc-riscv64-unknown-elf
-sudo apt install -y gdb-multiarch
+sudo apt install -y gdb-multiarch patchelf libstdc++-13-dev clangd
 
 # pip install
 cd ~/project/OpenHarmony-v4.0-Release/OpenHarmony/
