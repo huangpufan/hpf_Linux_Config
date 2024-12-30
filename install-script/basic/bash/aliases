@@ -75,3 +75,6 @@ alias j="just"
 # python related
 alias va="source ./.venv/bin/activate"
 #eval "$(zoxide init bash)"
+
+# IDE related
+alias vs="code ."
