@@ -82,3 +82,4 @@ alias vs="code ."
 # windows related (open windows explorer)
 alias e="explorer.exe ."
 
+alias code="\"/mnt/c/Users/kaihong-huangpufan/AppData/Local/Programs/Microsoft VS Code/bin/code\""
