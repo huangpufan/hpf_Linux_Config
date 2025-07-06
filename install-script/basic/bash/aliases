@@ -1,10 +1,5 @@
 ################################## My Alias #####################################
 
-# WSL only
-export hostip=$(ip route | grep default | awk '{print $3}')
-alias setss='export all_proxy="socks5://${hostip}:7890";'
-alias unsetss='unset all_proxy && unset ALL_PROXY'
-
 # Bashrc related
 # Use nvim by default,if no nvim,use vim.
 if command -v nvim >/dev/null 2>&1; then
@@ -50,7 +45,7 @@ alias st="source-file ~/.tmux.conf"
 
 
 # nvim related
-alias cs="rm -rf ~/.local/share/nvim/sessions/*"
+# alias cs="rm -rf ~/.local/share/nvim/sessions/*"
 alias nivm="nvim"  # For typo.
 alias en="cd ~/hpf_Linux_Config/nvim && nvim"
 alias n="nvim"
@@ -78,9 +73,31 @@ alias va="source ./.venv/bin/activate"
 
 # IDE related
 alias vs="code ."
-
+alias cs="cursor ."
 # windows related (open windows explorer)
 alias e="explorer.exe ."
 
 # alias code="\"/mnt/c/Users/kaihong-huangpufan/AppData/Local/Programs/Microsoft VS Code/bin/code\""
 alias code="\"/mnt/c/Users/$(cmd.exe /c echo %USERNAME% 2>/dev/null | tr -d '\r')/AppData/Local/Programs/Microsoft VS Code/bin/code\""
+
+# 添加http/https代理, apt代理, git代理
+export hostip=$(ip route | grep default | awk '{print $3}')
+export hostport=10809
+alias proxy='
+    export https_proxy="http://${hostip}:${hostport}";
+    export http_proxy="http://${hostip}:${hostport}";
+    export all_proxy="http://${hostip}:${hostport}";
+    git config --global http.proxy "http://${hostip}:${hostport}"
+    git config --global https.proxy "http://${hostip}:${hostport}"
+    echo -e "Acquire::http::Proxy \"http://${hostip}:${hostport}\";" | sudo tee -a /etc/apt/apt.conf.d/proxy.conf > /dev/null;
+    echo -e "Acquire::https::Proxy \"http://${hostip}:${hostport}\";" | sudo tee -a /etc/apt/apt.conf.d/proxy.conf > /dev/null;
+'
+alias unproxy='
+    unset https_proxy;
+    unset http_proxy;
+    unset all_proxy;
+    git config --global --unset http.proxy
+    git config --global --unset https.proxy
+    sudo sed -i -e '/Acquire::http::Proxy/d' /etc/apt/apt.conf.d/proxy.conf;
+    sudo sed -i -e '/Acquire::https::Proxy/d' /etc/apt/apt.conf.d/proxy.conf;
+'
