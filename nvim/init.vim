@@ -29,7 +29,6 @@ let s:core_conf_files = [
       \ 'misc.vim',
       \ 'color.vim',
       \ 'debug.vim',
-      \ 'wilder.vim',
       \ 'keymaps.vim',
       \ ]
 

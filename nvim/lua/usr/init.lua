@@ -1,6 +1,5 @@
 require "usr.options"
 require "usr.lazy"
-require "usr.lsp"
 
 require "usr.cmp"
 require("catppuccin").setup {
@@ -44,7 +43,6 @@ require "usr.which-key"
 require "usr.colorscheme"
 require "usr.alpha"
 require("colorizer").setup { "css", "javascript", "vim", "lua", html = { mode = "foreground" } }
-require("nvim-surround").setup()
 
 require("persisted").setup {
   autoload = true,
@@ -67,10 +65,6 @@ require("Comment").setup()
 --require("virt-column").setup()
 -- require("neo-tree").paste_default_config()
 --
-
-vim.defer_fn(function()
-  require("usr.lsp.mason")
-end, 0)
 
 -- require("luasnip.loaders.from_lua").lazy_load({ paths = "~/.config/nvim/LuaSnip/" })
 require("luasnip.loaders.from_snipmate").lazy_load { paths = "~/.config/nvim/snippets/" }
