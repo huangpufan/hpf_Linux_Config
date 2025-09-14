@@ -1,0 +1,14 @@
+## Commit Messages
+
+The commit messages should be written in English only.
+
+- Format: `[type](scope): description`
+- Types:
+  - feat: New feature
+  - fix: Bug fix
+  - docs: Documentation changes
+  - style: Formatting, missing semicolons, etc.
+  - refactor: Code refactoring
+  - test: Adding tests
+  - chore: Maintenance tasks
+  - perf: optimize codes
