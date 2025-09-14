@@ -3,12 +3,12 @@ if [ -s /home/hpf/.bashrc ]; then
 fi
 
 # Check if neofetch is installed
-if command -v neofetch >/dev/null 2>&1; then
-    neofetch
-else
-    echo "neofetch is not installed. Install it to display system information."
-    # Uncomment the following line to install neofetch automatically
-    # sudo apt-get install -y neofetch
-fi
+# if command -v neofetch >/dev/null 2>&1; then
+#     neofetch
+# else
+#     echo "neofetch is not installed. Install it to display system information."
+#     # Uncomment the following line to install neofetch automatically
+#     # sudo apt-get install -y neofetch
+# fi
 
 # Profile already set

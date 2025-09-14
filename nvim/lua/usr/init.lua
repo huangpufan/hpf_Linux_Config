@@ -122,50 +122,6 @@ require("goto-preview").setup {
 require("mini.indentscope").setup()
 -- instances.
 -- require("neoscroll").setup()
-require("copilot").setup {
-  panel = {
-    enabled = true,
-    auto_refresh = false,
-    keymap = {
-      jump_prev = "[[",
-      jump_next = "]]",
-      accept = "<CR>",
-      refresh = "gr",
-      open = "<M-CR>",
-    },
-    layout = {
-      position = "bottom", -- | top | left | right
-      ratio = 0.4,
-    },
-  },
-  suggestion = {
-    enabled = true,
-    auto_trigger = true,
-    debounce = 75,
-    keymap = {
-      accept = "<M-l>",
-      accept_word = false,
-      accept_line = false,
-      next = "<M-]>",
-      prev = "<M-[>",
-      dismiss = "<C-]>",
-    },
-  },
-  filetypes = {
-    markdown = false,
-    gitcommit = false,
-    gitrebase = false,
-    hgcommit = false,
-    svn = false,
-    cvs = false,
-    ["."] = false,
-    cpp = true,
-    c = true,
-    bash = true,
-  },
-  copilot_node_command = "node", -- Node.js version must be > 18.x
-  server_opts_overrides = {},
-}
 
 require("hlargs").setup {
   color = "#FF7F7F",
@@ -320,7 +276,3 @@ require("colorful-winsep").setup {}
 
 -- Close all spell check
 vim.opt.spell = false
-
-
--- Set the proxy for copilot
--- vim.g.copilot_proxy = 'host.docker.internal:7890'

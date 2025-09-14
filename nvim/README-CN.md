@@ -103,13 +103,6 @@ nvim 能额外提供的能力需要一定的学习成本，也是必然的。
 cd ~/.local/share/nvim/lazy/markdown-preview.nvim/app/ && npm install
 Lazy build markdown-preview.nvim
 ``````
-2. 如果 copilot 无法登录 [你的网络可能很烂，可以尝试用手机热点]
-``````
-Copilot auth signout
-Copilot auth signin
-``````
-如果你没有 copilot 账号，请注释掉 copolit 相关设置
-
 3. `TSUpdate just`
 
 # To be continue.

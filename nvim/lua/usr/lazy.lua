@@ -351,13 +351,6 @@ require("lazy").setup({
     -- Uncomment next line if you want to follow only stable versions
     -- version = "*"
   },
-  {
-    "git@github.com:zbirenbaum/copilot.lua.git",
-    lazy = false,
-    cmd = "Copilot",
-    build = ":Copilot auth",
-  },
-
   { "m-demare/hlargs.nvim", lazy = false },
 
   {

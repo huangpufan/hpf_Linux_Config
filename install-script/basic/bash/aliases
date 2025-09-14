@@ -74,6 +74,7 @@ alias va="source ./.venv/bin/activate"
 # IDE related
 alias vs="code ."
 alias cs="cursor ."
+alias cc="ccusage"
 # windows related (open windows explorer)
 alias e="explorer.exe ."
 

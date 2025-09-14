@@ -17,7 +17,6 @@ Including config:
     - Lazygit for version control.
     - Ranger as vim-style file manager .
     - Fzf to boost many components searching ability such as command line history.
-    - Nvm to upgrade node.js >= 18.0 for copilot.lua using.
     - Install cargo for potential software install by cargo
     - Ensure git version late enough for diffview.nvim.
 
