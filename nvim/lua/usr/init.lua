@@ -90,12 +90,12 @@ require("lsp_signature").setup()
 --     delete(functi*on calls)     dsf             function calls
 --
 
--- workaround for https://github.com/neovim/neovim/issues/21856
-vim.api.nvim_create_autocmd({ "VimLeave" }, {
-  callback = function()
-    vim.cmd "sleep 10m"
-  end,
-})
+-- -- workaround for https://github.com/neovim/neovim/issues/21856
+-- vim.api.nvim_create_autocmd({ "VimLeave" }, {
+--   callback = function()
+--     vim.cmd "sleep 10m"
+--   end,
+-- })
 
 require("aerial").setup {
   backends = { "markdown", "man", "lsp", "treesitter" },
