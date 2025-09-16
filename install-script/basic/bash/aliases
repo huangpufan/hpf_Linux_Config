@@ -82,7 +82,7 @@ alias code="\"/mnt/c/Users/$(cmd.exe /c echo %USERNAME% 2>/dev/null | tr -d '\r'
 
 # 添加http/https代理, apt代理, git代理
 export hostip=$(ip route | grep default | awk '{print $3}')
-export hostport=10809
+export hostport=7890
 alias proxy='
     export https_proxy="http://${hostip}:${hostport}";
     export http_proxy="http://${hostip}:${hostport}";
@@ -92,7 +92,7 @@ alias proxy='
     echo -e "Acquire::http::Proxy \"http://${hostip}:${hostport}\";" | sudo tee -a /etc/apt/apt.conf.d/proxy.conf > /dev/null;
     echo -e "Acquire::https::Proxy \"http://${hostip}:${hostport}\";" | sudo tee -a /etc/apt/apt.conf.d/proxy.conf > /dev/null;
 '
-alias unproxy='
+alias unp='
     unset https_proxy;
     unset http_proxy;
     unset all_proxy;
@@ -101,3 +101,4 @@ alias unproxy='
     sudo sed -i -e '/Acquire::http::Proxy/d' /etc/apt/apt.conf.d/proxy.conf;
     sudo sed -i -e '/Acquire::https::Proxy/d' /etc/apt/apt.conf.d/proxy.conf;
 '
+alias ccd='claude --dangerously-skip-permissions'
