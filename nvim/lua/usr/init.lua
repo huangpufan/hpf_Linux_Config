@@ -45,7 +45,7 @@ require "usr.alpha"
 require("colorizer").setup { "css", "javascript", "vim", "lua", html = { mode = "foreground" } }
 
 require("persisted").setup {
-  autoload = true,
+  autoload = false,
   before_save = function()
     vim.cmd "NvimTreeClose"
   end,
