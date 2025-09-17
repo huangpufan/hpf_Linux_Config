@@ -33,7 +33,7 @@ require("catppuccin").setup {
 require "usr.bufferline"
 
 --require("usr.code_runner")
-require "usr.hydra"
+-- require "usr.hydra"
 require "usr.nvim-tree"
 require "usr.nvim-treesitter"
 --require("usr.orgmode")
@@ -263,7 +263,7 @@ end, { expr = true })
 require("tree-sitter-just").setup {}
 require("colorful-winsep").setup {}
 
-
+vim.keymap.set("n", "<C-n>", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file tree" })
 
 
 -- Other settings:

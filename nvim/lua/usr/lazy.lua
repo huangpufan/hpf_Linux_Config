@@ -249,7 +249,16 @@ require("lazy").setup({
   { "windwp/nvim-autopairs", event = "InsertEnter" }, -- 自动括号匹配
   { "honza/vim-snippets", event = "InsertEnter" }, -- 安装公共的的 snippets
   --"mbbill/undotree", -- 显示编辑的历史记录
-  { "mg979/vim-visual-multi", event = "VeryLazy" }, -- 同时编辑多个位置
+  {
+    "mg979/vim-visual-multi",
+    event = "VeryLazy",
+    init = function()
+      vim.g.VM_maps = {
+        ["Find Under"] = "gb",
+        ["Find Subword Under"] = "gB",
+      }
+    end,
+  }, -- 同时编辑多个位置
   { "AckslD/nvim-neoclip.lua", event = "VeryLazy" }, -- 保存 macro
   { "windwp/nvim-spectre", cmd = "Spectre" }, -- 媲美 vscode 的多文件替换
   -- 高亮
