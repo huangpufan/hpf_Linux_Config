@@ -41,11 +41,10 @@ require "usr.telescope"
 require "usr.version"
 require "usr.which-key"
 require "usr.colorscheme"
-require "usr.alpha"
 require("colorizer").setup { "css", "javascript", "vim", "lua", html = { mode = "foreground" } }
 
 require("persisted").setup {
-  autoload = false,
+  autoload = true,
   before_save = function()
     vim.cmd "NvimTreeClose"
   end,
@@ -270,3 +269,6 @@ vim.keymap.set("n", "<C-n>", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file tr
 
 -- Close all spell check
 vim.opt.spell = false
+
+-- Load alpha dashboard after session autoload decision to avoid flicker
+require "usr.alpha"
