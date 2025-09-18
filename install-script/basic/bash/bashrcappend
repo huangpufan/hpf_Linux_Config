@@ -30,11 +30,11 @@ if [ -f ~/.bash-source ]; then
     . ~/.bash-source
 fi
 
-# To call setss automatically when WSL starts.
+# To call proxy automatically when WSL starts.
 if grep -qi microsoft /proc/version; then
   # Only for WSL
-  if type setss &>/dev/null; then
-    setss
+  if type proxy &>/dev/null; then
+    proxy
   fi
 fi
 

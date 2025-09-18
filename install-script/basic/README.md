@@ -16,7 +16,7 @@ The environment configuration process is very straightforward:
    
    - Access related to github must use a proxy.
    
-   - The script will write the aliases setss and unsetss into bashrc, using the former to enable the proxy and the latter to close management.
+   - The script will write the aliases proxy and unp into bashrc, using the former to enable the proxy and the latter to disable it.
 
 3. `make sshkey-generate-and-cat` 
 

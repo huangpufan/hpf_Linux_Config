@@ -14,7 +14,7 @@
    
    - 和 github 相关的访问必须使用代理。
    
-   - 脚本将 setss 与 unsetss 作为 alias 写入 bashrc 中，通过前者开启代理，后者关闭管理。
+   - 脚本将 proxy 与 unp 作为 alias 写入 bashrc 中，通过前者开启代理，后者关闭代理。
 
 3. `make sshkey-generate-and-cat` 
 

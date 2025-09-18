@@ -6,7 +6,7 @@ Mainly for windows **WSL2** ubuntu-20.04/22.04 and **neovim** as editor.
 
 Including config:
 - WSL Ubuntu 20.04/22.04 basic envrionment install script.
-    - ~/.bashrc modified to add my idiomatic alias and WSL proxy alias as setss.
+    - ~/.bashrc modified to add my idiomatic alias and WSL proxy alias as proxy/unp.
     - Change download source for Chinese users.
     - Mkdir root directory folder :
         -  project、install、download、bin、.config
