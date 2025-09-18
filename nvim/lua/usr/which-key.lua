@@ -8,10 +8,10 @@ wk.setup {
 }
 
 ------------------------------------------ Ctrl related. ------------------------------------------
-wk.register {
-  -- ["<C-A-l>"] = { "<cmd> lua vim.lsp.buf.format{ async = true }<cr>", "format current buffer" },
-  ["<C-n>"] = { "<cmd>NvimTreeToggle<cr>", "Toggle file tree" },
-}
+wk.add({
+  { "<C-n>", "<cmd>NvimTreeToggle<cr>", desc = "Toggle file tree" },
+})
+--[[
 wk.register {
   -- lsp
   ["K"] = { "<cmd>lua vim.lsp.buf.hover()<cr>", "document" },
@@ -165,16 +165,103 @@ wk.register {
   ["<C-j>"] = { "<C-w>j", "Switch to window below" },
   ["<C-k>"] = { "<C-w>k", "switch to window above" },
 }
+]]
 
--- Shortcut under visual mode
-wk.register({
-  ["<space>"] = {
-    s = {
-      name = "+search",
-      p = { "<cmd>lua require('spectre').open_visual()<cr>", "search" },
-    },
+wk.add({
+  { "K", "<cmd>lua vim.lsp.buf.hover()<cr>", desc = "document" },
+  { "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", desc = "go to declaration" },
+  { "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", desc = "go to definition" },
+  { "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", desc = "go to implementation" },
+  { "gr", "<cmd>lua vim.lsp.buf.references()<cr>", desc = "go to reference" },
+  { "gw", "<cmd>Telescope diagnostics<cr>", desc = "diagnostics" },
+
+  { "<space>a", group = "misc" },
+  { "<space>ad", "<cmd>call TrimWhitespace()<cr>", desc = "remove trailing space" },
+  { "<space>at", "<Plug>Translate", desc = "translate current word" },
+
+  { "<space>c", group = "Switch h/c" },
+  { "<space>cc", "<cmd>Ouroboros<cr>", desc = "open file in current window" },
+  { "<space>ch", "<cmd>split | Ouroboros<cr>", desc = "open file in a horizontal split" },
+  { "<space>cv", "<cmd>vsplit | Ouroboros<cr>", desc = "open file in a vertical split" },
+
+  { "<space>f", group = "Find" },
+  { "<space>fo", "<cmd>NvimTreeFindFile<cr>", desc = "Open file in dir" },
+  { "<space>fb", "<cmd>Telescope buffers<cr>", desc = "Searcher buffers" },
+  { "<space>ff", "<cmd>Telescope find_files<cr>", desc = "Search files (include submodules)" },
+  { "<space>fF", "<cmd>Telescope git_files<cr>", desc = "Search files (exclude gitignore)" },
+  { "<space>fw", "<cmd>Telescope live_grep<cr>", desc = "Search string" },
+  { "<space>fc", "<cmd>Telescope grep_string<cr>", desc = "Search word under cursor" },
+  { "<space>fv", "<cmd>Telescope help_tags<cr>", desc = "Search vim manual" },
+  { "<space>fj", "<cmd>Telescope jumplist<cr>", desc = "Search jumplist" },
+  { "<space>fe", "<cmd>Telescope emoji<cr>", desc = "Search emoji" },
+  { "<space>fs", "<cmd>Telescope lsp_dynamic_workspace_symbols <cr>", desc = "Search symbols in project" },
+
+  { "<space>md", "<cmd>MarkdownPreview<cr>", desc = "Markdown preview" },
+  { "<space>mp", "<cmd>PasteImage<cr>", desc = "Paste image in md" },
+
+  { "<space>ot", "<cmd>AerialToggle!<cr>", desc = "Code outline" },
+
+  { "<space>l", group = "Language" },
+  { "<space>la", "<cmd>lua vim.lsp.buf.code_action()<cr>", desc = "Code action" },
+  { "<space>lf", "<cmd> lua vim.lsp.buf.format{ async = true }<cr>", desc = "Format current buffer" },
+  { "<space>lj", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", desc = "Lsp goto next" },
+  { "<space>lk", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", desc = "Lsp goto prev" },
+  { "<space>ln", "<cmd>lua vim.lsp.buf.rename()<cr>", desc = "Rename" },
+  { "<space>ls", "<cmd>lua vim.lsp.buf.signature_help()<cr>", desc = "Signature help" },
+  { "<space>lq", "<cmd>lua vim.diagnostic.setloclist()<cr>", desc = "Set loc list" },
+  { "<space>lr", "<cmd>RunCode<cr>", desc = "run code" },
+
+  { "<space>q", "<cmd>qa<cr>", desc = "Close nvim" },
+
+  { "<space>r", group = "rename" },
+  { "<space>rn",
+    function()
+      return ":IncRename " .. vim.fn.expand "<cword>"
+    end,
+    desc = "Rename sign",
+    expr = true,
+    replace_keycodes = false,
   },
-  q = { "<cmd>q<cr>", "Close window" },
+
+  { "<space>s", group = "Search" },
+  { "<space>sP", "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", desc = "Search cursor word by spectre" },
+  { "<space>sp", "<cmd>lua require('spectre').open()<cr>", desc = "Search string by spectre" },
+  { "<space>sb", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Search in current buffer by telescope" },
+  { "<space>sg", "<cmd>Telescope git_status<cr>", desc = "Search git status " },
+
+  { "<space>t", group = "Toggle/Theme" },
+  { "<space>t7", "<cmd>let &cc = &cc == '' ? '75' : ''<cr>", desc = "highlight 75 line" },
+  { "<space>t8", "<cmd>let &cc = &cc == '' ? '81' : ''<cr>", desc = "highlight 80 line" },
+  { "<space>tb", "<cmd>let &tw = &tw == '0' ? '80' : '0'<cr>", desc = "automaticall break line at 80" },
+  { "<space>th",
+    function()
+      require("telescope.builtin").colorscheme { enable_preview = true }
+    end,
+    desc = "search theme",
+  },
+  { "<space>tm", "<cmd>TableModeToggle<cr>", desc = "markdown table edit mode" },
+  { "<space>ts", "<cmd>set spell!<cr>", desc = "spell check" },
+  { "<space>tw", "<cmd>set wrap!<cr>", desc = "wrap line" },
+  { "<space>tt", "<cmd>set nocursorline<cr> <cmd>TransparentToggle<cr>", desc = "make background transparent" },
+
+  { "q", "<cmd>q<cr>", desc = "close window" },
+
+  { "m", group = "bookmarks" },
+  { "ma", "<cmd>Telescope bookmarks<cr>", desc = "search bookmarks" },
+  { "md", "<cmd>lua require'bookmarks.list'.delete_on_virt()<cr>", desc = "Delete bookmark at virt text line" },
+  { "mm", "<cmd>lua require'bookmarks'.add_bookmarks()<cr>", desc = "add bookmarks" },
+  { "mn", "<cmd>lua require'bookmarks.list'.show_desc() <cr>", desc = "Show bookmark note" },
+
+  { "<C-l>", "<cmd>wincmd w<cr>", desc = "Switch to window right" },
+  { "<C-h>", "<cmd>wincmd W<cr>", desc = "Switch to window left" },
+  { "<C-j>", "<C-w>j", desc = "Switch to window below" },
+  { "<C-k>", "<C-w>k", desc = "switch to window above" },
+}, { mode = "n" })
+
+wk.add({
+  { "<space>s", group = "search" },
+  { "<space>sp", "<cmd>lua require('spectre').open_visual()<cr>", desc = "search" },
+  { "q", "<cmd>q<cr>", desc = "Close window" },
 }, { mode = "v" })
 
 -- 部分格式化，which-key 的设置方法有问题，似乎只是语法没有理解到位
