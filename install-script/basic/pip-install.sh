@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Define proxy functions
-set_proxy() {
+proxy() {
     export hostip=$(grep -oP '(?<=nameserver\ ).*' /etc/resolv.conf)
     export all_proxy="socks5://${hostip}:7890"
 }
 
-unset_proxy() {
+unp() {
     unset all_proxy
     unset ALL_PROXY
 }
@@ -15,12 +15,12 @@ unset_proxy() {
 if python3 -c "import pysocks" >/dev/null 2>&1; then
     echo "pysocks is already installed."
 else
-    unset_proxy
+    unp
     python3 -m pip install --user pysocks   -i https://pypi.tuna.tsinghua.edu.cn/simple
 fi
 
 # Cancel proxy
-unset_proxy
+unp
 
 # Check if gdbfrontend is already installed
 if python3 -m gdbfrontend --version >/dev/null 2>&1; then
@@ -48,4 +48,4 @@ else
 fi
 
 # Enable proxy
-set_proxy
+proxy
