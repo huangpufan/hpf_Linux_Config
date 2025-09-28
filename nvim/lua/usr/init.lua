@@ -270,5 +270,20 @@ vim.keymap.set("n", "<C-n>", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file tr
 -- Close all spell check
 vim.opt.spell = false
 
--- Load alpha dashboard after session autoload decision to avoid flicker
-require "usr.alpha"
+ -- Load alpha dashboard after session autoload decision to avoid flicker
+ -- 仅在没有传入文件、且会话/插件未打开任何缓冲区时显示 Alpha，避免闪烁
+ vim.api.nvim_create_autocmd("VimEnter", {
+   once = true,
+   callback = function()
+     if vim.fn.argc(-1) > 0 then
+       return
+     end
+     -- 延后执行，以便让会话恢复或其他插件先打开缓冲区
+     vim.schedule(function()
+       local bufs = vim.fn.getbufinfo({ buflisted = 1 })
+       if #bufs == 0 then
+         require "usr.alpha"
+       end
+     end)
+   end,
+ })
