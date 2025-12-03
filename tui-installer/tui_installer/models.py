@@ -62,6 +62,23 @@ class Tool:
         """Add log line with timestamp"""
         timestamp = datetime.now().strftime("%H:%M:%S")
         self.logs.append(f"[{timestamp}] {line}")
+    
+    def get_script_content(self, max_lines: int = 30) -> str:
+        """Read and return script content for preview"""
+        if not self.script_path.exists():
+            return f"脚本文件不存在: {self.script_rel}"
+        
+        try:
+            content = self.script_path.read_text(encoding="utf-8")
+            lines = content.splitlines()
+            
+            if len(lines) > max_lines:
+                preview_lines = lines[:max_lines]
+                preview_lines.append(f"... 共 {len(lines)} 行，省略 {len(lines) - max_lines} 行 ...")
+                return "\n".join(preview_lines)
+            return content
+        except Exception as e:
+            return f"读取脚本失败: {e}"
 
 
 class Category:

@@ -167,6 +167,69 @@ def make_logs(state: AppState) -> Panel:
     )
 
 
+def make_preview(state: AppState) -> Panel:
+    """Render script preview panel for current tool"""
+    tool = state.current_tool
+    if not tool:
+        return Panel(
+            Text("选择一个工具查看详情", style="dim"),
+            title="[b]脚本预览[/]",
+            border_style="dim magenta",
+            style="on #1e1e2e",
+            box=box.ROUNDED
+        )
+    
+    from rich.syntax import Syntax
+    
+    # Build info section
+    info_parts = []
+    info_parts.append(f"[bold cyan]{tool.name}[/]")
+    info_parts.append(f"[dim]{tool.description}[/]")
+    info_parts.append("")
+    
+    # Requirements
+    reqs = []
+    if tool.requires_sudo:
+        reqs.append("[yellow]⚡ 需要 sudo 权限[/]")
+    if tool.requires_ssh:
+        reqs.append("[blue]🔑 需要 SSH 密钥[/]")
+    if reqs:
+        info_parts.extend(reqs)
+        info_parts.append("")
+    
+    info_parts.append(f"[dim]脚本路径: {tool.script_rel}[/]")
+    info_parts.append("[dim]─" * 30 + "[/]")
+    
+    info_text = "\n".join(info_parts)
+    
+    # Get script content
+    script_content = tool.get_script_content(max_lines=25)
+    
+    try:
+        # Use Syntax highlighting for bash scripts
+        syntax = Syntax(
+            script_content, 
+            "bash", 
+            theme="monokai",
+            line_numbers=True,
+            word_wrap=True,
+            background_color="#1e1e2e"
+        )
+        from rich.console import Group
+        content = Group(Text.from_markup(info_text), syntax)
+    except Exception:
+        # Fallback to plain text
+        content = Text(f"{info_text}\n\n{script_content}", overflow="fold")
+    
+    return Panel(
+        content,
+        title="[b magenta]📜 脚本预览[/]",
+        border_style="magenta",
+        style="on #1e1e2e",
+        box=box.ROUNDED
+    )
+
+
 def make_footer(state: AppState) -> Panel:
     """Render footer with context-sensitive keybindings"""
     if state.view_mode == "logs":
@@ -207,21 +270,29 @@ def render_ui(state: AppState) -> Layout:
         Layout(name="footer", size=3),
     )
     
-    layout["main"].split_row(
-        Layout(name="sidebar", size=26),
-        Layout(name="body", ratio=1),
-    )
-    
-    # Update components
+    # Update header and footer
     layout["header"].update(make_header(state))
-    layout["sidebar"].update(make_sidebar(state))
     layout["footer"].update(make_footer(state))
     
-    # Toggle body view
+    # Toggle body view - different layouts for list vs logs mode
     if state.view_mode == "logs":
+        # Logs mode: sidebar + full-width logs panel
+        layout["main"].split_row(
+            Layout(name="sidebar", size=26),
+            Layout(name="body", ratio=1),
+        )
+        layout["sidebar"].update(make_sidebar(state))
         layout["body"].update(make_logs(state))
     else:
+        # List mode: sidebar + tool list + script preview
+        layout["main"].split_row(
+            Layout(name="sidebar", size=26),
+            Layout(name="body", ratio=1, minimum_size=40),
+            Layout(name="preview", ratio=1, minimum_size=45),
+        )
+        layout["sidebar"].update(make_sidebar(state))
         layout["body"].update(make_tool_list(state))
+        layout["preview"].update(make_preview(state))
     
     return layout
 
