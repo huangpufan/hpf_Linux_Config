@@ -1,8 +1,12 @@
-#!/bin/bash
-
-# Cause the user may not source the .bashrc file, so we need to source it manually
-source ~/.bashrc
+#!/usr/bin/env bash
 set -Eeuo pipefail
+
+# Source bashrc if exists (non-fatal)
+# shellcheck source=/dev/null
+[ -f ~/.bashrc ] && source ~/.bashrc || true
+
+# Get Ubuntu version
+ubuntu_version=$(lsb_release -rs 2>/dev/null || echo "")
 # Basic dependencies install
 sudo apt -y install gcc wget iputils-ping python3-pip git bear tig 
 sudo apt -y install ninja-build gettext libtool libtool-bin autoconf 

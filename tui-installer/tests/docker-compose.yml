@@ -1,0 +1,96 @@
+# Docker Compose for TUI Installer Testing
+# 支持多种测试场景
+
+version: '3.8'
+
+services:
+  # 主测试服务 - 运行所有测试
+  test:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile
+    volumes:
+      # 挂载源码以支持开发模式
+      - ..:/workspace/tui-installer:ro
+      # 挂载测试结果输出
+      - ./test-results:/workspace/test-results
+    environment:
+      - PYTHONPATH=/workspace/tui-installer
+      - TERM=xterm-256color
+    command: >
+      pytest -v --tb=short 
+      --junitxml=/workspace/test-results/junit.xml
+      -o junit_family=xunit2
+
+  # 单元测试服务
+  test-unit:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile
+    volumes:
+      - ..:/workspace/tui-installer:ro
+    environment:
+      - PYTHONPATH=/workspace/tui-installer
+    command: >
+      pytest -v --tb=short
+      tests/test_models.py 
+      tests/test_config.py
+      tests/test_executor.py
+      tests/test_system.py
+
+  # 集成测试服务
+  test-integration:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile
+    volumes:
+      - ..:/workspace/tui-installer:ro
+    environment:
+      - PYTHONPATH=/workspace/tui-installer
+    command: >
+      pytest -v --tb=short
+      tests/test_integration.py
+
+  # 覆盖率测试服务
+  test-coverage:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile
+    volumes:
+      - ..:/workspace/tui-installer:ro
+      - ./test-results:/workspace/test-results
+    environment:
+      - PYTHONPATH=/workspace/tui-installer
+    command: >
+      pytest -v
+      --cov=tui_installer
+      --cov-report=term-missing
+      --cov-report=html:/workspace/test-results/coverage
+      --cov-report=xml:/workspace/test-results/coverage.xml
+
+  # 交互式 Shell (用于调试)
+  shell:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile
+    volumes:
+      - ..:/workspace/tui-installer
+    environment:
+      - PYTHONPATH=/workspace/tui-installer
+      - TERM=xterm-256color
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+  # Linting 检查
+  lint:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile
+    volumes:
+      - ..:/workspace/tui-installer:ro
+    environment:
+      - PYTHONPATH=/workspace/tui-installer
+    command: >
+      sh -c "ruff check tui_installer tests && mypy tui_installer"
+
