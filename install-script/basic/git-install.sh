@@ -5,6 +5,6 @@ else
   echo "fzf is not installed, proceeding with installation"
   # Clone the fzf repository into the home directory
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-  # Run the install script
-  ~/.fzf/install
+  # Run the install script (non-interactive mode)
+  ~/.fzf/install --all
 fi

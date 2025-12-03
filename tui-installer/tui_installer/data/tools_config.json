@@ -1,0 +1,91 @@
+{
+  "categories": [
+    {
+      "id": "base",
+      "name": "基础环境",
+      "icon": "📦",
+      "tools": [
+        {
+          "id": "apt-snap",
+          "name": "系统基础包",
+          "description": "Git, Tmux, Htop, Build-essential, Snap工具",
+          "script": "basic/apt-snap-install.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v git && command -v tmux"
+        },
+        {
+          "id": "fzf",
+          "name": "FZF 模糊查找",
+          "description": "命令行模糊查找工具",
+          "script": "basic/git-install.sh",
+          "requires_sudo": false,
+          "check_cmd": "command -v fzf"
+        },
+        {
+          "id": "configs",
+          "name": "Dotfiles 配置",
+          "description": "Tmux, Neofetch 配置文件",
+          "script": "basic/config-install.sh",
+          "requires_sudo": false,
+          "check_cmd": "test -f ~/.tmux.conf"
+        }
+      ]
+    },
+    {
+      "id": "dev",
+      "name": "开发工具",
+      "icon": "🔧",
+      "tools": [
+        {
+          "id": "nvim",
+          "name": "Neovim",
+          "description": "现代化 Vim 编辑器 (v0.10.4)",
+          "script": "nvim/nvim-install.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v nvim && nvim --version | grep -q '0.10'"
+        }
+      ]
+    },
+    {
+      "id": "compiler",
+      "name": "编译器",
+      "icon": "⚙️",
+      "tools": [
+        {
+          "id": "gcc",
+          "name": "GCC/G++ 11",
+          "description": "最新 GCC 工具链",
+          "script": "basic/latestgccg++-install.sh",
+          "requires_sudo": true,
+          "check_cmd": "gcc --version | grep -q 'gcc.*11'"
+        },
+        {
+          "id": "clang",
+          "name": "Clang 13",
+          "description": "LLVM/Clang 13 工具链",
+          "script": "basic/clang13-install.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v clang-13"
+        }
+      ]
+    },
+    {
+      "id": "repos",
+      "name": "仓库与包",
+      "icon": "📚",
+      "tools": [
+        {
+          "id": "linux-repo",
+          "name": "Linux 软件包仓库",
+          "description": "个人维护的软件包集合 (需要SSH配置)",
+          "script": "basic/linux-repository-install.sh",
+          "requires_sudo": true,
+          "requires_ssh": true,
+          "check_cmd": "test -d ./linux-package-repository"
+        }
+      ]
+    }
+  ]
+}
+
+
