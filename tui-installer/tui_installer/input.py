@@ -25,14 +25,19 @@ class KeyboardInput:
         termios.tcsetattr(self.fd, termios.TCSADRAIN, self.old_settings)
     
     def read_key_sync(self) -> str | None:
-        """Synchronously read a key if available (non-blocking)"""
-        # Use select with short timeout to check if data is available
-        if select.select([sys.stdin], [], [], 0.01)[0]:
+        """Synchronously read a key if available (non-blocking)
+        
+        Optimized: reduced select timeouts for faster key response
+        """
+        # Use select with minimal timeout - just check if data is available
+        # 1ms is enough to detect available data without blocking
+        if select.select([sys.stdin], [], [], 0.001)[0]:
             ch = sys.stdin.read(1)
             # Handle ANSI escape sequences for arrow keys
             if ch == '\x1b':
                 # Check if more data available (escape sequence)
-                if select.select([sys.stdin], [], [], 0.02)[0]:
+                # Use very short timeout - escape sequences arrive together
+                if select.select([sys.stdin], [], [], 0.005)[0]:
                     seq = sys.stdin.read(2)
                     if seq == '[A':
                         return 'UP'
@@ -42,11 +47,16 @@ class KeyboardInput:
                         return 'RIGHT'
                     elif seq == '[D':
                         return 'LEFT'
+                # Single ESC key pressed (no sequence following)
+                return ch
             return ch
         return None
     
     async def get_key(self) -> str:
-        """Get next keypress asynchronously with minimal latency"""
+        """Get next keypress asynchronously with minimal latency
+        
+        Optimized: shorter sleep intervals for faster response
+        """
         loop = asyncio.get_event_loop()
         
         try:
@@ -55,8 +65,8 @@ class KeyboardInput:
                 key = await loop.run_in_executor(None, self.read_key_sync)
                 if key is not None:
                     return key
-                # Yield control briefly - much shorter than before
-                await asyncio.sleep(0.005)
+                # Minimal yield - 1ms is enough to prevent busy-wait
+                await asyncio.sleep(0.001)
         except asyncio.CancelledError:
             raise
 

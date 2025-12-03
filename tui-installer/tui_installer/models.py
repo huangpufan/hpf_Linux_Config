@@ -61,6 +61,9 @@ class Tool:
         self._script_cache: Optional[str] = None
         self._script_cache_lines: int = 0
         
+        # Cache for rendered Syntax object (avoid re-highlighting on each frame)
+        self._syntax_cache: Optional[object] = None
+        
     @property
     def elapsed_time(self) -> str:
         """Get formatted elapsed time"""

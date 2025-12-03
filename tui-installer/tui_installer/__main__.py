@@ -5,14 +5,33 @@ Entry point for `python -m tui_installer`
 """
 
 import asyncio
+import os
 import sys
 
 from .config import Config
 from .app import Application
+from .system import check_sudo_sync
+
+
+def check_sudo_available() -> bool:
+    """Check if we have sudo privileges (root or cached sudo credentials)"""
+    # Running as root
+    if os.geteuid() == 0:
+        return True
+    # Sudo credentials cached (can run sudo without password)
+    return check_sudo_sync()
 
 
 async def main() -> int:
     """Main application entry point"""
+    # Check sudo privileges before starting
+    if not check_sudo_available():
+        print("\033[1;31m错误: 需要 sudo 权限才能运行安装程序\033[0m", file=sys.stderr)
+        print("", file=sys.stderr)
+        print("请先缓存 sudo 凭证后运行:", file=sys.stderr)
+        print("  \033[1;32msudo -v && python -m tui_installer\033[0m", file=sys.stderr)
+        return 1
+    
     try:
         config = Config.default()
         app = Application(config)

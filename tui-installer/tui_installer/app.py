@@ -55,7 +55,7 @@ class Application:
             with Live(
                 render_ui(self.state),
                 console=self.console,
-                refresh_per_second=30,  # Higher refresh rate for smoother UI
+                refresh_per_second=10,  # Lower refresh rate - input triggers immediate update
                 screen=True
             ) as live:
                 
@@ -63,14 +63,14 @@ class Application:
                 ssh_task = asyncio.create_task(check_ssh_github_background(self.state))
                 self._background_tasks.append(ssh_task)
                 
-                # Main event loop
+                # Main event loop - optimized for responsiveness
                 while self.state.running:
                     try:
                         # Get key with short timeout for responsive input
                         try:
-                            key = await asyncio.wait_for(kbd.get_key(), timeout=0.03)
+                            key = await asyncio.wait_for(kbd.get_key(), timeout=0.016)
                             await handle_input(self.state, key)
-                            # Immediate UI update after input
+                            # Immediate UI update after input - key response
                             live.update(render_ui(self.state))
                         except asyncio.TimeoutError:
                             pass  # No input within timeout, Live handles refresh

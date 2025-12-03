@@ -38,8 +38,11 @@ async def execute_tool(tool: Tool, state: AppState):
         cwd = tool.script_path.parent
         
         # Execute script
+        # stdin=DEVNULL prevents scripts from blocking on user input
+        # (e.g., SSH passphrase prompts, git credential prompts)
         proc = await asyncio.create_subprocess_exec(
             "bash", str(tool.script_path),
+            stdin=asyncio.subprocess.DEVNULL,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,
             cwd=str(cwd),

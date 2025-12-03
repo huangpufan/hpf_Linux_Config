@@ -169,8 +169,50 @@ def make_tool_list(state: AppState) -> Panel:
     )
 
 
+def highlight_log_line(line: str) -> Text:
+    """Apply syntax highlighting to a log line based on content"""
+    text = Text()
+    
+    # Extract timestamp if present: [HH:MM:SS]
+    if line.startswith("[") and "]" in line[:12]:
+        bracket_end = line.index("]") + 1
+        timestamp = line[:bracket_end]
+        content = line[bracket_end:].lstrip()
+        text.append(timestamp, style=Theme.OVERLAY0)
+        text.append(" ")
+    else:
+        content = line
+    
+    # Highlight based on content patterns
+    content_lower = content.lower()
+    
+    # Error patterns
+    if any(kw in content_lower for kw in ["error", "错误", "failed", "失败", "[失败]", "[异常]", "fatal", "exception"]):
+        text.append(content, style=f"bold {Theme.RED}")
+    # Warning patterns
+    elif any(kw in content_lower for kw in ["warning", "警告", "[警告]", "warn", "⚠"]):
+        text.append(content, style=Theme.YELLOW)
+    # Success patterns
+    elif any(kw in content_lower for kw in ["success", "成功", "[成功]", "完成", "[验证] ✓", "done", "installed"]):
+        text.append(content, style=f"bold {Theme.GREEN}")
+    # Info/progress patterns
+    elif any(kw in content_lower for kw in ["开始", "running", "installing", "downloading", "cloning", "building", "compiling"]):
+        text.append(content, style=Theme.CYAN)
+    # Command execution (starts with + or $)
+    elif content.startswith("+") or content.startswith("$"):
+        text.append(content, style=Theme.MAUVE)
+    # Sudo/apt output
+    elif any(kw in content_lower for kw in ["reading", "unpacking", "setting up", "selecting", "preparing"]):
+        text.append(content, style=Theme.OVERLAY1)
+    # Default
+    else:
+        text.append(content, style=Theme.TEXT)
+    
+    return text
+
+
 def make_logs(state: AppState) -> Panel:
-    """Render logs for current tool"""
+    """Render logs for current tool with syntax highlighting"""
     tool = state.current_tool
     if not tool:
         return Panel(
@@ -181,22 +223,31 @@ def make_logs(state: AppState) -> Panel:
             box=box.ROUNDED
         )
     
-    # Get last 40 lines for better visibility
-    log_lines = list(tool.logs)[-40:]
+    # Get last N lines - auto-scroll by always showing most recent
+    # Calculate available height (approximate, assume ~30 lines visible)
+    max_lines = 50
+    log_lines = list(tool.logs)[-max_lines:]
     
     if log_lines:
-        log_text = Text("\n".join(log_lines), overflow="fold", style=Theme.TEXT)
+        # Build highlighted text line by line
+        log_text = Text()
+        for i, line in enumerate(log_lines):
+            if i > 0:
+                log_text.append("\n")
+            log_text.append_text(highlight_log_line(line))
     else:
         log_text = Text(f"暂无日志 - 按 [i] 安装后查看", style=Theme.OVERLAY0)
     
     status_icon, status_color, status_text = STATUS_ICONS[tool.status]
     title = f"[bold {Theme.TEXT}]{tool.name}[/] - [{status_color}]{status_text}[/]"
     
-    # Show elapsed time in subtitle
-    subtitle = f"[{Theme.OVERLAY0}]Enter:返回列表"
+    # Show elapsed time and line count in subtitle
+    subtitle_parts = [f"Enter:返回列表"]
     if tool.elapsed_time:
-        subtitle += f" | 耗时: {tool.elapsed_time}"
-    subtitle += "[/]"
+        subtitle_parts.append(f"耗时: {tool.elapsed_time}")
+    if len(tool.logs) > max_lines:
+        subtitle_parts.append(f"显示最新 {max_lines}/{len(tool.logs)} 行")
+    subtitle = f"[{Theme.OVERLAY0}]{' | '.join(subtitle_parts)}[/]"
     
     return Panel(
         log_text,
@@ -209,7 +260,7 @@ def make_logs(state: AppState) -> Panel:
 
 
 def make_preview(state: AppState) -> Panel:
-    """Render script preview panel for current tool"""
+    """Render script preview panel for current tool (with cached syntax highlighting)"""
     tool = state.current_tool
     if not tool:
         return Panel(
@@ -219,8 +270,6 @@ def make_preview(state: AppState) -> Panel:
             style=f"on {Theme.BASE}",
             box=box.ROUNDED
         )
-    
-    from rich.syntax import Syntax
     
     # Build info section
     info_parts = []
@@ -243,24 +292,25 @@ def make_preview(state: AppState) -> Panel:
     
     info_text = "\n".join(info_parts)
     
-    # Get script content
-    script_content = tool.get_script_content(max_lines=25)
+    # Use cached Syntax object if available (avoid expensive re-highlighting)
+    if tool._syntax_cache is None:
+        from rich.syntax import Syntax
+        script_content = tool.get_script_content(max_lines=25)
+        try:
+            tool._syntax_cache = Syntax(
+                script_content, 
+                "bash", 
+                theme="monokai",
+                line_numbers=True,
+                word_wrap=True,
+                background_color=Theme.BASE
+            )
+        except Exception:
+            # Fallback: cache as plain text
+            tool._syntax_cache = Text(script_content, overflow="fold", style=Theme.TEXT)
     
-    try:
-        # Use Syntax highlighting for bash scripts
-        syntax = Syntax(
-            script_content, 
-            "bash", 
-            theme="monokai",
-            line_numbers=True,
-            word_wrap=True,
-            background_color=Theme.BASE
-        )
-        from rich.console import Group
-        content = Group(Text.from_markup(info_text), syntax)
-    except Exception:
-        # Fallback to plain text
-        content = Text(f"{info_text}\n\n{script_content}", overflow="fold", style=Theme.TEXT)
+    from rich.console import Group
+    content = Group(Text.from_markup(info_text), tool._syntax_cache)
     
     return Panel(
         content,

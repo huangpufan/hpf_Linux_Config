@@ -1,5 +1,5 @@
 run_tui_installer:
-	python -m tui_installer
+	sudo python -m tui_installer
 push:
 	chmod +777 ./*
 	./push_nvim_config.sh
