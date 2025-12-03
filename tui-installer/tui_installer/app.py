@@ -41,22 +41,21 @@ class Application:
             with Live(
                 render_ui(self.state),
                 console=self.console,
-                refresh_per_second=5,
+                refresh_per_second=30,  # Higher refresh rate for smoother UI
                 screen=True
             ) as live:
                 
                 # Main event loop
                 while self.state.running:
                     try:
-                        # Get key with timeout using wait_for for proper cancellation
+                        # Get key with short timeout for responsive input
                         try:
-                            key = await asyncio.wait_for(kbd.get_key(), timeout=0.2)
+                            key = await asyncio.wait_for(kbd.get_key(), timeout=0.03)
                             await handle_input(self.state, key)
+                            # Immediate UI update after input
+                            live.update(render_ui(self.state))
                         except asyncio.TimeoutError:
-                            pass  # No input within timeout, continue loop
-                        
-                        # Update UI
-                        live.update(render_ui(self.state))
+                            pass  # No input within timeout, Live handles refresh
                         
                     except KeyboardInterrupt:
                         self.state.running = False

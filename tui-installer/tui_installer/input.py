@@ -24,38 +24,40 @@ class KeyboardInput:
     def __exit__(self, *args):
         termios.tcsetattr(self.fd, termios.TCSADRAIN, self.old_settings)
     
+    def read_key_sync(self) -> str | None:
+        """Synchronously read a key if available (non-blocking)"""
+        # Use select with short timeout to check if data is available
+        if select.select([sys.stdin], [], [], 0.01)[0]:
+            ch = sys.stdin.read(1)
+            # Handle ANSI escape sequences for arrow keys
+            if ch == '\x1b':
+                # Check if more data available (escape sequence)
+                if select.select([sys.stdin], [], [], 0.02)[0]:
+                    seq = sys.stdin.read(2)
+                    if seq == '[A':
+                        return 'UP'
+                    elif seq == '[B':
+                        return 'DOWN'
+                    elif seq == '[C':
+                        return 'RIGHT'
+                    elif seq == '[D':
+                        return 'LEFT'
+            return ch
+        return None
+    
     async def get_key(self) -> str:
-        """Get next keypress asynchronously"""
+        """Get next keypress asynchronously with minimal latency"""
         loop = asyncio.get_event_loop()
-        
-        def read():
-            # Use select to check if data is available (non-blocking)
-            if select.select([sys.stdin], [], [], 0)[0]:
-                ch = sys.stdin.read(1)
-                # Handle ANSI escape sequences for arrow keys
-                if ch == '\x1b':
-                    # Check if more data available (escape sequence)
-                    if select.select([sys.stdin], [], [], 0.1)[0]:
-                        seq = sys.stdin.read(2)
-                        if seq == '[A':
-                            return 'UP'
-                        elif seq == '[B':
-                            return 'DOWN'
-                        elif seq == '[C':
-                            return 'RIGHT'
-                        elif seq == '[D':
-                            return 'LEFT'
-                return ch
-            return None
         
         try:
             while True:
-                key = await loop.run_in_executor(None, read)
+                # Run blocking read in executor with built-in select timeout
+                key = await loop.run_in_executor(None, self.read_key_sync)
                 if key is not None:
                     return key
-                await asyncio.sleep(0.05)  # Small delay to prevent CPU spin
+                # Yield control briefly - much shorter than before
+                await asyncio.sleep(0.005)
         except asyncio.CancelledError:
-            # Task was cancelled (timeout), exit cleanly
             raise
 
 

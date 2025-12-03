@@ -47,6 +47,10 @@ class Tool:
         self.start_time: Optional[float] = None
         self.end_time: Optional[float] = None
         
+        # Cache for script content preview
+        self._script_cache: Optional[str] = None
+        self._script_cache_lines: int = 0
+        
     @property
     def elapsed_time(self) -> str:
         """Get formatted elapsed time"""
@@ -64,9 +68,16 @@ class Tool:
         self.logs.append(f"[{timestamp}] {line}")
     
     def get_script_content(self, max_lines: int = 30) -> str:
-        """Read and return script content for preview"""
+        """Read and return script content for preview (cached)"""
+        # Return cached content if available and max_lines matches
+        if self._script_cache is not None and self._script_cache_lines == max_lines:
+            return self._script_cache
+        
         if not self.script_path.exists():
-            return f"脚本文件不存在: {self.script_rel}"
+            result = f"脚本文件不存在: {self.script_rel}"
+            self._script_cache = result
+            self._script_cache_lines = max_lines
+            return result
         
         try:
             content = self.script_path.read_text(encoding="utf-8")
@@ -75,8 +86,14 @@ class Tool:
             if len(lines) > max_lines:
                 preview_lines = lines[:max_lines]
                 preview_lines.append(f"... 共 {len(lines)} 行，省略 {len(lines) - max_lines} 行 ...")
-                return "\n".join(preview_lines)
-            return content
+                result = "\n".join(preview_lines)
+            else:
+                result = content
+            
+            # Cache the result
+            self._script_cache = result
+            self._script_cache_lines = max_lines
+            return result
         except Exception as e:
             return f"读取脚本失败: {e}"
 
