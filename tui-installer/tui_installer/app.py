@@ -9,6 +9,7 @@ from rich.live import Live
 from .config import Config
 from .models import AppState, Status
 from .system import check_system_fast, check_ssh_github_background
+from .state import verify_tools_fast, verify_and_update_tools
 from .input import KeyboardInput, handle_input
 from .ui import render_ui
 from .theme import Theme
@@ -35,6 +36,14 @@ class Application:
         
         # Instant system check (file reads only, ~1ms)
         check_system_fast(self.state)
+        
+        # Verify tool installation status (dual verification)
+        # Uses local state file + real-time check_cmd detection
+        all_tools = self.state.all_tools
+        statuses = verify_tools_fast(all_tools)
+        for tool in all_tools:
+            if tool.id in statuses:
+                tool.apply_verified_status(statuses[tool.id])
     
     async def run(self):
         """Main application loop"""
@@ -81,10 +90,17 @@ class Application:
         """Display installation summary"""
         all_tools = self.state.all_tools
         success_count = sum(1 for t in all_tools if t.status == Status.SUCCESS)
+        installed_count = sum(1 for t in all_tools if t.status == Status.INSTALLED)
         failed_count = sum(1 for t in all_tools if t.status == Status.FAILED)
+        broken_count = sum(1 for t in all_tools if t.status == Status.BROKEN)
         
         if success_count > 0 or failed_count > 0:
             self.console.print(f"\n[bold]安装总结:[/]")
-            self.console.print(f"  [{Theme.GREEN}]✓ 成功: {success_count}[/]")
+            if success_count > 0:
+                self.console.print(f"  [{Theme.GREEN}]✓ 本次成功: {success_count}[/]")
+            if installed_count > 0:
+                self.console.print(f"  [{Theme.CYAN}]✓ 已安装: {installed_count}[/]")
             if failed_count > 0:
                 self.console.print(f"  [{Theme.RED}]✗ 失败: {failed_count}[/]")
+            if broken_count > 0:
+                self.console.print(f"  [{Theme.YELLOW}]⚠ 异常: {broken_count}[/]")

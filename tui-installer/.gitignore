@@ -59,3 +59,9 @@ Desktop.ini
 .env
 .env.local
 *.local
+
+# Installation state file (local to each machine)
+# Main state file is at ~/.local/share/tui-installer/state.json
+# This entry is for any local state files that might be created
+.install_state.json
+state.json

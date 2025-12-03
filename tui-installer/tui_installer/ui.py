@@ -77,9 +77,9 @@ def make_sidebar(state: AppState) -> Panel:
     for idx, cat in enumerate(state.categories):
         is_selected = (idx == state.current_category_idx)
         
-        # Count completed tools
+        # Count completed/installed tools (both SUCCESS and INSTALLED count as done)
         total = len(cat.tools)
-        done = sum(1 for t in cat.tools if t.status == Status.SUCCESS)
+        done = sum(1 for t in cat.tools if t.status in (Status.SUCCESS, Status.INSTALLED))
         
         name_label = cat.name
         if total > 0:
@@ -150,10 +150,19 @@ def make_tool_list(state: AppState) -> Panel:
     border_style = f"bold {Theme.CYAN}" if is_focused else Theme.OVERLAY0
     title = f"[bold {Theme.CYAN}]{cat.icon} {cat.name}[/]" if is_focused else f"[bold {Theme.TEXT}]{cat.icon} {cat.name}[/]"
     
+    # Build dynamic subtitle based on current tool status
+    tool = state.current_tool
+    if tool and tool.status == Status.INSTALLED:
+        subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 Enter:日志 [已安装][/]"
+    elif tool and tool.status == Status.BROKEN:
+        subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 i:重装 Enter:日志 [异常][/]"
+    else:
+        subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 i:安装 a:批量安装 Enter:日志[/]"
+    
     return Panel(
         table,
         title=title,
-        subtitle=f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 i:安装 a:批量安装 Enter:查看日志[/]",
+        subtitle=subtitle,
         border_style=border_style,
         style=f"on {Theme.BASE}",
         box=box.ROUNDED

@@ -106,8 +106,8 @@ async def handle_input(state: AppState, key: str):
     # Install current tool
     elif key in ('i', 'I'):
         if tool := state.current_tool:
-            from .models import Status
-            if tool.status == Status.PENDING:
+            # Allow installation for PENDING, BROKEN, and FAILED tools
+            if tool.is_installable:
                 tool.selected = True
                 asyncio.create_task(execute_tool(tool, state))
     

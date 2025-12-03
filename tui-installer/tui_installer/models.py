@@ -15,21 +15,25 @@ if TYPE_CHECKING:
 
 class Status(Enum):
     """Task execution status"""
-    PENDING = auto()
-    RUNNING = auto()
-    SUCCESS = auto()
-    FAILED = auto()
-    SKIPPED = auto()
+    PENDING = auto()      # 待装：未检测到，无成功安装记录
+    RUNNING = auto()      # 运行中：正在安装
+    SUCCESS = auto()      # 成功：本次会话刚安装成功
+    FAILED = auto()       # 失败：安装失败
+    SKIPPED = auto()      # 跳过：因条件不满足跳过
+    INSTALLED = auto()    # 已装：启动时检测到已安装
+    BROKEN = auto()       # 异常：有成功记录但检测失败（可能被卸载）
 
 
 # Status icons with absolute hex colors (not affected by terminal themes)
 # Format: (icon, color_hex, label)
 STATUS_ICONS = {
-    Status.PENDING: ("⚪", "#6c7086", "待装"),   # Overlay0 - dimmed
-    Status.RUNNING: ("🔵", "#89b4fa", "运行"),   # Blue
-    Status.SUCCESS: ("🟢", "#a6e3a1", "完成"),   # Green
-    Status.FAILED: ("🔴", "#f38ba8", "失败"),    # Red
-    Status.SKIPPED: ("⚫", "#7f849c", "跳过"),   # Overlay1 - dimmed
+    Status.PENDING: ("⚪", "#6c7086", "待装"),     # Overlay0 - dimmed
+    Status.RUNNING: ("🔵", "#89b4fa", "运行"),     # Blue
+    Status.SUCCESS: ("🟢", "#a6e3a1", "完成"),     # Green
+    Status.FAILED: ("🔴", "#f38ba8", "失败"),      # Red
+    Status.SKIPPED: ("⚫", "#7f849c", "跳过"),     # Overlay1 - dimmed
+    Status.INSTALLED: ("✅", "#94e2d5", "已装"),   # Teal - installed
+    Status.BROKEN: ("⚠️", "#fab387", "异常"),      # Peach - warning
 }
 
 
@@ -102,6 +106,25 @@ class Tool:
             return result
         except Exception as e:
             return f"读取脚本失败: {e}"
+    
+    def apply_verified_status(self, status_str: str) -> None:
+        """
+        Apply verified status from state manager.
+        
+        Args:
+            status_str: One of "installed", "broken", "pending"
+        """
+        if status_str == "installed":
+            self.status = Status.INSTALLED
+        elif status_str == "broken":
+            self.status = Status.BROKEN
+        else:
+            self.status = Status.PENDING
+    
+    @property
+    def is_installable(self) -> bool:
+        """Check if tool can be installed (not already running or completed)."""
+        return self.status in (Status.PENDING, Status.BROKEN, Status.FAILED)
 
 
 class Category:

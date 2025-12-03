@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import List
 
 from .models import Tool, AppState, Status
+from .state import get_state_manager, check_tool_async
 
 
 async def execute_tool(tool: Tool, state: AppState):
@@ -60,13 +61,34 @@ async def execute_tool(tool: Tool, state: AppState):
         if proc.returncode == 0:
             tool.status = Status.SUCCESS
             tool.add_log(f"[成功] 安装完成，耗时 {tool.elapsed_time}")
+            
+            # Verify installation with check_cmd
+            if tool.check_cmd:
+                tool.add_log("[验证] 检测安装结果...")
+                check_passed = await check_tool_async(tool.check_cmd, timeout=5.0)
+                if check_passed:
+                    tool.add_log("[验证] ✓ 检测通过")
+                else:
+                    tool.add_log("[验证] ⚠ 检测未通过，可能需要重启终端")
+            
+            # Record successful installation to state file
+            state_mgr = get_state_manager()
+            state_mgr.record_install(tool.id, success=True)
         else:
             tool.status = Status.FAILED
             tool.add_log(f"[失败] 退出码: {proc.returncode}")
             
+            # Record failed installation to state file
+            state_mgr = get_state_manager()
+            state_mgr.record_install(tool.id, success=False)
+            
     except Exception as e:
         tool.status = Status.FAILED
         tool.add_log(f"[异常] {str(e)}")
+        
+        # Record exception as failed installation
+        state_mgr = get_state_manager()
+        state_mgr.record_install(tool.id, success=False)
     
     finally:
         tool.end_time = datetime.now().timestamp()
@@ -79,8 +101,9 @@ async def install_selected(state: AppState):
     if not selected:
         return
     
-    # Filter out already running/completed tools
-    pending = [t for t in selected if t.status == Status.PENDING]
+    # Filter out already running/completed/installed tools
+    # Allow re-installation of BROKEN and FAILED tools
+    pending = [t for t in selected if t.is_installable]
     
     # Execute all pending tools concurrently
     tasks = [execute_tool(tool, state) for tool in pending]
