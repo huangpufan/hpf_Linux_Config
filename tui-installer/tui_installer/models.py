@@ -2,11 +2,15 @@
 Data models for the TUI installer
 """
 
+from __future__ import annotations
 from collections import deque
 from datetime import datetime
 from enum import Enum, auto
 from pathlib import Path
-from typing import List, Dict, Optional, Deque
+from typing import List, Dict, Optional, Deque, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .system import SystemInfo
 
 
 class Status(Enum):
@@ -18,12 +22,14 @@ class Status(Enum):
     SKIPPED = auto()
 
 
+# Status icons with absolute hex colors (not affected by terminal themes)
+# Format: (icon, color_hex, label)
 STATUS_ICONS = {
-    Status.PENDING: ("⚪", "dim white", "待装"),
-    Status.RUNNING: ("🔵", "bold blue", "运行"),
-    Status.SUCCESS: ("🟢", "bold green", "完成"),
-    Status.FAILED: ("🔴", "bold red", "失败"),
-    Status.SKIPPED: ("⚫", "dim", "跳过"),
+    Status.PENDING: ("⚪", "#6c7086", "待装"),   # Overlay0 - dimmed
+    Status.RUNNING: ("🔵", "#89b4fa", "运行"),   # Blue
+    Status.SUCCESS: ("🟢", "#a6e3a1", "完成"),   # Green
+    Status.FAILED: ("🔴", "#f38ba8", "失败"),    # Red
+    Status.SKIPPED: ("⚫", "#7f849c", "跳过"),   # Overlay1 - dimmed
 }
 
 
@@ -123,7 +129,10 @@ class AppState:
         self.active_tasks = 0
         self.focus_panel = "sidebar"  # sidebar, body - 当前焦点所在的边栏
         
-        # System info
+        # System info (detailed, populated by check_system)
+        self.system_info: Optional[SystemInfo] = None
+        
+        # Legacy system flags (kept for backward compatibility)
         self.has_sudo = False
         self.has_ssh = False
         self.is_wsl = False

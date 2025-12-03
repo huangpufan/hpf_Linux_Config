@@ -11,6 +11,7 @@ from .models import AppState, Status
 from .system import check_system
 from .input import KeyboardInput, handle_input
 from .ui import render_ui
+from .theme import Theme
 
 
 class Application:
@@ -18,7 +19,8 @@ class Application:
     
     def __init__(self, config: Config):
         self.config = config
-        self.console = Console()
+        # Force truecolor (24-bit) to ensure consistent colors across terminals
+        self.console = Console(force_terminal=True, color_system="truecolor")
         self.state = None
     
     async def initialize(self):
@@ -28,7 +30,7 @@ class Application:
         self.state = AppState(categories)
         
         # Check system prerequisites
-        with self.console.status("[cyan]正在检查系统环境...[/]"):
+        with self.console.status(f"[{Theme.CYAN}]正在检查系统环境...[/]"):
             await check_system(self.state)
     
     async def run(self):
@@ -71,6 +73,6 @@ class Application:
         
         if success_count > 0 or failed_count > 0:
             self.console.print(f"\n[bold]安装总结:[/]")
-            self.console.print(f"  [green]✓ 成功: {success_count}[/]")
+            self.console.print(f"  [{Theme.GREEN}]✓ 成功: {success_count}[/]")
             if failed_count > 0:
-                self.console.print(f"  [red]✗ 失败: {failed_count}[/]")
+                self.console.print(f"  [{Theme.RED}]✗ 失败: {failed_count}[/]")
