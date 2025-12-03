@@ -87,6 +87,7 @@ class AppState:
         self.view_mode = "list"  # list, logs
         self.running = True
         self.active_tasks = 0
+        self.focus_panel = "sidebar"  # sidebar, body - 当前焦点所在的边栏
         
         # System info
         self.has_sudo = False

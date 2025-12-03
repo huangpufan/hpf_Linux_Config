@@ -66,21 +66,27 @@ async def handle_input(state: AppState, key: str):
     if key in ('q', 'Q'):
         state.running = False
     
-    # Navigation - vertical (tools)
+    # Navigation - vertical (j/k based on focus_panel)
     elif key in ('j', 'DOWN'):
         if state.view_mode == "list":
-            state.move_tool(1)
+            if state.focus_panel == "sidebar":
+                state.move_category(1)
+            else:
+                state.move_tool(1)
     
     elif key in ('k', 'UP'):
         if state.view_mode == "list":
-            state.move_tool(-1)
+            if state.focus_panel == "sidebar":
+                state.move_category(-1)
+            else:
+                state.move_tool(-1)
     
-    # Navigation - horizontal (categories)
+    # Navigation - horizontal (h/l to switch focus panel)
     elif key in ('h', 'LEFT'):
-        state.move_category(-1)
+        state.focus_panel = "sidebar"
     
     elif key in ('l', 'RIGHT'):
-        state.move_category(1)
+        state.focus_panel = "body"
     
     # Selection
     elif key == ' ':  # Space

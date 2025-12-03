@@ -45,6 +45,8 @@ def make_sidebar(state: AppState) -> Panel:
     table = Table(show_header=False, box=None, expand=True)
     table.add_column("Item")
     
+    is_focused = state.focus_panel == "sidebar"
+    
     for idx, cat in enumerate(state.categories):
         is_selected = (idx == state.current_category_idx)
         
@@ -63,10 +65,14 @@ def make_sidebar(state: AppState) -> Panel:
         
         table.add_row(text)
     
+    # 根据焦点状态设置边框颜色
+    border_style = "bold cyan" if is_focused else "dim blue"
+    title = "[b cyan]分类[/]" if is_focused else "[b]分类[/]"
+    
     return Panel(
         table,
-        title="[b]分类[/]",
-        border_style="blue",
+        title=title,
+        border_style=border_style,
         style="on #1e1e2e",
         box=box.ROUNDED
     )
@@ -76,6 +82,8 @@ def make_tool_list(state: AppState) -> Panel:
     """Render tool list for current category"""
     cat = state.current_category
     
+    is_focused = state.focus_panel == "body"
+    
     table = Table(box=box.SIMPLE, expand=True, show_header=True, show_lines=False)
     table.add_column("选择", width=4, justify="center")
     table.add_column("状态", width=8)
@@ -84,7 +92,7 @@ def make_tool_list(state: AppState) -> Panel:
     table.add_column("耗时", width=8, justify="right")
     
     for idx, tool in enumerate(cat.tools):
-        is_focused = (idx == state.current_tool_idx)
+        is_row_focused = (idx == state.current_tool_idx)
         
         # Checkbox
         check = "[green]✓[/]" if tool.selected else "·"
@@ -94,8 +102,8 @@ def make_tool_list(state: AppState) -> Panel:
         status_text = Text(text, style=color)
         
         # Highlight focused row
-        row_style = "on #2b2b3b" if is_focused else ""
-        name = f"[bold]{tool.name}[/]" if is_focused else tool.name
+        row_style = "on #2b2b3b" if is_row_focused else ""
+        name = f"[bold]{tool.name}[/]" if is_row_focused else tool.name
         
         table.add_row(
             check,
@@ -106,11 +114,15 @@ def make_tool_list(state: AppState) -> Panel:
             style=row_style
         )
     
+    # 根据焦点状态设置边框颜色
+    border_style = "bold cyan" if is_focused else "dim white"
+    title = f"[b cyan]{cat.icon} {cat.name}[/]" if is_focused else f"[b]{cat.icon} {cat.name}[/]"
+    
     return Panel(
         table,
-        title=f"[b]{cat.icon} {cat.name}[/]",
+        title=title,
         subtitle="[dim]j/k:移动 Space:选择 i:安装 a:批量安装 Enter:查看日志[/]",
-        border_style="white",
+        border_style=border_style,
         style="on #1e1e2e",
         box=box.ROUNDED
     )
@@ -150,11 +162,12 @@ def make_footer(state: AppState) -> Panel:
     if state.view_mode == "logs":
         help_text = "[Enter] 返回列表  [q] 退出"
     else:
-        # Show context-sensitive help
+        # Show context-sensitive help with focus indicator
         selected_count = len(state.get_selected_tools())
+        focus_hint = "分类" if state.focus_panel == "sidebar" else "工具"
         help_parts = [
-            "[h/l] 切换分类",
-            "[j/k] 移动",
+            f"[h/l] 切换面板",
+            f"[j/k] 移动({focus_hint})",
             "[Space] 选择",
             "[i] 安装当前",
         ]
