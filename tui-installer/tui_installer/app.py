@@ -8,7 +8,7 @@ from rich.live import Live
 
 from .config import Config
 from .models import AppState, Status
-from .system import check_system
+from .system import check_system_fast, check_ssh_github_background
 from .input import KeyboardInput, handle_input
 from .ui import render_ui
 from .theme import Theme
@@ -22,21 +22,24 @@ class Application:
         # Force truecolor (24-bit) to ensure consistent colors across terminals
         self.console = Console(force_terminal=True, color_system="truecolor")
         self.state = None
+        self._background_tasks: list[asyncio.Task] = []
     
-    async def initialize(self):
-        """Initialize application state"""
-        # Load configuration
+    def initialize_fast(self):
+        """
+        INSTANT initialization - no blocking, no async wait.
+        UI will be available immediately.
+        """
+        # Load configuration (fast JSON parse)
         categories = self.config.load()
         self.state = AppState(categories)
         
-        # Check system prerequisites
-        with self.console.status(f"[{Theme.CYAN}]正在检查系统环境...[/]"):
-            await check_system(self.state)
+        # Instant system check (file reads only, ~1ms)
+        check_system_fast(self.state)
     
     async def run(self):
         """Main application loop"""
         if not self.state:
-            await self.initialize()
+            self.initialize_fast()
         
         # Start interactive UI
         with KeyboardInput() as kbd:
@@ -46,6 +49,10 @@ class Application:
                 refresh_per_second=30,  # Higher refresh rate for smoother UI
                 screen=True
             ) as live:
+                
+                # Start SSH GitHub check in background (doesn't block UI)
+                ssh_task = asyncio.create_task(check_ssh_github_background(self.state))
+                self._background_tasks.append(ssh_task)
                 
                 # Main event loop
                 while self.state.running:
@@ -61,6 +68,11 @@ class Application:
                         
                     except KeyboardInterrupt:
                         self.state.running = False
+                
+                # Cancel background tasks on exit
+                for task in self._background_tasks:
+                    if not task.done():
+                        task.cancel()
         
         # Show summary
         self.show_summary()
