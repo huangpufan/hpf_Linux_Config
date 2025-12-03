@@ -67,8 +67,10 @@ def make_header(state: AppState) -> Panel:
 
 def make_sidebar(state: AppState) -> Panel:
     """Render category sidebar navigation"""
-    table = Table(show_header=False, box=None, expand=True)
-    table.add_column("Item")
+    table = Table(show_header=False, box=None, expand=True, padding=(0, 0))
+    table.add_column("Marker", width=2)
+    table.add_column("Icon", width=2)
+    table.add_column("Name")
     
     is_focused = state.focus_panel == "sidebar"
     
@@ -79,16 +81,21 @@ def make_sidebar(state: AppState) -> Panel:
         total = len(cat.tools)
         done = sum(1 for t in cat.tools if t.status == Status.SUCCESS)
         
-        label = f"{cat.icon}  {cat.name}"
+        name_label = cat.name
         if total > 0:
-            label += f" [{done}/{total}]"
+            name_label += f" [{done}/{total}]"
         
         if is_selected:
-            text = Text(f"▶ {label}", style=f"bold {Theme.CYAN} on {Theme.SURFACE0}")
+            row_style = f"bold {Theme.CYAN} on {Theme.SURFACE0}"
+            marker = Text("▶", style=row_style)
         else:
-            text = Text(f"  {label}", style=Theme.OVERLAY0)
+            row_style = Theme.OVERLAY0
+            marker = Text(" ", style=row_style)
         
-        table.add_row(text)
+        icon = Text(cat.icon, style=row_style)
+        name = Text(name_label, style=row_style)
+        
+        table.add_row(marker, icon, name)
     
     # 根据焦点状态设置边框颜色
     border_style = f"bold {Theme.CYAN}" if is_focused else Theme.SURFACE2
