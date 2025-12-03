@@ -8,10 +8,26 @@
         {
           "id": "apt-snap",
           "name": "系统基础包",
-          "description": "Git, Tmux, Htop, Build-essential, Snap工具",
+          "description": "Git, Tmux, Htop, Build-essential, Snap等基础工具",
           "script": "basic/apt-snap-install.sh",
           "requires_sudo": true,
           "check_cmd": "command -v git && command -v tmux"
+        },
+        {
+          "id": "bashrc",
+          "name": "Bashrc 初始化",
+          "description": "配置 .bashrc 基础环境变量",
+          "script": "basic/bashrc-init.sh",
+          "requires_sudo": false,
+          "check_cmd": "grep -q 'hpf_Linux_Config' ~/.bashrc"
+        },
+        {
+          "id": "configs",
+          "name": "Dotfiles 配置",
+          "description": "Tmux, Neofetch 等配置文件",
+          "script": "basic/config-install.sh",
+          "requires_sudo": false,
+          "check_cmd": "test -f ~/.tmux.conf"
         },
         {
           "id": "fzf",
@@ -22,12 +38,58 @@
           "check_cmd": "command -v fzf"
         },
         {
-          "id": "configs",
-          "name": "Dotfiles 配置",
-          "description": "Tmux, Neofetch 配置文件",
-          "script": "basic/config-install.sh",
+          "id": "folder-create",
+          "name": "目录结构创建",
+          "description": "创建标准工作目录结构",
+          "script": "basic/folder-create.sh",
           "requires_sudo": false,
-          "check_cmd": "test -f ~/.tmux.conf"
+          "check_cmd": "test -d ~/workspace"
+        }
+      ]
+    },
+    {
+      "id": "editor",
+      "name": "编辑器",
+      "icon": "📝",
+      "tools": [
+        {
+          "id": "nvim",
+          "name": "Neovim",
+          "description": "现代化 Vim 编辑器 (v0.10+)",
+          "script": "nvim/nvim-install.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v nvim"
+        },
+        {
+          "id": "vim",
+          "name": "Vim",
+          "description": "经典 Vim 编辑器配置",
+          "script": "vim/vim-install.sh",
+          "requires_sudo": false,
+          "check_cmd": "command -v vim"
+        }
+      ]
+    },
+    {
+      "id": "compiler",
+      "name": "编译器",
+      "icon": "🔩",
+      "tools": [
+        {
+          "id": "gcc",
+          "name": "GCC/G++ 最新版",
+          "description": "GCC/G++ 编译器工具链",
+          "script": "basic/latestgccg++-install.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v gcc"
+        },
+        {
+          "id": "clang",
+          "name": "Clang 13",
+          "description": "LLVM/Clang 13 编译器工具链",
+          "script": "basic/clang13-install.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v clang-13"
         }
       ]
     },
@@ -37,55 +99,110 @@
       "icon": "🔧",
       "tools": [
         {
-          "id": "nvim",
-          "name": "Neovim",
-          "description": "现代化 Vim 编辑器 (v0.10.4)",
-          "script": "nvim/nvim-install.sh",
+          "id": "cgdb",
+          "name": "CGDB",
+          "description": "带有Curses界面的GDB前端",
+          "script": "gdb/cgdb-install.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v nvim && nvim --version | grep -q '0.10'"
+          "check_cmd": "command -v cgdb"
+        },
+        {
+          "id": "cargo",
+          "name": "Cargo (Rust)",
+          "description": "Rust包管理器和工具链",
+          "script": "basic/cargo-install.sh",
+          "requires_sudo": false,
+          "check_cmd": "command -v cargo"
+        },
+        {
+          "id": "npm",
+          "name": "NPM (Node.js)",
+          "description": "Node.js 和 NPM 包管理器",
+          "script": "basic/npm-install.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v npm"
+        },
+        {
+          "id": "pip",
+          "name": "Pip (Python)",
+          "description": "Python 包管理器配置",
+          "script": "basic/pip-install.sh",
+          "requires_sudo": false,
+          "check_cmd": "command -v pip3"
+        },
+        {
+          "id": "ranger",
+          "name": "Ranger",
+          "description": "终端文件管理器",
+          "script": "ranger/install.sh",
+          "requires_sudo": false,
+          "check_cmd": "command -v ranger"
         }
       ]
     },
     {
-      "id": "compiler",
-      "name": "编译器",
-      "icon": "⚙️",
+      "id": "system",
+      "name": "系统配置",
+      "icon": "🛠",
       "tools": [
         {
-          "id": "gcc",
-          "name": "GCC/G++ 11",
-          "description": "最新 GCC 工具链",
-          "script": "basic/latestgccg++-install.sh",
-          "requires_sudo": true,
-          "check_cmd": "gcc --version | grep -q 'gcc.*11'"
+          "id": "sshkey",
+          "name": "SSH 密钥生成",
+          "description": "生成 SSH 密钥对",
+          "script": "basic/sshkey-generate.sh",
+          "requires_sudo": false,
+          "check_cmd": "test -f ~/.ssh/id_rsa.pub || test -f ~/.ssh/id_ed25519.pub"
         },
         {
-          "id": "clang",
-          "name": "Clang 13",
-          "description": "LLVM/Clang 13 工具链",
-          "script": "basic/clang13-install.sh",
+          "id": "source-change",
+          "name": "Ubuntu 换源",
+          "description": "更换 apt 软件源为国内镜像",
+          "script": "basic/ubuntu-source-change.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v clang-13"
+          "check_cmd": "grep -q 'mirrors' /etc/apt/sources.list"
+        },
+        {
+          "id": "dns-adjust",
+          "name": "DNS 配置",
+          "description": "调整 DNS 解析设置",
+          "script": "basic/dns-adjust.sh",
+          "requires_sudo": true,
+          "check_cmd": "grep -q '8.8.8.8' /etc/resolv.conf"
+        },
+        {
+          "id": "curl",
+          "name": "Curl 安装",
+          "description": "安装 curl 命令行工具",
+          "script": "basic/curl-install.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v curl"
         }
       ]
     },
     {
       "id": "repos",
-      "name": "仓库与包",
+      "name": "代码仓库",
       "icon": "📚",
       "tools": [
         {
           "id": "linux-repo",
           "name": "Linux 软件包仓库",
-          "description": "个人维护的软件包集合 (需要SSH配置)",
+          "description": "个人维护的软件包集合",
           "script": "basic/linux-repository-install.sh",
           "requires_sudo": true,
           "requires_ssh": true,
           "check_cmd": "test -d ./linux-package-repository"
+        },
+        {
+          "id": "install-after-ssh",
+          "name": "SSH后安装",
+          "description": "配置SSH密钥后需安装的工具",
+          "script": "basic/install-after-sshkey.sh",
+          "requires_sudo": false,
+          "requires_ssh": true,
+          "check_cmd": "test -d ~/workspace/repos"
         }
       ]
     }
   ]
 }
-
-

@@ -19,9 +19,9 @@ class Status(Enum):
 
 
 STATUS_ICONS = {
-    Status.PENDING: ("⚪", "dim white", "待安装"),
-    Status.RUNNING: ("🔵", "bold blue", "运行中"),
-    Status.SUCCESS: ("🟢", "bold green", "已完成"),
+    Status.PENDING: ("⚪", "dim white", "待装"),
+    Status.RUNNING: ("🔵", "bold blue", "运行"),
+    Status.SUCCESS: ("🟢", "bold green", "完成"),
     Status.FAILED: ("🔴", "bold red", "失败"),
     Status.SKIPPED: ("⚫", "dim", "跳过"),
 }

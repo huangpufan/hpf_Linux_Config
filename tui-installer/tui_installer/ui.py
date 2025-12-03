@@ -85,11 +85,11 @@ def make_tool_list(state: AppState) -> Panel:
     is_focused = state.focus_panel == "body"
     
     table = Table(box=box.SIMPLE, expand=True, show_header=True, show_lines=False)
-    table.add_column("选择", width=4, justify="center")
-    table.add_column("状态", width=8)
-    table.add_column("工具名称", ratio=1)
-    table.add_column("描述", style="dim", ratio=2)
-    table.add_column("耗时", width=8, justify="right")
+    table.add_column("", width=2, justify="center")  # 选择列，去掉表头
+    table.add_column("状态", width=6)
+    table.add_column("工具", width=18)
+    table.add_column("描述", style="dim", ratio=1)
+    table.add_column("耗时", width=6, justify="right")
     
     for idx, tool in enumerate(cat.tools):
         is_row_focused = (idx == state.current_tool_idx)
@@ -132,11 +132,21 @@ def make_logs(state: AppState) -> Panel:
     """Render logs for current tool"""
     tool = state.current_tool
     if not tool:
-        return Panel("没有选中工具", style="on #1e1e2e", box=box.ROUNDED)
+        return Panel(
+            Text("没有选中工具", style="dim"),
+            title="[b]日志[/]",
+            border_style="yellow",
+            style="on #1e1e2e",
+            box=box.ROUNDED
+        )
     
     # Get last 40 lines for better visibility
     log_lines = list(tool.logs)[-40:]
-    log_text = "\n".join(log_lines) if log_lines else "[dim]暂无日志[/]"
+    
+    if log_lines:
+        log_text = Text("\n".join(log_lines), overflow="fold")
+    else:
+        log_text = Text("暂无日志 - 按 [i] 安装后查看", style="dim")
     
     status_icon, status_color, status_text = STATUS_ICONS[tool.status]
     title = f"[b]{tool.name}[/] - [{status_color}]{status_text}[/]"
@@ -148,7 +158,7 @@ def make_logs(state: AppState) -> Panel:
     subtitle += "[/]"
     
     return Panel(
-        Text(log_text, overflow="fold"),
+        log_text,
         title=title,
         subtitle=subtitle,
         border_style="yellow",
@@ -198,7 +208,7 @@ def render_ui(state: AppState) -> Layout:
     )
     
     layout["main"].split_row(
-        Layout(name="sidebar", size=30),
+        Layout(name="sidebar", size=26),
         Layout(name="body", ratio=1),
     )
     

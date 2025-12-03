@@ -83,10 +83,12 @@ async def handle_input(state: AppState, key: str):
     
     # Navigation - horizontal (h/l to switch focus panel)
     elif key in ('h', 'LEFT'):
-        state.focus_panel = "sidebar"
+        if state.view_mode == "list":
+            state.focus_panel = "sidebar"
     
     elif key in ('l', 'RIGHT'):
-        state.focus_panel = "body"
+        if state.view_mode == "list":
+            state.focus_panel = "body"
     
     # Selection
     elif key == ' ':  # Space
