@@ -29,7 +29,7 @@ class KeyboardInput:
         loop = asyncio.get_event_loop()
         
         def read():
-            # Use select to check if data is available
+            # Use select to check if data is available (non-blocking)
             if select.select([sys.stdin], [], [], 0)[0]:
                 ch = sys.stdin.read(1)
                 # Handle ANSI escape sequences for arrow keys
@@ -48,11 +48,15 @@ class KeyboardInput:
                 return ch
             return None
         
-        while True:
-            key = await loop.run_in_executor(None, read)
-            if key is not None:
-                return key
-            await asyncio.sleep(0.05)  # Small delay to prevent CPU spin
+        try:
+            while True:
+                key = await loop.run_in_executor(None, read)
+                if key is not None:
+                    return key
+                await asyncio.sleep(0.05)  # Small delay to prevent CPU spin
+        except asyncio.CancelledError:
+            # Task was cancelled (timeout), exit cleanly
+            raise
 
 
 async def handle_input(state: AppState, key: str):

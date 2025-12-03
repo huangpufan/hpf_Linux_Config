@@ -48,20 +48,12 @@ class Application:
                 # Main event loop
                 while self.state.running:
                     try:
-                        # Get key with timeout
-                        key_task = asyncio.create_task(kbd.get_key())
-                        done, pending = await asyncio.wait(
-                            [key_task],
-                            timeout=0.2
-                        )
-                        
-                        if done:
-                            key = key_task.result()
+                        # Get key with timeout using wait_for for proper cancellation
+                        try:
+                            key = await asyncio.wait_for(kbd.get_key(), timeout=0.2)
                             await handle_input(self.state, key)
-                        else:
-                            # Cancel pending task
-                            for task in pending:
-                                task.cancel()
+                        except asyncio.TimeoutError:
+                            pass  # No input within timeout, continue loop
                         
                         # Update UI
                         live.update(render_ui(self.state))
@@ -83,5 +75,3 @@ class Application:
             self.console.print(f"  [green]✓ 成功: {success_count}[/]")
             if failed_count > 0:
                 self.console.print(f"  [red]✗ 失败: {failed_count}[/]")
-
-
