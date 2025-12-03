@@ -3,9 +3,13 @@
 # Define script directory for reliable path resolution
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Cause the user may not source the .bashrc file, so we need to source it manually
-source ~/.bashrc
+# Enable strict error handling first
 set -Eeuo pipefail
+
+# Cause the user may not source the .bashrc file, so we need to source it manually
+if [ -f ~/.bashrc ]; then
+  source ~/.bashrc
+fi
 
 # Get Ubuntu version for conditional package installation
 ubuntu_version=$(lsb_release -rs 2>/dev/null || echo "")
@@ -52,4 +56,8 @@ rm -rf ~/.local/share/nvim/
 # Link the new nvim config
 ln -s ~/hpf_Linux_Config/nvim ~/.config/nvim
 # Call clipboard-prepare.sh using absolute path from script directory
-"$SCRIPT_DIR/clipboard-prepare.sh"
+if [ -x "$SCRIPT_DIR/clipboard-prepare.sh" ]; then
+  "$SCRIPT_DIR/clipboard-prepare.sh"
+else
+  echo "Warning: clipboard-prepare.sh not found or not executable at $SCRIPT_DIR" >&2
+fi
