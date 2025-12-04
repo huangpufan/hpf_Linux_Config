@@ -1,5 +1,6 @@
+local uv = vim.uv or vim.loop
 local function microsoft_edge()
-  if vim.loop.os_uname().sysname == "Linux" then
+  if uv.os_uname().sysname == "Linux" then
     return "microsoft-edge-beta $fileName"
   else
     return "/Applications/Microsoft\\ Edge.app/Contents/MacOS/Microsoft\\ Edge $file"
