@@ -77,19 +77,35 @@ async def execute_tool(tool: Tool, state: AppState):
             env={**os.environ, "DEBIAN_FRONTEND": "noninteractive"}
         )
         
-        # Stream logs in real-time
-        while True:
-            line = await proc.stdout.readline()
-            if not line:
-                break
-            decoded = line.decode('utf-8', errors='replace').rstrip()
-            if decoded:
-                tool.add_log(decoded)
+        # Stream logs in real-time with timeout control
+        timed_out = False
+        try:
+            async def read_output():
+                while True:
+                    line = await proc.stdout.readline()
+                    if not line:
+                        break
+                    decoded = line.decode('utf-8', errors='replace').rstrip()
+                    if decoded:
+                        tool.add_log(decoded)
+                await proc.wait()
+            
+            await asyncio.wait_for(read_output(), timeout=tool.timeout)
+        except asyncio.TimeoutError:
+            timed_out = True
+            tool.add_log(f"[超时] 执行超过 {tool.timeout} 秒，正在终止进程...")
+            proc.kill()
+            await proc.wait()
         
-        await proc.wait()
-        
-        # Update status based on exit code
-        if proc.returncode == 0:
+        # Update status based on exit code or timeout
+        if timed_out:
+            tool.status = Status.FAILED
+            tool.add_log(f"[失败] 脚本执行超时 ({tool.timeout}秒)")
+            
+            # Record timeout as failed installation
+            state_mgr = get_state_manager()
+            state_mgr.record_install(tool.id, success=False)
+        elif proc.returncode == 0:
             tool.status = Status.SUCCESS
             tool.add_log(f"[成功] 安装完成，耗时 {tool.elapsed_time}")
             

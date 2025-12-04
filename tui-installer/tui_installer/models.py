@@ -40,6 +40,9 @@ STATUS_ICONS = {
 class Tool:
     """Represents an installable tool/package"""
     
+    # Default timeout for script execution (5 minutes)
+    DEFAULT_TIMEOUT = 300
+    
     def __init__(self, data: dict, category_id: str, script_root: Path):
         self.id = data["id"]
         self.name = data["name"]
@@ -49,6 +52,7 @@ class Tool:
         self.requires_sudo = data.get("requires_sudo", False)
         self.requires_ssh = data.get("requires_ssh", False)
         self.check_cmd = data.get("check_cmd", "")
+        self.timeout = data.get("timeout", self.DEFAULT_TIMEOUT)  # Script execution timeout in seconds
         self.category_id = category_id
         
         self.status = Status.PENDING
