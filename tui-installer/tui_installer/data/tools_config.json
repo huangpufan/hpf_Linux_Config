@@ -33,7 +33,7 @@
           "id": "fzf",
           "name": "FZF 模糊查找",
           "description": "命令行模糊查找工具",
-          "script": "basic/git-install.sh",
+          "script": "basic/fzf-install.sh",
           "requires_sudo": false,
           "check_cmd": "command -v fzf"
         },
