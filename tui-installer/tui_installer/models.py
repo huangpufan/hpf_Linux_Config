@@ -9,7 +9,7 @@ from enum import Enum, auto
 from pathlib import Path
 from typing import List, Dict, Optional, Deque, TYPE_CHECKING
 
-from .constants import SCRIPT_DEFAULT_TIMEOUT, LOG_MAX_ENTRIES
+from .constants import SCRIPT_DEFAULT_TIMEOUT, LOG_MAX_ENTRIES, LOG_DIR_NAME, LOG_PERSIST_ENABLED
 
 if TYPE_CHECKING:
     from .system import SystemInfo
@@ -42,6 +42,9 @@ STATUS_ICONS = {
 class Tool:
     """Represents an installable tool/package"""
     
+    # Log directory for persistent storage (lazily initialized)
+    _log_dir: Optional[Path] = None
+    
     def __init__(self, data: dict, category_id: str, script_root: Path):
         self.id = data["id"]
         self.name = data["name"]
@@ -60,12 +63,32 @@ class Tool:
         self.start_time: Optional[float] = None
         self.end_time: Optional[float] = None
         
+        # Persistent log file (initialized when execution starts)
+        self._log_file: Optional[Path] = None
+        
         # Cache for script content preview
         self._script_cache: Optional[str] = None
         self._script_cache_lines: int = 0
         
         # Cache for rendered Syntax object (avoid re-highlighting on each frame)
         self._syntax_cache: Optional[object] = None
+    
+    @classmethod
+    def _ensure_log_dir(cls) -> Path:
+        """Ensure log directory exists and return its path."""
+        if cls._log_dir is None:
+            cls._log_dir = Path.home() / ".local" / "share" / LOG_DIR_NAME / "logs"
+            cls._log_dir.mkdir(parents=True, exist_ok=True)
+        return cls._log_dir
+    
+    def init_log_file(self) -> None:
+        """Initialize persistent log file for this tool's execution."""
+        if not LOG_PERSIST_ENABLED:
+            return
+        
+        log_dir = self._ensure_log_dir()
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self._log_file = log_dir / f"{self.id}_{timestamp}.log"
         
     @property
     def elapsed_time(self) -> str:
@@ -79,9 +102,27 @@ class Tool:
         return f"{delta/60:.1f}m"
     
     def add_log(self, line: str):
-        """Add log line with timestamp"""
+        """
+        Add log line with timestamp.
+        
+        Stores in memory (with size limit) and optionally persists to file.
+        """
         timestamp = datetime.now().strftime("%H:%M:%S")
-        self.logs.append(f"[{timestamp}] {line}")
+        timestamped = f"[{timestamp}] {line}"
+        self.logs.append(timestamped)
+        
+        # Persist to file if enabled
+        if self._log_file is not None:
+            try:
+                with open(self._log_file, "a", encoding="utf-8") as f:
+                    f.write(timestamped + "\n")
+            except IOError:
+                pass  # Silent fail - don't disrupt execution
+    
+    @property
+    def log_file_path(self) -> Optional[Path]:
+        """Get path to persistent log file, if available."""
+        return self._log_file
     
     def get_script_content(self, max_lines: int = 30) -> str:
         """Read and return script content for preview (cached)"""

@@ -49,3 +49,11 @@ MAX_CONCURRENT_CHECKS = 10
 # Uses deque to automatically discard oldest entries
 LOG_MAX_ENTRIES = 500
 
+# Directory for storing persistent log files
+# Uses XDG Base Directory specification
+LOG_DIR_NAME = "tui-installer"
+
+# Whether to enable persistent log storage (write full logs to file)
+# Set to True to preserve complete logs for large compilation tasks
+LOG_PERSIST_ENABLED = True
+

@@ -42,6 +42,10 @@ async def execute_tool(tool: Tool, state: AppState):
     """Execute a tool installation script asynchronously"""
     tool.status = Status.RUNNING
     tool.start_time = datetime.now().timestamp()
+    
+    # Initialize persistent log file
+    tool.init_log_file()
+    
     tool.add_log(f"开始执行: {tool.script_path}")
     state.active_tasks += 1
     
