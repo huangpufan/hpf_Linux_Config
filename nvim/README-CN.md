@@ -99,10 +99,10 @@ nvim 能额外提供的能力需要一定的学习成本，也是必然的。
 # 安装须知
 
 1. 如果 markdown preview 不生效
-``````
+```bash
 cd ~/.local/share/nvim/lazy/markdown-preview.nvim/app/ && npm install
 Lazy build markdown-preview.nvim
-``````
-3. `TSUpdate just`
+```
+2. `TSUpdate just`
 
 # To be continue.
