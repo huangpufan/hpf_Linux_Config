@@ -266,9 +266,7 @@ vim.keymap.set("n", "<C-n>", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file tr
 
 
 -- Other settings:
-
--- Close all spell check
-vim.opt.spell = false
+-- spell settings moved to options.lua
 
  -- Load alpha dashboard after session autoload decision to avoid flicker
  -- 仅在没有传入文件、且会话/插件未打开任何缓冲区时显示 Alpha，避免闪烁
