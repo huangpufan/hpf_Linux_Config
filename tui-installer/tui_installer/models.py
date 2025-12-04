@@ -147,7 +147,15 @@ class Category:
 class AppState:
     """Global application state"""
     
-    def __init__(self, categories: List[Category]):
+    def __init__(self, categories: List[Category], state_manager=None):
+        """
+        Initialize application state.
+        
+        Args:
+            categories: List of tool categories
+            state_manager: Optional StateManager instance for dependency injection.
+                          If not provided, uses the global singleton when needed.
+        """
         self.categories = categories
         self.current_category_idx = 0
         self.current_tool_idx = 0
@@ -155,6 +163,9 @@ class AppState:
         self.running = True
         self.active_tasks = 0
         self.focus_panel = "sidebar"  # sidebar, body - 当前焦点所在的边栏
+        
+        # Dependency injection for state manager
+        self.state_manager = state_manager
         
         # Track background tasks to prevent silent failures
         self.running_tasks: List = []

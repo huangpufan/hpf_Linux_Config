@@ -358,7 +358,10 @@ async def verify_and_update_tools(
     return statuses
 
 
-def verify_tools_fast(tools: List["Tool"]) -> Dict[str, str]:
+def verify_tools_fast(
+    tools: List["Tool"],
+    state_manager: Optional[StateManager] = None,
+) -> Dict[str, str]:
     """
     Synchronous fast verification for startup.
     
@@ -366,11 +369,13 @@ def verify_tools_fast(tools: List["Tool"]) -> Dict[str, str]:
     
     Args:
         tools: List of tools to verify
+        state_manager: Optional state manager (uses global if not provided)
     
     Returns:
         Dictionary mapping tool_id to status string
     """
-    state_manager = get_state_manager()
+    if state_manager is None:
+        state_manager = get_state_manager()
     state_manager.load()
     
     statuses = {}

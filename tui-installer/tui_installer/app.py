@@ -12,7 +12,7 @@ from .config import Config
 from .constants import UI_REFRESH_RATE, INPUT_POLL_INTERVAL
 from .models import AppState, Status
 from .system import check_system_fast, check_ssh_github_background
-from .state import verify_tools_fast, verify_and_update_tools
+from .state import StateManager, verify_tools_fast, verify_and_update_tools
 from .input import KeyboardInput, handle_input
 from .ui import render_ui
 from .theme import Theme
@@ -21,8 +21,17 @@ from .theme import Theme
 class Application:
     """Main TUI application"""
     
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, state_manager: Optional[StateManager] = None):
+        """
+        Initialize the application.
+        
+        Args:
+            config: Application configuration
+            state_manager: Optional StateManager instance for dependency injection.
+                          If not provided, uses the global singleton.
+        """
         self.config = config
+        self.state_manager = state_manager
         # Force truecolor (24-bit) to ensure consistent colors across terminals
         self.console = Console(force_terminal=True, color_system="truecolor")
         self.state: Optional[AppState] = None
@@ -35,7 +44,7 @@ class Application:
         """
         # Load configuration (fast JSON parse)
         categories = self.config.load()
-        self.state = AppState(categories)
+        self.state = AppState(categories, state_manager=self.state_manager)
         
         # Instant system check (file reads only, ~1ms)
         check_system_fast(self.state)
@@ -43,7 +52,7 @@ class Application:
         # Verify tool installation status (dual verification)
         # Uses local state file + real-time check_cmd detection
         all_tools = self.state.all_tools
-        statuses = verify_tools_fast(all_tools)
+        statuses = verify_tools_fast(all_tools, state_manager=self.state_manager)
         for tool in all_tools:
             if tool.id in statuses:
                 tool.apply_verified_status(statuses[tool.id])

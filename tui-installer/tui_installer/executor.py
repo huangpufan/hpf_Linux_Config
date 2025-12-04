@@ -10,7 +10,12 @@ from typing import List
 
 from .constants import SUDO_REFRESH_TIMEOUT, CHECK_CMD_TIMEOUT
 from .models import Tool, AppState, Status
-from .state import get_state_manager, check_tool_async
+from .state import StateManager, get_state_manager, check_tool_async
+
+
+def _get_state_manager(state: AppState) -> StateManager:
+    """Get state manager from AppState or fallback to global singleton."""
+    return state.state_manager if state.state_manager else get_state_manager()
 
 
 async def refresh_sudo_credentials() -> bool:
@@ -104,7 +109,7 @@ async def execute_tool(tool: Tool, state: AppState):
             tool.add_log(f"[失败] 脚本执行超时 ({tool.timeout}秒)")
             
             # Record timeout as failed installation
-            state_mgr = get_state_manager()
+            state_mgr = _get_state_manager(state)
             state_mgr.record_install(tool.id, success=False)
         elif proc.returncode == 0:
             tool.status = Status.SUCCESS
@@ -120,14 +125,14 @@ async def execute_tool(tool: Tool, state: AppState):
                     tool.add_log("[验证] ⚠ 检测未通过，可能需要重启终端")
             
             # Record successful installation to state file
-            state_mgr = get_state_manager()
+            state_mgr = _get_state_manager(state)
             state_mgr.record_install(tool.id, success=True)
         else:
             tool.status = Status.FAILED
             tool.add_log(f"[失败] 退出码: {proc.returncode}")
             
             # Record failed installation to state file
-            state_mgr = get_state_manager()
+            state_mgr = _get_state_manager(state)
             state_mgr.record_install(tool.id, success=False)
             
     except Exception as e:
@@ -135,7 +140,7 @@ async def execute_tool(tool: Tool, state: AppState):
         tool.add_log(f"[异常] {str(e)}")
         
         # Record exception as failed installation
-        state_mgr = get_state_manager()
+        state_mgr = _get_state_manager(state)
         state_mgr.record_install(tool.id, success=False)
     
     finally:
