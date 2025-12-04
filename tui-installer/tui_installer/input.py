@@ -7,6 +7,7 @@ import sys
 import termios
 import tty
 import select
+from typing import Optional
 
 from .models import AppState
 from .executor import execute_tool, install_selected
@@ -24,7 +25,7 @@ class KeyboardInput:
     def __exit__(self, *args):
         termios.tcsetattr(self.fd, termios.TCSADRAIN, self.old_settings)
     
-    def read_key_sync(self) -> str | None:
+    def read_key_sync(self) -> Optional[str]:
         """Synchronously read a key if available (non-blocking)
         
         Optimized: reduced select timeouts for faster key response

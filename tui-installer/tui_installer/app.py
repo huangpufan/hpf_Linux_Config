@@ -3,6 +3,8 @@ Main application logic and event loop
 """
 
 import asyncio
+from typing import List, Optional
+
 from rich.console import Console
 from rich.live import Live
 
@@ -22,8 +24,8 @@ class Application:
         self.config = config
         # Force truecolor (24-bit) to ensure consistent colors across terminals
         self.console = Console(force_terminal=True, color_system="truecolor")
-        self.state = None
-        self._background_tasks: list[asyncio.Task] = []
+        self.state: Optional[AppState] = None
+        self._background_tasks: List[asyncio.Task] = []
     
     def initialize_fast(self):
         """
