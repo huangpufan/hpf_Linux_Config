@@ -115,12 +115,10 @@ class Tool:
         Apply verified status from state manager.
         
         Args:
-            status_str: One of "installed", "broken", "pending"
+            status_str: One of "installed", "pending"
         """
         if status_str == "installed":
             self.status = Status.INSTALLED
-        elif status_str == "broken":
-            self.status = Status.BROKEN
         else:
             self.status = Status.PENDING
     

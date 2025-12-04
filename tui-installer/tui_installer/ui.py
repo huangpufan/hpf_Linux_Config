@@ -154,8 +154,6 @@ def make_tool_list(state: AppState) -> Panel:
     tool = state.current_tool
     if tool and tool.status == Status.INSTALLED:
         subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 Enter:日志 [已安装][/]"
-    elif tool and tool.status == Status.BROKEN:
-        subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 i:重装 Enter:日志 [异常][/]"
     else:
         subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 i:安装 a:批量安装 Enter:日志[/]"
     

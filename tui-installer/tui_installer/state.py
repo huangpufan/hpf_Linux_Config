@@ -286,11 +286,13 @@ def determine_tool_status(
     """
     Determine the display status for a tool based on dual verification.
     
-    Logic:
-    - check_passed=True  && has_record(success)  → "installed"
-    - check_passed=True  && no_record            → "installed" (external)
-    - check_passed=False && has_record(success)  → "broken"
-    - check_passed=False && no_record/failed     → "pending"
+    Logic (OR relationship):
+    - check_passed=True  OR has_record(success)  → "installed"
+    - check_passed=False AND no_record/failed    → "pending"
+    
+    The OR relationship ensures:
+    - Tools that need terminal restart after install are still marked as installed
+    - Inaccurate check_cmd won't affect status if we have a success record
     
     Args:
         tool_id: Tool identifier
@@ -298,23 +300,18 @@ def determine_tool_status(
         state_manager: Optional state manager (uses global if not provided)
     
     Returns:
-        Status string: "installed", "broken", or "pending"
+        Status string: "installed" or "pending"
     """
     if state_manager is None:
         state_manager = get_state_manager()
     
     has_success_record = state_manager.has_successful_record(tool_id)
     
-    if check_passed:
-        # Tool is actually available
+    # OR relationship: either check passes OR we have a success record
+    if check_passed or has_success_record:
         return "installed"
     else:
-        if has_success_record:
-            # Was installed but now broken/uninstalled
-            return "broken"
-        else:
-            # Never installed or previous install failed
-            return "pending"
+        return "pending"
 
 
 async def verify_and_update_tools(
@@ -384,4 +381,9 @@ def verify_tools_fast(tools: List["Tool"]) -> Dict[str, str]:
         state_manager.update_check_result(tool.id, check_passed)
     
     return statuses
+
+
+
+
+
 

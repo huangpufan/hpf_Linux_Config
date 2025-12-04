@@ -92,7 +92,6 @@ class Application:
         success_count = sum(1 for t in all_tools if t.status == Status.SUCCESS)
         installed_count = sum(1 for t in all_tools if t.status == Status.INSTALLED)
         failed_count = sum(1 for t in all_tools if t.status == Status.FAILED)
-        broken_count = sum(1 for t in all_tools if t.status == Status.BROKEN)
         
         if success_count > 0 or failed_count > 0:
             self.console.print(f"\n[bold]安装总结:[/]")
@@ -102,5 +101,3 @@ class Application:
                 self.console.print(f"  [{Theme.CYAN}]✓ 已安装: {installed_count}[/]")
             if failed_count > 0:
                 self.console.print(f"  [{Theme.RED}]✗ 失败: {failed_count}[/]")
-            if broken_count > 0:
-                self.console.print(f"  [{Theme.YELLOW}]⚠ 异常: {broken_count}[/]")
