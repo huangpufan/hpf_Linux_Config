@@ -46,7 +46,7 @@ require("nvim-tree").setup {
     enable = true, -- Enable watching the filesystem for changes
   },
   view = {
-    side = "right",
+    side = "left",
   },
   on_attach = on_attach,
   actions = {

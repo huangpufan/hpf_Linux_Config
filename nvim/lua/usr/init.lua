@@ -220,20 +220,15 @@ end, { expr = true })
 require("tree-sitter-just").setup {}
 require("colorful-winsep").setup {}
 
--- Load alpha dashboard after session autoload decision to avoid flicker
- -- 仅在没有传入文件、且会话/插件未打开任何缓冲区时显示 Alpha，避免闪烁
- vim.api.nvim_create_autocmd("VimEnter", {
-   once = true,
-   callback = function()
-     if vim.fn.argc(-1) > 0 then
-       return
-     end
-     -- 延后执行，以便让会话恢复或其他插件先打开缓冲区
-     vim.schedule(function()
-       local bufs = vim.fn.getbufinfo({ buflisted = 1 })
-       if #bufs == 0 then
-         require "usr.alpha"
-       end
-     end)
-   end,
- })
+-- 启动时：没有文件参数显示 alpha，有文件参数打开 nvim-tree
+if vim.fn.argc(-1) == 0 then
+  require "usr.alpha"
+else
+  vim.api.nvim_create_autocmd("VimEnter", {
+    once = true,
+    callback = function()
+      require("nvim-tree.api").tree.open()
+      vim.cmd "wincmd p"
+    end,
+  })
+end
