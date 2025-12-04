@@ -133,6 +133,17 @@ return {
         dashboard.button("q", "  Quit", ":qa<CR>"),
       }
 
+      -- Center dashboard vertically
+      dashboard.config.opts.noautocmd = true
+      dashboard.config.layout = {
+        { type = "padding", val = vim.fn.max({ 2, vim.fn.floor(vim.fn.winheight(0) * 0.2) }) },
+        dashboard.section.header,
+        { type = "padding", val = 2 },
+        dashboard.section.buttons,
+        { type = "padding", val = 1 },
+        dashboard.section.footer,
+      }
+
       alpha.setup(dashboard.config)
     end,
   },
@@ -251,6 +262,9 @@ return {
         char = "│",
         tab_char = "│",
       },
+      exclude = {
+        filetypes = { "alpha", "dashboard", "help", "lazy", "mason", "NvimTree" },
+      },
     },
   },
 
@@ -262,7 +276,29 @@ return {
     opts = {
       symbol = "│",
       options = { try_as_border = true },
+      draw = {
+        delay = 100,
+      },
     },
+    init = function()
+      -- Disable on special filetypes
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "alpha", "dashboard", "help", "lazy", "mason", "NvimTree", "Trouble" },
+        callback = function()
+          vim.b.miniindentscope_disable = true
+        end,
+      })
+      -- Also check current buffer (for alpha which loads before this plugin)
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "VeryLazy",
+        callback = function()
+          local ft = vim.bo.filetype
+          if ft == "alpha" or ft == "dashboard" then
+            vim.b.miniindentscope_disable = true
+          end
+        end,
+      })
+    end,
   },
 
   -- Todo comments
