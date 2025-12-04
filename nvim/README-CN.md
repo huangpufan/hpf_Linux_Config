@@ -1,108 +1,186 @@
-# 我的 NVIM 配置
+# Neovim 配置
 
-首先是一个问题，2024年了，为什么我们还要学习 vim/nvim？
+一个现代化、模块化的 Neovim 配置，专为 C/C++ 及通用开发设计。
 
-在有关 vim 相关的讨论中，经常有这么两种言论：
+## 📁 项目结构
 
-1. vim 是编辑器之神，其他一切的编辑器/ide 与之相比都黯然失色（Emacs 除外），vim 可以满足一切编程需求，all in one！
+```
+nvim/
+├── init.lua                  # 主入口文件
+├── lazy-lock.json            # 插件版本锁定文件
+├── efm.yaml                  # EFM 语言服务器配置
+│
+├── lua/
+│   ├── core/                 # 核心配置
+│   │   ├── init.lua          # 核心入口
+│   │   ├── options.lua       # Vim 选项
+│   │   ├── keymaps.lua       # 快捷键映射
+│   │   ├── autocmds.lua      # 自动命令
+│   │   └── lazy.lua          # 插件管理器 (lazy.nvim)
+│   │
+│   ├── config/               # 非插件配置模块
+│   │   ├── keybindings.lua   # Which-key 快捷键绑定
+│   │   └── lsp/              # LSP 工具模块
+│   │       ├── handlers.lua  # LSP 处理器
+│   │       └── servers.lua   # 服务器配置
+│   │
+│   └── plugins/              # 插件配置
+│       ├── init.lua          # 插件列表索引
+│       ├── colorscheme.lua   # 主题设置
+│       ├── ui.lua            # UI 插件
+│       ├── editor.lua        # 编辑器增强
+│       ├── completion.lua    # 补全 (nvim-cmp)
+│       ├── treesitter.lua    # Treesitter 配置
+│       ├── telescope.lua     # Telescope 搜索
+│       ├── git.lua           # Git 集成
+│       ├── terminal.lua      # 终端插件
+│       ├── markdown.lua      # Markdown 插件
+│       ├── tools.lua         # 其他工具
+│       └── lsp/              # LSP 插件规格
+│           └── init.lua      # LSP 插件
+│
+├── after/
+│   └── plugin/               # 后加载脚本
+│       ├── wilder.vim        # Wilder 配置
+│       └── utils.vim         # 工具函数
+│
+└── snippets/                 # 自定义代码片段
+    ├── c.snippets
+    ├── cpp.snippets
+    ├── markdown.snippets
+    └── sh.snippets
+```
 
-2. vim 是时代的垃圾，我们拥有 VSCode/Jetbrains 等极其现代，并且用户友好的现代 ide，不应该浪费任何一点时间在学习成本很高又没什么用的 vim 上面，垃圾就该被放到垃圾堆里。
+## ✨ 特性
 
-很有趣的一点是，虽然这两种言论都很极端，但是随处可见，尤其以抨击终端编辑器的居多。
+### 核心特性
+- 🚀 延迟加载，快速启动
+- 📦 使用 [lazy.nvim](https://github.com/folke/lazy.nvim) 管理插件
+- 🎨 美观的 Catppuccin 主题
+- ⌨️ 现代快捷键 (Ctrl+C/V/S/A)
 
-自从在阿里云的暑期实习接触到纯 vim 开发之后，我逐渐被它无限的可定制性以及高效的编程模式所吸引，综合学习了几个出名的配置框架，慢慢得出自己喜欢的配置。
+### LSP 与补全
+- 🔧 多语言 LSP 支持
+- ✏️ nvim-cmp 自动补全
+- 📝 LuaSnip 代码片段
+- 💡 代码操作与诊断
 
-目前还没有系统性整理过自己的配置文件，相比于 LazyVim/AstroNvim 这样成熟的配置框架相差甚远。只在特性上做到了自己可用的程度。
+### 导航与搜索
+- 🔍 Telescope 模糊查找
+- 🌳 nvim-tree 文件浏览器
+- ⚡ Flash.nvim 快速跳转
+- 📌 书签支持
 
-总体而言，我对于 nvim 作为开发环境的思考如下：
+### Git 集成
+- 📊 侧边栏 Git 标记
+- 📋 Git blame 显示
+- 🔀 Diffview 差异视图
+- 🚀 Lazygit 集成 (g=)
 
-## 不要有工具崇拜
-   
-   任何工具在历史当中都是短暂的，不同的工具适用于不同的场景。不存在 all in one 的工具。
+### 编辑器增强
+- 🎯 智能缩进
+- 💬 快速注释
+- 🔄 会话持久化
+- 📐 多光标编辑
 
-   永远会有更好用的工具出现，因此对于工具的无休止的争论是毫无意义的，无需盲目崇拜一类工具，也无需诋毁你不了解的工具。
+## ⌨️ 快捷键
 
-   了解，然后选择即可。
+### 通用
+| 快捷键 | 功能 |
+|--------|------|
+| `<Space>` | Leader 键 |
+| `<C-s>` | 保存所有 |
+| `<C-w>` | 关闭 buffer |
+| `<C-n>` | 切换文件树 |
+| `q` | 关闭窗口 |
+| `<Space>q` | 退出 Neovim |
 
-## 重要的是 feature
-    
-   我认为好的工具流选择策略是，首先思考，你的需要的是什么特性。接着去寻找能提供这些特性的工具。
+### 导航
+| 快捷键 | 功能 |
+|--------|------|
+| `<A-j>/<A-k>` | 上/下一个 buffer |
+| `<A-1-9>` | 跳转到第 N 个 buffer |
+| `<C-h>/<C-l>` | 切换窗口 |
+| `\` / `\|` | 水平/垂直分屏 |
 
-   而 nvim 比其他编辑器强的地方就在于，不仅拥有一个活跃的社区，提供常规编辑器所拥有的大部分功能插件，还降低了插件实现门槛（相比 vim），能够提供你自己实现这些特性的能力。
+### 搜索 (Telescope)
+| 快捷键 | 功能 |
+|--------|------|
+| `<Space>ff` | 查找文件 |
+| `<Space>fw` | 全局搜索 |
+| `<Space>fb` | 查找 buffer |
+| `<Space>fc` | 搜索光标下的词 |
 
-   nvim 是可编程的，而可编程的工具，能约束你的只有想象力。
+### LSP
+| 快捷键 | 功能 |
+|--------|------|
+| `gd` | 跳转到定义 |
+| `gr` | 跳转到引用 |
+| `K` | 悬浮文档 |
+| `<Space>la` | 代码操作 |
+| `<Space>lf` | 格式化代码 |
+| `<Space>rn` | 重命名符号 |
 
-   大概盘点一下我需要的代码编辑器特性：
+### Git
+| 快捷键 | 功能 |
+|--------|------|
+| `g=` | 打开 Lazygit |
+| `<Space>sg` | Git 状态 |
 
-### 必需特性
-   - 引用跳转，定义跳转，悬浮窗口预览
-   - 代码高亮与补全
-   - 函数调用时参数 tab 跳转与函数定义预览
-   - 迅速注释与反注释一行/一块代码
-   - 重命名符号（函数，变量名）
-   - 光标历史跳转（上一个/下一个位置）
-   - 撤销与重做
-   - 分栏浏览/编辑
-       - 窗口之间快速跳转
-   - 文件目录树
-       - 新建文件/文件夹
-       - 重命名/删除文件
-       - 集成 Git，符号显示是否编辑，是否提交
-       - 可定位当前文件在目录中的位置
-   - Git 集成
-       - git blame 每行显示历史 commit 信息、
-       - 行标识未 commit 的新增/编辑/删除的内容
-       - lazygit 集成
-   - 按照文件/项目搜索/替换字符串
-   - 代码格式化
-       - 可按照编程语言对应的格式化文件迅速格式化，如 .clangformat
-   - 终端集成
-       - 浮动终端，可随时换出
-   - 主题丰富可配置
-       - TODO: 可预览并随时切换
-       - TODO: 可针对不懂文件类型切换主题风格
-   - GDB 调试集成 (TODO)
-   - 标签页管理
-       - 可固定标签页
-       - 可移动标签页（移动顺序）
-       - 可快速切换
-       - 可关闭当前/其他/右侧标签页
-   - Snippet 代码片段
-       - 可简单增加/调用 snippet
-   - 项目管理
-       - 可跳转到不同项目目录
-   - 行号显示
-   - 现代编辑器惯用快捷键集成
-      - 复制黏贴 Ctrl C/V 
-      - 剪切 Ctrl X 
-      - 保存 Ctrl S 
-      - 全选 Ctrl A
-      - 关闭当前文件 Ctrl W
-   - Markdown 预览
----   
+## 🔧 安装
 
-### 可选特性
-   - 当前缩进突出显示
+1. 备份现有 Neovim 配置：
+   ```bash
+   mv ~/.config/nvim ~/.config/nvim.bak
+   ```
 
----
+2. 克隆或链接此配置：
+   ```bash
+   ln -s /path/to/this/nvim ~/.config/nvim
+   ```
 
-看完这些特性，我们会发现大部分编辑器都能做到这些点。比如 VSCode，甚至 jetbrains 系 IDE 提供的能力更强。
+3. 打开 Neovim，lazy.nvim 会自动安装插件：
+   ```bash
+   nvim
+   ```
 
-在我眼里，VSCode 和 nvim 几乎是一种东西。二者都是编辑器 + 插件的模式去发挥作用。VSCode 最有竞争力的地方就在于它的插件市场与账号自动同步相关设置，相当于开箱即用。
+4. 安装 LSP 服务器：
+   ```vim
+   :MasonInstallAll
+   ```
 
-而 nvim 从能力上与 VSCode 基本没有差异，在 LSP 推出之后，各大主流编辑器都是基于 LSP 做代码补全和跳转了。也可以选择将 nvim 相关的配置存到 github 上，同样是一次配置，到处使用。
+## 📝 注意事项
 
-nvim 能额外提供的能力需要一定的学习成本，也是必然的。
-
-
-
-# 安装须知
-
-1. 如果 markdown preview 不生效
+### Markdown 预览
+如果 Markdown 预览无法工作：
 ```bash
 cd ~/.local/share/nvim/lazy/markdown-preview.nvim/app/ && npm install
-Lazy build markdown-preview.nvim
 ```
-2. `TSUpdate just`
 
-# To be continue.
+### Treesitter
+更新 Just 语法：
+```vim
+:TSInstall just
+```
+
+## 🤔 设计理念
+
+### 不要有工具崇拜
+
+任何工具在历史当中都是短暂的，不同的工具适用于不同的场景。不存在 all in one 的工具。
+
+永远会有更好用的工具出现，因此对于工具的无休止的争论是毫无意义的，无需盲目崇拜一类工具，也无需诋毁你不了解的工具。
+
+了解，然后选择即可。
+
+### 重要的是 Feature
+
+我认为好的工具流选择策略是，首先思考，你需要的是什么特性。接着去寻找能提供这些特性的工具。
+
+而 Neovim 比其他编辑器强的地方就在于，不仅拥有一个活跃的社区，提供常规编辑器所拥有的大部分功能插件，还降低了插件实现门槛（相比 vim），能够提供你自己实现这些特性的能力。
+
+Neovim 是可编程的，而可编程的工具，能约束你的只有想象力。
+
+## 📄 许可证
+
+MIT
