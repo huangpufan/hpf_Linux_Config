@@ -26,11 +26,10 @@ class TestCheckSudo:
     @pytest.mark.asyncio
     async def test_check_sudo_available(self):
         """Should return True when sudo -n succeeds"""
-        mock_proc = MagicMock()
-        mock_proc.returncode = 0
-        mock_proc.wait = AsyncMock(return_value=None)
+        mock_result = MagicMock()
+        mock_result.returncode = 0
         
-        with patch('asyncio.create_subprocess_exec', return_value=mock_proc):
+        with patch('subprocess.run', return_value=mock_result):
             result = await check_sudo()
         
         assert result is True
@@ -38,11 +37,10 @@ class TestCheckSudo:
     @pytest.mark.asyncio
     async def test_check_sudo_unavailable(self):
         """Should return False when sudo -n fails"""
-        mock_proc = MagicMock()
-        mock_proc.returncode = 1
-        mock_proc.wait = AsyncMock(return_value=None)
+        mock_result = MagicMock()
+        mock_result.returncode = 1
         
-        with patch('asyncio.create_subprocess_exec', return_value=mock_proc):
+        with patch('subprocess.run', return_value=mock_result):
             result = await check_sudo()
         
         assert result is False

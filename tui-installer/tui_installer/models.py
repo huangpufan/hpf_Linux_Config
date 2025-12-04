@@ -153,6 +153,9 @@ class AppState:
         self.active_tasks = 0
         self.focus_panel = "sidebar"  # sidebar, body - 当前焦点所在的边栏
         
+        # Track background tasks to prevent silent failures
+        self.running_tasks: List = []
+        
         # System info (detailed, populated by check_system)
         self.system_info: Optional[SystemInfo] = None
         

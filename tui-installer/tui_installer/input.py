@@ -120,12 +120,14 @@ async def handle_input(state: AppState, key: str):
             # Allow installation for PENDING, BROKEN, and FAILED tools
             if tool.is_installable:
                 tool.selected = True
-                asyncio.create_task(execute_tool(tool, state))
+                task = asyncio.create_task(execute_tool(tool, state))
+                state.running_tasks.append(task)
     
     # Install all selected tools
     elif key in ('a', 'A'):
         if state.get_selected_tools():
-            asyncio.create_task(install_selected(state))
+            task = asyncio.create_task(install_selected(state))
+            state.running_tasks.append(task)
     
     # Toggle logs view (alternative keybinding)
     elif key == 'L':

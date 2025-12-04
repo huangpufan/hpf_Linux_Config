@@ -7,13 +7,13 @@ import asyncio
 import json
 import pytest
 from pathlib import Path
+from typing import Tuple
 from unittest.mock import patch, AsyncMock
 
 from tui_installer.app import Application
 from tui_installer.config import Config
 from tui_installer.models import AppState, Category, Tool, Status
 from tui_installer.executor import execute_tool, install_selected
-from tui_installer.system import check_system
 from tui_installer.input import handle_input
 
 
@@ -21,7 +21,7 @@ class TestEndToEndWorkflow:
     """Test complete installation workflows"""
 
     @pytest.fixture
-    def complete_setup(self, tmp_path: Path) -> tuple[Application, Path]:
+    def complete_setup(self, tmp_path: Path) -> Tuple[Application, Path]:
         """Create complete test environment"""
         script_root = tmp_path / "scripts" / "install-script"
         script_root.mkdir(parents=True)
@@ -117,8 +117,9 @@ exit 0
         """Test complete app initialization"""
         app, _ = complete_setup
         
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         assert app.state is not None
         assert len(app.state.categories) == 2
@@ -129,8 +130,9 @@ exit 0
         """Test installing a single tool"""
         app, _ = complete_setup
         
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         tool = app.state.all_tools[0]  # success-tool
         await execute_tool(tool, app.state)
@@ -143,8 +145,9 @@ exit 0
         """Test handling of failed installation"""
         app, _ = complete_setup
         
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         tool = app.state.all_tools[1]  # fail-tool
         await execute_tool(tool, app.state)
@@ -158,8 +161,9 @@ exit 0
         """Test SSH-dependent tool skipped when SSH unavailable"""
         app, _ = complete_setup
         
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         app.state.has_ssh = False
         
@@ -174,8 +178,9 @@ exit 0
         """Test batch installation of multiple tools"""
         app, _ = complete_setup
         
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         # Select multiple tools
         for tool in app.state.all_tools[:3]:
@@ -226,20 +231,31 @@ class TestNavigationWorkflow:
 
     @pytest.mark.asyncio
     async def test_complete_navigation(self, nav_state: AppState):
-        """Test navigating through all categories and tools"""
-        # Navigate right through categories
-        for _ in range(2):
-            await handle_input(nav_state, 'l')
+        """Test navigating through categories and tools using focus panel"""
+        # Initial state: focus on sidebar
+        assert nav_state.focus_panel == "sidebar"
+        
+        # Navigate down through categories in sidebar
+        await handle_input(nav_state, 'j')
+        await handle_input(nav_state, 'j')
         assert nav_state.current_category_idx == 2
         
-        # Navigate down through tools
+        # Switch focus to body
+        await handle_input(nav_state, 'l')
+        assert nav_state.focus_panel == "body"
+        
+        # Navigate down through tools in body
         for _ in range(3):
             await handle_input(nav_state, 'j')
         assert nav_state.current_tool_idx == 3
         
-        # Navigate back
-        for _ in range(2):
-            await handle_input(nav_state, 'h')
+        # Switch back to sidebar
+        await handle_input(nav_state, 'h')
+        assert nav_state.focus_panel == "sidebar"
+        
+        # Navigate back up through categories
+        await handle_input(nav_state, 'k')
+        await handle_input(nav_state, 'k')
         assert nav_state.current_category_idx == 0
         
         # Tool index should reset on category change
@@ -248,15 +264,24 @@ class TestNavigationWorkflow:
     @pytest.mark.asyncio
     async def test_selection_across_categories(self, nav_state: AppState):
         """Test selecting tools across categories"""
-        # Select tool in first category
-        await handle_input(nav_state, ' ')
+        # Switch to body to select tool
+        await handle_input(nav_state, 'l')
+        await handle_input(nav_state, ' ')  # Select first tool in first category
         
-        # Move to second category and select
+        # Switch to sidebar, move to second category
+        await handle_input(nav_state, 'h')
+        await handle_input(nav_state, 'j')
+        
+        # Switch to body and select tool
         await handle_input(nav_state, 'l')
         await handle_input(nav_state, 'j')
         await handle_input(nav_state, ' ')
         
-        # Move to third category and select
+        # Switch to sidebar, move to third category
+        await handle_input(nav_state, 'h')
+        await handle_input(nav_state, 'j')
+        
+        # Switch to body and select tool
         await handle_input(nav_state, 'l')
         await handle_input(nav_state, ' ')
         
@@ -273,6 +298,7 @@ class TestNavigationWorkflow:
         assert nav_state.view_mode == "logs"
         
         # Navigation should not work in logs view
+        nav_state.focus_panel = "body"
         prev_idx = nav_state.current_tool_idx
         await handle_input(nav_state, 'j')
         assert nav_state.current_tool_idx == prev_idx
@@ -493,7 +519,8 @@ class TestStateConsistency:
         consistency_state.all_tools[0].selected = True
         consistency_state.all_tools[2].selected = True
         
-        # Navigate
+        # Navigate (need to set focus_panel to body for tool navigation)
+        consistency_state.focus_panel = "body"
         await handle_input(consistency_state, 'j')
         await handle_input(consistency_state, 'k')
         
@@ -501,4 +528,3 @@ class TestStateConsistency:
         assert consistency_state.all_tools[0].selected is True
         assert consistency_state.all_tools[1].selected is False
         assert consistency_state.all_tools[2].selected is True
-
