@@ -10,6 +10,7 @@ return {
     priority = 1000,
     config = function()
       require("catppuccin").setup({
+        flavour = "frappe", -- latte, frappe, macchiato, mocha
         aerial = true,
         alpha = true,
         cmp = true,
