@@ -100,7 +100,7 @@ require("lazy").setup({
     end,
   }, -- simple to use language server installer
   { "williamboman/mason-lspconfig.nvim", event = "VeryLazy" },
-  { "jose-elias-alvarez/null-ls.nvim", event = "VeryLazy" }, -- for formatters and linters
+  { "nvimtools/none-ls.nvim", event = "VeryLazy" }, -- for formatters and linters (community fork of null-ls)
   { "j-hui/fidget.nvim", event = "VeryLazy", tag = "legacy" },
   { "SmiteshP/nvim-navic", event = "VeryLazy" },
   { "utilyre/barbecue.nvim", event = "VeryLazy" },
