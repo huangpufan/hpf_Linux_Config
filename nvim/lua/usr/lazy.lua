@@ -128,9 +128,7 @@ require("lazy").setup({
   {
     "smjonas/inc-rename.nvim",
     cmd = "IncRename",
-    config = function()
-      require("inc_rename").setup()
-    end,
+    -- config is in init.lua with dressing integration
   },
 
   { "rmagatti/goto-preview", keys = { "gd", "gD" } },
