@@ -7,6 +7,20 @@ from pathlib import Path
 
 from tui_installer.config import Config
 from tui_installer.models import AppState, Category, Tool, Status
+import tui_installer.state as state_module
+
+
+@pytest.fixture(autouse=True)
+def reset_state_manager():
+    """
+    Reset global state manager before and after each test.
+    
+    This prevents test state leakage between tests when using the
+    global StateManager singleton pattern.
+    """
+    state_module._state_manager = None
+    yield
+    state_module._state_manager = None
 
 
 # Sample test configuration
