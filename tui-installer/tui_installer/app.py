@@ -9,6 +9,7 @@ from rich.console import Console
 from rich.live import Live
 
 from .config import Config
+from .constants import UI_REFRESH_RATE, INPUT_POLL_INTERVAL
 from .models import AppState, Status
 from .system import check_system_fast, check_ssh_github_background
 from .state import verify_tools_fast, verify_and_update_tools
@@ -57,7 +58,7 @@ class Application:
             with Live(
                 render_ui(self.state),
                 console=self.console,
-                refresh_per_second=10,  # Lower refresh rate - input triggers immediate update
+                refresh_per_second=UI_REFRESH_RATE,
                 screen=True
             ) as live:
                 
@@ -70,7 +71,7 @@ class Application:
                     try:
                         # Get key with short timeout for responsive input
                         try:
-                            key = await asyncio.wait_for(kbd.get_key(), timeout=0.016)
+                            key = await asyncio.wait_for(kbd.get_key(), timeout=INPUT_POLL_INTERVAL)
                             await handle_input(self.state, key)
                             # Immediate UI update after input - key response
                             live.update(render_ui(self.state))

@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List
 
+from .constants import SUDO_REFRESH_TIMEOUT, CHECK_CMD_TIMEOUT
 from .models import Tool, AppState, Status
 from .state import get_state_manager, check_tool_async
 
@@ -26,7 +27,7 @@ async def refresh_sudo_credentials() -> bool:
             stdout=asyncio.subprocess.DEVNULL,
             stderr=asyncio.subprocess.DEVNULL,
         )
-        await asyncio.wait_for(refresh_proc.wait(), timeout=5.0)
+        await asyncio.wait_for(refresh_proc.wait(), timeout=SUDO_REFRESH_TIMEOUT)
         return refresh_proc.returncode == 0
     except (asyncio.TimeoutError, OSError):
         return False
@@ -112,7 +113,7 @@ async def execute_tool(tool: Tool, state: AppState):
             # Verify installation with check_cmd
             if tool.check_cmd:
                 tool.add_log("[验证] 检测安装结果...")
-                check_passed = await check_tool_async(tool.check_cmd, timeout=5.0)
+                check_passed = await check_tool_async(tool.check_cmd, timeout=CHECK_CMD_TIMEOUT)
                 if check_passed:
                     tool.add_log("[验证] ✓ 检测通过")
                 else:

@@ -14,6 +14,7 @@ from rich.table import Table
 from rich.text import Text
 from rich import box
 
+from .constants import LOG_DISPLAY_LINES
 from .models import AppState, STATUS_ICONS, Status
 from .theme import Theme
 
@@ -223,8 +224,7 @@ def make_logs(state: AppState) -> Panel:
         )
     
     # Get last N lines - auto-scroll by always showing most recent
-    # Calculate available height (approximate, assume ~30 lines visible)
-    max_lines = 50
+    max_lines = LOG_DISPLAY_LINES
     log_lines = list(tool.logs)[-max_lines:]
     
     if log_lines:

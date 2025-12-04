@@ -18,6 +18,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, TYPE_CHECKING
 
+from .constants import CHECK_CMD_TIMEOUT, MAX_CONCURRENT_CHECKS
+
 if TYPE_CHECKING:
     from .models import Tool, AppState
 
@@ -197,7 +199,7 @@ def get_state_manager() -> StateManager:
     return _state_manager
 
 
-def check_tool_sync(check_cmd: str, timeout: float = 5.0) -> bool:
+def check_tool_sync(check_cmd: str, timeout: float = CHECK_CMD_TIMEOUT) -> bool:
     """
     Synchronously check if a tool is installed using its check_cmd.
     
@@ -223,7 +225,7 @@ def check_tool_sync(check_cmd: str, timeout: float = 5.0) -> bool:
         return False
 
 
-async def check_tool_async(check_cmd: str, timeout: float = 5.0) -> bool:
+async def check_tool_async(check_cmd: str, timeout: float = CHECK_CMD_TIMEOUT) -> bool:
     """
     Asynchronously check if a tool is installed using its check_cmd.
     
@@ -251,8 +253,8 @@ async def check_tool_async(check_cmd: str, timeout: float = 5.0) -> bool:
 
 async def check_tools_batch_async(
     tools: List["Tool"], 
-    timeout: float = 5.0,
-    max_concurrent: int = 10
+    timeout: float = CHECK_CMD_TIMEOUT,
+    max_concurrent: int = MAX_CONCURRENT_CHECKS
 ) -> Dict[str, bool]:
     """
     Check multiple tools concurrently with rate limiting.

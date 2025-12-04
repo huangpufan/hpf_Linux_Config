@@ -9,6 +9,8 @@ from enum import Enum, auto
 from pathlib import Path
 from typing import List, Dict, Optional, Deque, TYPE_CHECKING
 
+from .constants import SCRIPT_DEFAULT_TIMEOUT, LOG_MAX_ENTRIES
+
 if TYPE_CHECKING:
     from .system import SystemInfo
 
@@ -40,9 +42,6 @@ STATUS_ICONS = {
 class Tool:
     """Represents an installable tool/package"""
     
-    # Default timeout for script execution (5 minutes)
-    DEFAULT_TIMEOUT = 300
-    
     def __init__(self, data: dict, category_id: str, script_root: Path):
         self.id = data["id"]
         self.name = data["name"]
@@ -52,12 +51,12 @@ class Tool:
         self.requires_sudo = data.get("requires_sudo", False)
         self.requires_ssh = data.get("requires_ssh", False)
         self.check_cmd = data.get("check_cmd", "")
-        self.timeout = data.get("timeout", self.DEFAULT_TIMEOUT)  # Script execution timeout in seconds
+        self.timeout = data.get("timeout", SCRIPT_DEFAULT_TIMEOUT)
         self.category_id = category_id
         
         self.status = Status.PENDING
         self.selected = False
-        self.logs: Deque[str] = deque(maxlen=500)
+        self.logs: Deque[str] = deque(maxlen=LOG_MAX_ENTRIES)
         self.start_time: Optional[float] = None
         self.end_time: Optional[float] = None
         
