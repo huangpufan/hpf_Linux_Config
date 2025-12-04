@@ -255,8 +255,7 @@ end, { expr = true })
 require("tree-sitter-just").setup {}
 require("colorful-winsep").setup {}
 
-vim.keymap.set("n", "<C-n>", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file tree" })
-
+-- <C-n> keymap is defined in which-key.lua
 
 -- Other settings:
 -- spell settings moved to options.lua
