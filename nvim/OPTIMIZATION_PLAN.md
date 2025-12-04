@@ -21,10 +21,10 @@
 
 ### 优先级：低（可选优化）
 
-- [ ] **[L1] 使用 vim.uv 替代 vim.loop（兼容性）**
-- [ ] **[L2] 考虑迁移 null-ls 到 none-ls**
-- [ ] **[L3] 更新 fidget.nvim 到新版本**
-- [ ] **[L4] 清理 init.lua 中的注释代码**
+- [x] **[L1] 使用 vim.uv 替代 vim.loop（兼容性）** ✅ (commit: 2761954)
+- [x] **[L2] 考虑迁移 null-ls 到 none-ls** ✅ (commit: f04c473)
+- [x] **[L3] 更新 fidget.nvim 到新版本** ✅ (commit: cbd18e0)
+- [x] **[L4] 清理 init.lua 中的注释代码** ✅ (commit: e67ed1d, -41 lines)
 
 ---
 
