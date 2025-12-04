@@ -6,6 +6,7 @@ import asyncio
 import json
 import pytest
 from pathlib import Path
+from typing import Tuple
 from unittest.mock import patch, MagicMock, AsyncMock
 from io import StringIO
 
@@ -18,7 +19,7 @@ class TestApplication:
     """Test Application class"""
 
     @pytest.fixture
-    def temp_config(self, tmp_path: Path) -> tuple[Path, Path]:
+    def temp_config(self, tmp_path: Path) -> Tuple[Path, Path]:
         """Create temporary config and script directories"""
         script_root = tmp_path / "scripts"
         script_root.mkdir()
@@ -62,7 +63,7 @@ class TestApplication:
         return config_file, script_root
 
     @pytest.fixture
-    def app(self, temp_config: tuple[Path, Path]) -> Application:
+    def app(self, temp_config: Tuple[Path, Path]) -> Application:
         """Create Application instance"""
         config_file, script_root = temp_config
         config = Config(config_file, script_root)
@@ -72,28 +73,28 @@ class TestApplication:
 class TestApplicationInitialization(TestApplication):
     """Test application initialization"""
 
-    @pytest.mark.asyncio
-    async def test_initialize_loads_config(self, app: Application):
-        """Application should load configuration on initialize"""
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await app.initialize()
+    def test_initialize_loads_config(self, app: Application):
+        """Application should load configuration on initialize_fast"""
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         assert app.state is not None
         assert len(app.state.categories) > 0
 
-    @pytest.mark.asyncio
-    async def test_initialize_checks_system(self, app: Application):
-        """Application should run system checks on initialize"""
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock) as mock_check:
-            await app.initialize()
+    def test_initialize_checks_system(self, app: Application):
+        """Application should run system checks on initialize_fast"""
+        with patch('tui_installer.app.check_system_fast') as mock_check:
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         mock_check.assert_called_once()
 
-    @pytest.mark.asyncio
-    async def test_initialize_creates_state(self, app: Application):
-        """Application should create AppState on initialize"""
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await app.initialize()
+    def test_initialize_creates_state(self, app: Application):
+        """Application should create AppState on initialize_fast"""
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         assert isinstance(app.state, AppState)
         assert app.state.running is True
@@ -102,11 +103,11 @@ class TestApplicationInitialization(TestApplication):
 class TestApplicationSummary(TestApplication):
     """Test application summary display"""
 
-    @pytest.mark.asyncio
-    async def test_show_summary_success(self, app: Application, capsys):
+    def test_show_summary_success(self, app: Application, capsys):
         """Should display success count"""
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         # Mark some tools as successful
         app.state.all_tools[0].status = Status.SUCCESS
@@ -116,22 +117,22 @@ class TestApplicationSummary(TestApplication):
         # Rich console output may not be captured by capsys
         # Just verify no exception is raised
 
-    @pytest.mark.asyncio
-    async def test_show_summary_failure(self, app: Application):
+    def test_show_summary_failure(self, app: Application):
         """Should display failure count"""
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         app.state.all_tools[0].status = Status.FAILED
         
         # Should not raise
         app.show_summary()
 
-    @pytest.mark.asyncio
-    async def test_show_summary_mixed(self, app: Application):
+    def test_show_summary_mixed(self, app: Application):
         """Should display both success and failure counts"""
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         app.state.all_tools[0].status = Status.SUCCESS
         if len(app.state.all_tools) > 1:
@@ -139,11 +140,11 @@ class TestApplicationSummary(TestApplication):
         
         app.show_summary()
 
-    @pytest.mark.asyncio
-    async def test_show_summary_none(self, app: Application):
+    def test_show_summary_none(self, app: Application):
         """Should not display when no tools were run"""
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         # All tools remain PENDING
         app.show_summary()
@@ -152,23 +153,21 @@ class TestApplicationSummary(TestApplication):
 class TestApplicationState(TestApplication):
     """Test application state management"""
 
-    @pytest.mark.asyncio
-    async def test_state_initially_none(self, app: Application):
+    def test_state_initially_none(self, app: Application):
         """State should be None before initialization"""
         assert app.state is None
 
-    @pytest.mark.asyncio
-    async def test_state_populated_after_init(self, app: Application):
+    def test_state_populated_after_init(self, app: Application):
         """State should be populated after initialization"""
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                app.initialize_fast()
         
         assert app.state is not None
         assert len(app.state.categories) == 1
         assert len(app.state.all_tools) == 2
 
-    @pytest.mark.asyncio
-    async def test_console_exists(self, app: Application):
+    def test_console_exists(self, app: Application):
         """Application should have a Console instance"""
         from rich.console import Console
         assert isinstance(app.console, Console)
@@ -183,8 +182,7 @@ class TestApplicationConfig(TestApplication):
         config_file, _ = temp_config
         assert app.config.config_file == config_file
 
-    @pytest.mark.asyncio
-    async def test_invalid_config_raises(self, tmp_path: Path):
+    def test_invalid_config_raises(self, tmp_path: Path):
         """Application should raise on invalid config"""
         config_file = tmp_path / "invalid.json"
         config_file.write_text("invalid json")
@@ -193,16 +191,15 @@ class TestApplicationConfig(TestApplication):
         app = Application(config)
         
         with pytest.raises(json.JSONDecodeError):
-            await app.initialize()
+            app.initialize_fast()
 
-    @pytest.mark.asyncio
-    async def test_missing_config_raises(self, tmp_path: Path):
+    def test_missing_config_raises(self, tmp_path: Path):
         """Application should raise on missing config"""
         config = Config(tmp_path / "nonexistent.json", tmp_path)
         app = Application(config)
         
         with pytest.raises(FileNotFoundError):
-            await app.initialize()
+            app.initialize_fast()
 
 
 class TestApplicationToolCounts:
@@ -248,19 +245,19 @@ class TestApplicationToolCounts:
         config = Config(config_file, script_root)
         return Application(config)
 
-    @pytest.mark.asyncio
-    async def test_all_tools_count(self, multi_tool_app: Application):
+    def test_all_tools_count(self, multi_tool_app: Application):
         """Should count all tools across categories"""
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await multi_tool_app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                multi_tool_app.initialize_fast()
         
         assert len(multi_tool_app.state.all_tools) == 5
 
-    @pytest.mark.asyncio
-    async def test_success_count(self, multi_tool_app: Application):
+    def test_success_count(self, multi_tool_app: Application):
         """Should count successful tools"""
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await multi_tool_app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                multi_tool_app.initialize_fast()
         
         multi_tool_app.state.all_tools[0].status = Status.SUCCESS
         multi_tool_app.state.all_tools[2].status = Status.SUCCESS
@@ -268,14 +265,13 @@ class TestApplicationToolCounts:
         success_count = sum(1 for t in multi_tool_app.state.all_tools if t.status == Status.SUCCESS)
         assert success_count == 2
 
-    @pytest.mark.asyncio
-    async def test_failed_count(self, multi_tool_app: Application):
+    def test_failed_count(self, multi_tool_app: Application):
         """Should count failed tools"""
-        with patch('tui_installer.app.check_system', new_callable=AsyncMock):
-            await multi_tool_app.initialize()
+        with patch('tui_installer.app.check_system_fast'):
+            with patch('tui_installer.app.verify_tools_fast', return_value={}):
+                multi_tool_app.initialize_fast()
         
         multi_tool_app.state.all_tools[1].status = Status.FAILED
         
         failed_count = sum(1 for t in multi_tool_app.state.all_tools if t.status == Status.FAILED)
         assert failed_count == 1
-
