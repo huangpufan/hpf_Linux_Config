@@ -6,9 +6,10 @@ across different terminal themes.
 """
 
 from datetime import datetime
-from rich.console import Console
+from rich.console import Console, Group
 from rich.layout import Layout
 from rich.panel import Panel
+from rich.syntax import Syntax
 from rich.table import Table
 from rich.text import Text
 from rich import box
@@ -292,7 +293,6 @@ def make_preview(state: AppState) -> Panel:
     
     # Use cached Syntax object if available (avoid expensive re-highlighting)
     if tool._syntax_cache is None:
-        from rich.syntax import Syntax
         script_content = tool.get_script_content(max_lines=25)
         try:
             tool._syntax_cache = Syntax(
@@ -307,7 +307,6 @@ def make_preview(state: AppState) -> Panel:
             # Fallback: cache as plain text
             tool._syntax_cache = Text(script_content, overflow="fold", style=Theme.TEXT)
     
-    from rich.console import Group
     content = Group(Text.from_markup(info_text), tool._syntax_cache)
     
     return Panel(
