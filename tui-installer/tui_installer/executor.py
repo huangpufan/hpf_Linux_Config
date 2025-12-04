@@ -12,6 +12,26 @@ from .models import Tool, AppState, Status
 from .state import get_state_manager, check_tool_async
 
 
+async def refresh_sudo_credentials() -> bool:
+    """
+    Attempt to refresh sudo credentials before executing a script.
+    
+    Returns:
+        True if sudo credentials are valid, False otherwise
+    """
+    try:
+        refresh_proc = await asyncio.create_subprocess_exec(
+            "sudo", "-v",
+            stdin=asyncio.subprocess.DEVNULL,
+            stdout=asyncio.subprocess.DEVNULL,
+            stderr=asyncio.subprocess.DEVNULL,
+        )
+        await asyncio.wait_for(refresh_proc.wait(), timeout=5.0)
+        return refresh_proc.returncode == 0
+    except (asyncio.TimeoutError, OSError):
+        return False
+
+
 async def execute_tool(tool: Tool, state: AppState):
     """Execute a tool installation script asynchronously"""
     tool.status = Status.RUNNING
@@ -25,6 +45,14 @@ async def execute_tool(tool: Tool, state: AppState):
             tool.status = Status.SKIPPED
             tool.add_log("[警告] 需要SSH密钥配置，已跳过")
             return
+        
+        # Refresh sudo credentials if needed (prevent race condition)
+        if tool.requires_sudo:
+            tool.add_log("[检查] 刷新 sudo 凭证...")
+            if not await refresh_sudo_credentials():
+                tool.status = Status.FAILED
+                tool.add_log("[错误] sudo 凭证已过期，请重新运行程序")
+                return
         
         if not tool.script_path.exists():
             tool.status = Status.FAILED
