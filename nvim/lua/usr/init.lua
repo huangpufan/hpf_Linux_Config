@@ -31,12 +31,8 @@ require("catppuccin").setup {
   navic = { enabled = true, custom_bg = "lualine" },
 }
 require "usr.bufferline"
-
---require("usr.code_runner")
--- require "usr.hydra"
 require "usr.nvim-tree"
 require "usr.nvim-treesitter"
---require("usr.orgmode")
 require "usr.telescope"
 require "usr.version"
 require "usr.which-key"
@@ -57,38 +53,12 @@ require("fidget").setup()
 require("nvim-navic").setup()
 require("barbecue").setup()
 require("nvim-lightbulb").update_lightbulb()
--- require("im_select").setup()
 require("lualine").setup()
---require("rsync").setup()
 require("Comment").setup()
---require("virt-column").setup()
--- require("neo-tree").paste_default_config()
---
 
--- require("luasnip.loaders.from_lua").lazy_load({ paths = "~/.config/nvim/LuaSnip/" })
 require("luasnip.loaders.from_snipmate").lazy_load { paths = "~/.config/nvim/snippets/" }
--- require("luasnip.loaders.from_vscode").load({paths = "~/.config/nvim/snippets"})
 
 require("lsp_signature").setup()
-
--- Usage:
---     Old text                    Command         New text
--- --------------------------------------------------------------------------------
---     surr*ound_words             ysiw)           (surround_words)
---     *make strings               ys$"            "make strings"
---     [delete ar*ound me!]        ds]             delete around me!
---     remove <b>HTML t*ags</b>    dst             remove HTML tags
---     'change quot*es'            cs'"            "change quotes"
---     <b>or tag* types</b>        csth1<CR>       <h1>or tag types</h1>
---     delete(functi*on calls)     dsf             function calls
---
-
--- -- workaround for https://github.com/neovim/neovim/issues/21856
--- vim.api.nvim_create_autocmd({ "VimLeave" }, {
---   callback = function()
---     vim.cmd "sleep 10m"
---   end,
--- })
 
 require("aerial").setup {
   backends = { "markdown", "man", "lsp", "treesitter" },
@@ -111,10 +81,7 @@ require("tabout").setup()
 require("goto-preview").setup {
   default_mappings = true,
 }
--- require("ibl").setup()
 require("mini.indentscope").setup()
--- instances.
--- require("neoscroll").setup()
 
 require("hlargs").setup {
   color = "#FF7F7F",
@@ -173,8 +140,6 @@ require("hlargs").setup {
     },
   },
 }
-
--- nvim-tree configuration is in nvim-tree.lua (removed duplicate here)
 
 local helpers = require "incline.helpers"
 require("incline").setup {
@@ -255,12 +220,7 @@ end, { expr = true })
 require("tree-sitter-just").setup {}
 require("colorful-winsep").setup {}
 
--- <C-n> keymap is defined in which-key.lua
-
--- Other settings:
--- spell settings moved to options.lua
-
- -- Load alpha dashboard after session autoload decision to avoid flicker
+-- Load alpha dashboard after session autoload decision to avoid flicker
  -- 仅在没有传入文件、且会话/插件未打开任何缓冲区时显示 Alpha，避免闪烁
  vim.api.nvim_create_autocmd("VimEnter", {
    once = true,
