@@ -1,4 +1,6 @@
+-- Unified nvim-treesitter configuration (merged from 3 separate setup calls)
 require("nvim-treesitter.configs").setup {
+  -- Highlighting configuration
   -- If TS highlights are not enabled at all, or disabled via `disable` prop, highlighting will fallback to default Vim syntax highlighting
   highlight = {
     enable = true,
@@ -6,6 +8,7 @@ require("nvim-treesitter.configs").setup {
     disable = { "org", "c", "cpp" },
     -- additional_vim_regex_highlighting = { "org" },
   },
+
   -- ensure_installed = "maintained", 安装目前维护的所有语言 treesitter 插件。
   ensure_installed = {
     --
@@ -46,10 +49,9 @@ require("nvim-treesitter.configs").setup {
     -- "scala",
     -- "rst",
   },
-}
 
--- 从 https://github.com/nvim-treesitter/nvim-treesitter-textobjects 拷贝过来的配置
-require("nvim-treesitter.configs").setup {
+  -- 从 https://github.com/nvim-treesitter/nvim-treesitter-textobjects 拷贝过来的配置
+  -- Textsubjects configuration (RRethy/nvim-treesitter-textsubjects)
   textsubjects = {
     enable = true,
     prev_selection = ",", -- (Optional) keymap to select the previous selection
@@ -59,9 +61,8 @@ require("nvim-treesitter.configs").setup {
       ["i;"] = "textsubjects-container-inner",
     },
   },
-}
 
-require("nvim-treesitter.configs").setup {
+  -- Textobjects configuration (nvim-treesitter/nvim-treesitter-textobjects)
   textobjects = {
     select = {
       enable = true,
