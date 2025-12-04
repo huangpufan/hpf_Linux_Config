@@ -86,8 +86,9 @@ class TestNavigationInput(TestHandleInput):
     """Test navigation keybindings"""
 
     @pytest.mark.asyncio
-    async def test_move_down_j(self, state_with_tools: AppState):
-        """'j' should move tool selection down"""
+    async def test_move_down_j_in_body(self, state_with_tools: AppState):
+        """'j' should move tool selection down when focus is on body"""
+        state_with_tools.focus_panel = "body"
         assert state_with_tools.current_tool_idx == 0
         
         await handle_input(state_with_tools, 'j')
@@ -95,15 +96,17 @@ class TestNavigationInput(TestHandleInput):
         assert state_with_tools.current_tool_idx == 1
 
     @pytest.mark.asyncio
-    async def test_move_down_arrow(self, state_with_tools: AppState):
-        """DOWN arrow should move tool selection down"""
+    async def test_move_down_arrow_in_body(self, state_with_tools: AppState):
+        """DOWN arrow should move tool selection down when focus is on body"""
+        state_with_tools.focus_panel = "body"
         await handle_input(state_with_tools, 'DOWN')
         
         assert state_with_tools.current_tool_idx == 1
 
     @pytest.mark.asyncio
-    async def test_move_up_k(self, state_with_tools: AppState):
-        """'k' should move tool selection up"""
+    async def test_move_up_k_in_body(self, state_with_tools: AppState):
+        """'k' should move tool selection up when focus is on body"""
+        state_with_tools.focus_panel = "body"
         state_with_tools.current_tool_idx = 1
         
         await handle_input(state_with_tools, 'k')
@@ -111,8 +114,9 @@ class TestNavigationInput(TestHandleInput):
         assert state_with_tools.current_tool_idx == 0
 
     @pytest.mark.asyncio
-    async def test_move_up_arrow(self, state_with_tools: AppState):
-        """UP arrow should move tool selection up"""
+    async def test_move_up_arrow_in_body(self, state_with_tools: AppState):
+        """UP arrow should move tool selection up when focus is on body"""
+        state_with_tools.focus_panel = "body"
         state_with_tools.current_tool_idx = 1
         
         await handle_input(state_with_tools, 'UP')
@@ -120,43 +124,66 @@ class TestNavigationInput(TestHandleInput):
         assert state_with_tools.current_tool_idx == 0
 
     @pytest.mark.asyncio
-    async def test_move_category_right_l(self, state_with_tools: AppState):
-        """'l' should move to next category"""
+    async def test_move_category_down_j_in_sidebar(self, state_with_tools: AppState):
+        """'j' should move category selection down when focus is on sidebar"""
+        state_with_tools.focus_panel = "sidebar"
         assert state_with_tools.current_category_idx == 0
+        
+        await handle_input(state_with_tools, 'j')
+        
+        assert state_with_tools.current_category_idx == 1
+
+    @pytest.mark.asyncio
+    async def test_move_category_up_k_in_sidebar(self, state_with_tools: AppState):
+        """'k' should move category selection up when focus is on sidebar"""
+        state_with_tools.focus_panel = "sidebar"
+        state_with_tools.current_category_idx = 1
+        
+        await handle_input(state_with_tools, 'k')
+        
+        assert state_with_tools.current_category_idx == 0
+
+    @pytest.mark.asyncio
+    async def test_focus_switch_to_body_l(self, state_with_tools: AppState):
+        """'l' should switch focus to body panel"""
+        state_with_tools.focus_panel = "sidebar"
         
         await handle_input(state_with_tools, 'l')
         
-        assert state_with_tools.current_category_idx == 1
+        assert state_with_tools.focus_panel == "body"
 
     @pytest.mark.asyncio
-    async def test_move_category_right_arrow(self, state_with_tools: AppState):
-        """RIGHT arrow should move to next category"""
+    async def test_focus_switch_to_body_right_arrow(self, state_with_tools: AppState):
+        """RIGHT arrow should switch focus to body panel"""
+        state_with_tools.focus_panel = "sidebar"
+        
         await handle_input(state_with_tools, 'RIGHT')
         
-        assert state_with_tools.current_category_idx == 1
+        assert state_with_tools.focus_panel == "body"
 
     @pytest.mark.asyncio
-    async def test_move_category_left_h(self, state_with_tools: AppState):
-        """'h' should move to previous category"""
-        state_with_tools.current_category_idx = 1
+    async def test_focus_switch_to_sidebar_h(self, state_with_tools: AppState):
+        """'h' should switch focus to sidebar panel"""
+        state_with_tools.focus_panel = "body"
         
         await handle_input(state_with_tools, 'h')
         
-        assert state_with_tools.current_category_idx == 0
+        assert state_with_tools.focus_panel == "sidebar"
 
     @pytest.mark.asyncio
-    async def test_move_category_left_arrow(self, state_with_tools: AppState):
-        """LEFT arrow should move to previous category"""
-        state_with_tools.current_category_idx = 1
+    async def test_focus_switch_to_sidebar_left_arrow(self, state_with_tools: AppState):
+        """LEFT arrow should switch focus to sidebar panel"""
+        state_with_tools.focus_panel = "body"
         
         await handle_input(state_with_tools, 'LEFT')
         
-        assert state_with_tools.current_category_idx == 0
+        assert state_with_tools.focus_panel == "sidebar"
 
     @pytest.mark.asyncio
     async def test_navigation_in_logs_view(self, state_with_tools: AppState):
         """Navigation should not work in logs view"""
         state_with_tools.view_mode = "logs"
+        state_with_tools.focus_panel = "body"
         state_with_tools.current_tool_idx = 1
         
         await handle_input(state_with_tools, 'j')
@@ -297,4 +324,3 @@ class TestUnknownInput(TestHandleInput):
         assert state_with_tools.current_category_idx == initial_cat
         assert state_with_tools.view_mode == initial_view
         assert state_with_tools.running == initial_running
-
