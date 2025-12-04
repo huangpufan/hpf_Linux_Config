@@ -58,7 +58,7 @@ class KeyboardInput:
         
         Optimized: shorter sleep intervals for faster response
         """
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         
         try:
             while True:
