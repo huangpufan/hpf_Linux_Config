@@ -1,44 +1,48 @@
 #!/usr/bin/env bash
+# [DEPRECATED] 此脚本已迁移到模块化结构
+# 请使用:
+#   - tools/apt/*.sh             各个 APT 工具
+#   - tools/snap/*.sh            各个 Snap 工具
+#   - presets/minimal.sh         最小工具集
+#   - presets/dev-cli.sh         CLI 开发工具集
+#   - presets/dev-full.sh        完整开发环境
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+APT_DIR="$REPO_ROOT/tools/apt"
+SNAP_DIR="$REPO_ROOT/tools/snap"
 
-# 检测 snap 是否可用
-has_snap() {
-    command -v snap >/dev/null 2>&1 && \
-    (systemctl is-active snapd >/dev/null 2>&1 || snap version >/dev/null 2>&1)
-}
+echo "[INFO] 此脚本已迁移到模块化结构，调用新脚本..."
 
 echo "========================================"
-echo "  安装基础 APT 包"
+echo "  安装 APT 工具"
 echo "========================================"
 
-sudo add-apt-repository -y ppa:xmake-io/xmake || echo "[WARN] 无法添加 xmake PPA"
-
-sudo apt update
-
-# 基础工具
-sudo apt-get install -y git tmux htop lua5.3 gcc-multilib || true
-sudo apt-get install -y bat python-is-python3 python3-pip || true
-sudo apt-get install -y build-essential ranger xclip || true
-sudo apt-get install -y tldr cppman ncdu silversearcher-ag neofetch || true
-sudo apt-get install -y git wget rpm rpm2cpio cpio make binutils m4 || true
-sudo apt install -y xmake || echo "[WARN] xmake 安装失败"
+bash "$APT_DIR/git.sh" || true
+bash "$APT_DIR/tmux.sh" || true
+bash "$APT_DIR/htop.sh" || true
+bash "$APT_DIR/bat.sh" || true
+bash "$APT_DIR/ranger.sh" || true
+bash "$APT_DIR/ncdu.sh" || true
+bash "$APT_DIR/tldr.sh" || true
+bash "$APT_DIR/neofetch.sh" || true
+bash "$APT_DIR/xclip.sh" || true
+bash "$APT_DIR/silversearcher-ag.sh" || true
+bash "$APT_DIR/build-essential.sh" || true
+bash "$APT_DIR/xmake.sh" || true
 
 echo ""
 echo "========================================"
-echo "  安装 Snap 包"
+echo "  安装 Snap 工具"
 echo "========================================"
 
-if has_snap; then
-    echo "Snap 可用，安装 snap 包..."
-    sudo snap install btop dust procs bandwhich lnav || true
-    sudo snap install zellij --classic || true
-    sudo snap install emacs --classic || true
-else
-    echo "[WARN] Snap 不可用（可能在容器或 WSL 中），跳过 snap 包安装"
-    echo "       可以稍后手动安装: btop, dust, procs, bandwhich, lnav, zellij, emacs"
-fi
+bash "$SNAP_DIR/btop.sh" || true
+bash "$SNAP_DIR/dust.sh" || true
+bash "$SNAP_DIR/procs.sh" || true
+bash "$SNAP_DIR/bandwhich.sh" || true
+bash "$SNAP_DIR/lnav.sh" || true
+bash "$SNAP_DIR/zellij.sh" || true
 
 echo ""
 echo "========================================"
@@ -51,17 +55,5 @@ bash ./clang13-install.sh || echo "[WARN] Clang 安装失败"
 
 echo ""
 echo "========================================"
-echo "  配置 bat 符号链接"
-echo "========================================"
-
-# bat 在 Ubuntu 中包名为 batcat，创建符号链接
-if command -v batcat >/dev/null 2>&1 && [ ! -L ~/.local/bin/bat ]; then
-    mkdir -p ~/.local/bin
-    ln -sf /usr/bin/batcat ~/.local/bin/bat
-    echo "已创建 bat -> batcat 符号链接"
-fi
-
-echo ""
-echo "========================================"
-echo "  安装完成！"
+echo "  apt-snap-install.sh 完成！"
 echo "========================================"

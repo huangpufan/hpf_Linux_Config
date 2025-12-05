@@ -1,42 +1,22 @@
 #!/usr/bin/env bash
+# [DEPRECATED] 此脚本已迁移到模块化结构
+# 请使用:
+#   - tools/pip/_ensure.sh       确保 pip/pipx 环境
+#   - tools/pip/pysocks.sh       安装 pysocks
+#   - tools/pip/gdbfrontend.sh   安装 gdbfrontend
+#   - tools/pip/gdbgui.sh        安装 gdbgui
+#   - presets/dev-full.sh        安装完整开发环境
 set -Eeuo pipefail
 
-TSINGHUA_MIRROR="-i https://pypi.tuna.tsinghua.edu.cn/simple"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+TOOLS_DIR="$REPO_ROOT/tools/pip"
 
-# Install pysocks if not already installed
-if python3 -c "import socks" >/dev/null 2>&1; then
-    echo "pysocks is already installed."
-else
-    echo "Installing pysocks..."
-    python3 -m pip install --user pysocks $TSINGHUA_MIRROR
-fi
+echo "[INFO] 此脚本已迁移到模块化结构，调用新脚本..."
 
-# Install gdbfrontend if not already installed
-if python3 -m gdbfrontend --version >/dev/null 2>&1; then
-    echo "gdbfrontend is already installed."
-else
-    echo "Installing gdbfrontend..."
-    sudo python3 -m pip install gdbfrontend $TSINGHUA_MIRROR || echo "[WARN] gdbfrontend installation failed"
-fi
+# 调用新的模块化脚本
+bash "$TOOLS_DIR/pysocks.sh" || true
+bash "$TOOLS_DIR/gdbfrontend.sh" || true
+bash "$TOOLS_DIR/gdbgui.sh" || true
 
-# Install pipx if not already installed
-if command -v pipx >/dev/null 2>&1; then
-    echo "pipx is already installed."
-else
-    echo "Installing pipx..."
-    python3 -m pip install --user pipx $TSINGHUA_MIRROR
-    sudo apt-get install -y python3-venv || true
-fi
-
-# Ensure pipx is in PATH
-export PATH="$HOME/.local/bin:$PATH"
-
-# Install gdbgui via pipx if not already installed
-if pipx list 2>/dev/null | grep -q gdbgui; then
-    echo "gdbgui is already installed via pipx."
-else
-    echo "Installing gdbgui..."
-    pipx install gdbgui --force || echo "[WARN] gdbgui installation failed"
-fi
-
-echo "Python tools installation completed!"
+echo "[INFO] pip-install.sh 完成"

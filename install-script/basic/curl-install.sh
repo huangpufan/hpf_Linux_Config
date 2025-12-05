@@ -1,49 +1,22 @@
 #!/usr/bin/env bash
+# [DEPRECATED] 此脚本已迁移到模块化结构
+# 请使用:
+#   - tools/curl/zoxide.sh       安装 zoxide
+#   - tools/curl/lazygit.sh      安装 lazygit
+#   - tools/curl/nvm.sh          安装 nvm
+#   - tools/curl/fzf.sh          安装 fzf
+#   - presets/dev-cli.sh         安装完整 CLI 工具集
 set -Eeuo pipefail
 
-# Source bashrc if exists (for PATH and other env vars)
-if [ -f ~/.bashrc ]; then
-    # shellcheck source=/dev/null
-    . ~/.bashrc 2>/dev/null || true
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+TOOLS_DIR="$REPO_ROOT/tools/curl"
 
-# Install zoxide if not installed
-if ! command -v zoxide >/dev/null 2>&1; then
-    echo "zoxide not found, installing..."
-    curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-else
-    echo "zoxide is already installed."
-fi
+echo "[INFO] 此脚本已迁移到模块化结构，调用新脚本..."
 
-# Install lazygit if not installed
-if ! command -v lazygit >/dev/null 2>&1; then
-    echo "lazygit not found, installing..."
-    mkdir -p ~/download
-    cd ~/download/
-    LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-    curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-    tar xf lazygit.tar.gz lazygit
-    sudo install lazygit /usr/local/bin
-    rm -rf lazygit* 
-    cd ~
-else
-    echo "lazygit is already installed."
-fi
+# 调用新的模块化脚本
+bash "$TOOLS_DIR/zoxide.sh" || true
+bash "$TOOLS_DIR/lazygit.sh" || true
+bash "$TOOLS_DIR/nvm.sh" || true
 
-# Install nvm if not installed (mainly used for copilot.lua Nvim plugin)
-if [ ! -d "$HOME/.nvm" ]; then
-    echo "nvm not found, installing..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-    export NVM_DIR="$HOME/.nvm"
-    # shellcheck source=/dev/null
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    # shellcheck source=/dev/null
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-    nvm install 18
-    nvm use 18
-    nvm alias default v18
-else
-    echo "nvm is already installed."
-fi
-
-echo "Tools installation completed!"
+echo "[INFO] curl-install.sh 完成"

@@ -1,38 +1,29 @@
 #!/usr/bin/env bash
+# [DEPRECATED] 此脚本已迁移到模块化结构
+# 请使用:
+#   - tools/cargo/_ensure.sh     确保 cargo 环境
+#   - tools/cargo/eza.sh         安装 eza
+#   - tools/cargo/yazi.sh        安装 yazi
+#   - tools/cargo/broot.sh       安装 broot
+#   - tools/cargo/mprocs.sh      安装 mprocs
+#   - tools/cargo/sd.sh          安装 sd
+#   - tools/cargo/ouch.sh        安装 ouch
+#   - presets/dev-cli.sh         安装完整 CLI 工具集
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+TOOLS_DIR="$REPO_ROOT/tools/cargo"
 
-# Check if cargo is installed
-if ! command -v cargo >/dev/null 2>&1; then
-    echo "Cargo is not installed. Installing Cargo and Rust..."
-    # Install Rust
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    # shellcheck source=/dev/null
-    . "$HOME/.cargo/env"
-fi
+echo "[INFO] 此脚本已迁移到模块化结构，调用新脚本..."
 
-# Ensure cargo env is loaded
-if [ -f "$HOME/.cargo/env" ]; then
-    # shellcheck source=/dev/null
-    . "$HOME/.cargo/env"
-fi
+# 调用新的模块化脚本
+bash "$TOOLS_DIR/_ensure.sh" || true
+bash "$TOOLS_DIR/eza.sh" || true
+bash "$TOOLS_DIR/broot.sh" || true
+bash "$TOOLS_DIR/mprocs.sh" || true
+bash "$TOOLS_DIR/sd.sh" || true
+bash "$TOOLS_DIR/ouch.sh" || true
+bash "$TOOLS_DIR/yazi.sh" || true
 
-# Check ~/.cargo/config symlink
-CONFIG_LINK="$HOME/.cargo/config"
-TARGET_FILE="$SCRIPT_DIR/cargo-config"
-
-if [ ! -L "$CONFIG_LINK" ] && [ ! -e "$CONFIG_LINK" ]; then
-    if [ ! -e "$TARGET_FILE" ]; then
-        echo "[WARN] Cargo config file not found: $TARGET_FILE, skipping symlink"
-    else
-        echo "Creating symlink for cargo config..."
-        ln -s "$TARGET_FILE" "$CONFIG_LINK"
-    fi
-fi
-
-# Install software by cargo
-echo "Installing cargo packages..."
-cargo install mprocs eza sd broot
-cargo install --locked ouch
-cargo install --locked yazi-fm
+echo "[INFO] cargo-install.sh 完成"

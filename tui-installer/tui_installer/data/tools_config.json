@@ -1,18 +1,41 @@
 {
   "categories": [
     {
-      "id": "base",
-      "name": "基础环境",
-      "icon": "📦",
+      "id": "presets",
+      "name": "预设组合",
+      "icon": "🎯",
       "tools": [
         {
-          "id": "apt-snap",
-          "name": "系统基础包",
-          "description": "Git, Tmux, Htop, Build-essential, Snap等基础工具",
-          "script": "basic/apt-snap-install.sh",
+          "id": "preset-minimal",
+          "name": "最小工具集",
+          "description": "基础命令行工具: git, tmux, htop, bat, fzf, zoxide",
+          "script": "presets/minimal.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v git && command -v tmux"
+          "check_cmd": "command -v fzf && command -v zoxide"
         },
+        {
+          "id": "preset-dev-cli",
+          "name": "CLI 开发工具集",
+          "description": "现代 CLI 工具: lazygit, eza, broot, fkill 等",
+          "script": "presets/dev-cli.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v lazygit && command -v eza"
+        },
+        {
+          "id": "preset-dev-full",
+          "name": "完整开发环境",
+          "description": "CLI + 编译器 + 调试工具 + 高级文件管理",
+          "script": "presets/dev-full.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v yazi && command -v gdbgui"
+        }
+      ]
+    },
+    {
+      "id": "setup",
+      "name": "系统配置",
+      "icon": "⚙️",
+      "tools": [
         {
           "id": "bashrc",
           "name": "Bashrc 初始化",
@@ -22,28 +45,373 @@
           "check_cmd": "grep -q 'hpf_Linux_Config' ~/.bashrc"
         },
         {
+          "id": "folder-create",
+          "name": "目录结构创建",
+          "description": "创建标准工作目录结构",
+          "script": "basic/folder-create.sh",
+          "requires_sudo": false,
+          "check_cmd": "test -d ~/workspace || test -d ~/project"
+        },
+        {
+          "id": "sshkey",
+          "name": "SSH 密钥生成",
+          "description": "生成 SSH 密钥对",
+          "script": "basic/sshkey-generate.sh",
+          "requires_sudo": false,
+          "check_cmd": "test -f ~/.ssh/id_rsa.pub || test -f ~/.ssh/id_ed25519.pub"
+        },
+        {
+          "id": "source-change",
+          "name": "Ubuntu 换源",
+          "description": "更换 apt 软件源为国内镜像",
+          "script": "basic/ubuntu-source-change.sh",
+          "requires_sudo": true,
+          "check_cmd": "grep -q 'mirrors' /etc/apt/sources.list"
+        },
+        {
+          "id": "npm-registry",
+          "name": "NPM 镜像配置",
+          "description": "配置 npm 使用国内镜像源",
+          "script": "setup/npm-registry.sh",
+          "requires_sudo": false,
+          "check_cmd": "npm config get registry 2>/dev/null | grep -q npmmirror"
+        },
+        {
+          "id": "cargo-registry",
+          "name": "Cargo 镜像配置",
+          "description": "配置 cargo 使用国内镜像源",
+          "script": "setup/cargo-registry.sh",
+          "requires_sudo": false,
+          "check_cmd": "test -f ~/.cargo/config"
+        },
+        {
           "id": "configs",
           "name": "Dotfiles 配置",
           "description": "Tmux, Neofetch 等配置文件",
           "script": "basic/config-install.sh",
           "requires_sudo": false,
           "check_cmd": "test -f ~/.tmux.conf"
+        }
+      ]
+    },
+    {
+      "id": "apt-tools",
+      "name": "APT 工具",
+      "icon": "📦",
+      "tools": [
+        {
+          "id": "git",
+          "name": "Git",
+          "description": "分布式版本控制系统",
+          "script": "tools/apt/git.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v git"
         },
         {
+          "id": "tmux",
+          "name": "Tmux",
+          "description": "终端复用器",
+          "script": "tools/apt/tmux.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v tmux"
+        },
+        {
+          "id": "htop",
+          "name": "Htop",
+          "description": "交互式进程查看器",
+          "script": "tools/apt/htop.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v htop"
+        },
+        {
+          "id": "bat",
+          "name": "Bat",
+          "description": "带语法高亮的 cat 替代品",
+          "script": "tools/apt/bat.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v bat || command -v batcat"
+        },
+        {
+          "id": "ranger",
+          "name": "Ranger",
+          "description": "Vim 风格终端文件管理器",
+          "script": "tools/apt/ranger.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v ranger"
+        },
+        {
+          "id": "ncdu",
+          "name": "Ncdu",
+          "description": "NCurses 磁盘使用分析器",
+          "script": "tools/apt/ncdu.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v ncdu"
+        },
+        {
+          "id": "tldr",
+          "name": "TLDR",
+          "description": "简化的 man 手册",
+          "script": "tools/apt/tldr.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v tldr"
+        },
+        {
+          "id": "neofetch",
+          "name": "Neofetch",
+          "description": "系统信息展示工具",
+          "script": "tools/apt/neofetch.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v neofetch"
+        },
+        {
+          "id": "xclip",
+          "name": "Xclip",
+          "description": "命令行剪贴板工具",
+          "script": "tools/apt/xclip.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v xclip"
+        },
+        {
+          "id": "ag",
+          "name": "Ag (Silver Searcher)",
+          "description": "快速代码搜索工具",
+          "script": "tools/apt/silversearcher-ag.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v ag"
+        },
+        {
+          "id": "build-essential",
+          "name": "Build Essential",
+          "description": "编译工具链 (gcc, g++, make)",
+          "script": "tools/apt/build-essential.sh",
+          "requires_sudo": true,
+          "check_cmd": "dpkg -l | grep -qw build-essential"
+        },
+        {
+          "id": "xmake",
+          "name": "XMake",
+          "description": "现代化构建系统",
+          "script": "tools/apt/xmake.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v xmake"
+        }
+      ]
+    },
+    {
+      "id": "curl-tools",
+      "name": "Curl 安装工具",
+      "icon": "🌐",
+      "tools": [
+        {
           "id": "fzf",
-          "name": "FZF 模糊查找",
+          "name": "FZF",
           "description": "命令行模糊查找工具",
-          "script": "basic/fzf-install.sh",
+          "script": "tools/curl/fzf.sh",
           "requires_sudo": false,
           "check_cmd": "command -v fzf"
         },
         {
-          "id": "folder-create",
-          "name": "目录结构创建",
-          "description": "创建标准工作目录结构",
-          "script": "basic/folder-create.sh",
+          "id": "zoxide",
+          "name": "Zoxide",
+          "description": "智能目录跳转 (cd 替代品)",
+          "script": "tools/curl/zoxide.sh",
           "requires_sudo": false,
-          "check_cmd": "test -d ~/workspace"
+          "check_cmd": "command -v zoxide"
+        },
+        {
+          "id": "lazygit",
+          "name": "Lazygit",
+          "description": "终端 Git UI",
+          "script": "tools/curl/lazygit.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v lazygit"
+        },
+        {
+          "id": "nvm",
+          "name": "NVM",
+          "description": "Node.js 版本管理器",
+          "script": "tools/curl/nvm.sh",
+          "requires_sudo": false,
+          "check_cmd": "test -d ~/.nvm"
+        }
+      ]
+    },
+    {
+      "id": "cargo-tools",
+      "name": "Cargo 工具",
+      "icon": "🦀",
+      "tools": [
+        {
+          "id": "eza",
+          "name": "Eza",
+          "description": "现代化 ls 替代品",
+          "script": "tools/cargo/eza.sh",
+          "requires_sudo": false,
+          "check_cmd": "command -v eza"
+        },
+        {
+          "id": "yazi",
+          "name": "Yazi",
+          "description": "终端文件管理器",
+          "script": "tools/cargo/yazi.sh",
+          "requires_sudo": false,
+          "check_cmd": "command -v yazi"
+        },
+        {
+          "id": "broot",
+          "name": "Broot",
+          "description": "Tree 的现代替代品",
+          "script": "tools/cargo/broot.sh",
+          "requires_sudo": false,
+          "check_cmd": "command -v broot"
+        },
+        {
+          "id": "mprocs",
+          "name": "Mprocs",
+          "description": "并行运行多个命令",
+          "script": "tools/cargo/mprocs.sh",
+          "requires_sudo": false,
+          "check_cmd": "command -v mprocs"
+        },
+        {
+          "id": "sd",
+          "name": "Sd",
+          "description": "Sed 的现代替代品",
+          "script": "tools/cargo/sd.sh",
+          "requires_sudo": false,
+          "check_cmd": "command -v sd"
+        },
+        {
+          "id": "ouch",
+          "name": "Ouch",
+          "description": "压缩/解压缩工具",
+          "script": "tools/cargo/ouch.sh",
+          "requires_sudo": false,
+          "check_cmd": "command -v ouch"
+        }
+      ]
+    },
+    {
+      "id": "npm-tools",
+      "name": "NPM 工具",
+      "icon": "📗",
+      "tools": [
+        {
+          "id": "fkill",
+          "name": "Fkill",
+          "description": "交互式进程杀手",
+          "script": "tools/npm/fkill.sh",
+          "requires_sudo": false,
+          "check_cmd": "command -v fkill"
+        }
+      ]
+    },
+    {
+      "id": "snap-tools",
+      "name": "Snap 工具",
+      "icon": "🔷",
+      "tools": [
+        {
+          "id": "btop",
+          "name": "Btop",
+          "description": "资源监控器 (htop 替代品)",
+          "script": "tools/snap/btop.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v btop"
+        },
+        {
+          "id": "dust",
+          "name": "Dust",
+          "description": "磁盘使用分析 (du 替代品)",
+          "script": "tools/snap/dust.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v dust"
+        },
+        {
+          "id": "procs",
+          "name": "Procs",
+          "description": "进程查看器 (ps 替代品)",
+          "script": "tools/snap/procs.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v procs"
+        },
+        {
+          "id": "zellij",
+          "name": "Zellij",
+          "description": "终端工作区 (tmux 替代品)",
+          "script": "tools/snap/zellij.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v zellij"
+        },
+        {
+          "id": "lnav",
+          "name": "Lnav",
+          "description": "日志文件导航器",
+          "script": "tools/snap/lnav.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v lnav"
+        },
+        {
+          "id": "bandwhich",
+          "name": "Bandwhich",
+          "description": "带宽使用监控",
+          "script": "tools/snap/bandwhich.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v bandwhich"
+        }
+      ]
+    },
+    {
+      "id": "pip-tools",
+      "name": "Pip 工具",
+      "icon": "🐍",
+      "tools": [
+        {
+          "id": "pysocks",
+          "name": "PySocks",
+          "description": "SOCKS 代理支持",
+          "script": "tools/pip/pysocks.sh",
+          "requires_sudo": false,
+          "check_cmd": "python3 -c 'import socks' 2>/dev/null"
+        },
+        {
+          "id": "gdbgui",
+          "name": "GDBGui",
+          "description": "浏览器端 GDB 前端",
+          "script": "tools/pip/gdbgui.sh",
+          "requires_sudo": false,
+          "check_cmd": "pipx list 2>/dev/null | grep -q gdbgui"
+        },
+        {
+          "id": "gdbfrontend",
+          "name": "GDB Frontend",
+          "description": "GDB 前端界面",
+          "script": "tools/pip/gdbfrontend.sh",
+          "requires_sudo": true,
+          "check_cmd": "python3 -m gdbfrontend --version 2>/dev/null"
+        }
+      ]
+    },
+    {
+      "id": "compiler",
+      "name": "编译器",
+      "icon": "🔩",
+      "tools": [
+        {
+          "id": "gcc",
+          "name": "GCC/G++ 11",
+          "description": "GCC/G++ 编译器工具链",
+          "script": "basic/latestgccg++-install.sh",
+          "requires_sudo": true,
+          "check_cmd": "gcc --version | grep -q '11'"
+        },
+        {
+          "id": "clang",
+          "name": "Clang 13",
+          "description": "LLVM/Clang 编译器工具链",
+          "script": "basic/clang13-install.sh",
+          "requires_sudo": true,
+          "check_cmd": "command -v clang-13"
         }
       ]
     },
@@ -71,29 +439,6 @@
       ]
     },
     {
-      "id": "compiler",
-      "name": "编译器",
-      "icon": "🔩",
-      "tools": [
-        {
-          "id": "gcc",
-          "name": "GCC/G++ 最新版",
-          "description": "GCC/G++ 编译器工具链",
-          "script": "basic/latestgccg++-install.sh",
-          "requires_sudo": true,
-          "check_cmd": "command -v gcc"
-        },
-        {
-          "id": "clang",
-          "name": "Clang 13",
-          "description": "LLVM/Clang 13 编译器工具链",
-          "script": "basic/clang13-install.sh",
-          "requires_sudo": true,
-          "check_cmd": "command -v clang-13"
-        }
-      ]
-    },
-    {
       "id": "dev",
       "name": "开发工具",
       "icon": "🔧",
@@ -107,100 +452,12 @@
           "check_cmd": "command -v cgdb"
         },
         {
-          "id": "cargo",
-          "name": "Cargo (Rust)",
-          "description": "Rust包管理器和工具链",
-          "script": "basic/cargo-install.sh",
-          "requires_sudo": false,
-          "check_cmd": "command -v cargo"
-        },
-        {
-          "id": "npm",
-          "name": "NPM (Node.js)",
-          "description": "Node.js 和 NPM 包管理器",
-          "script": "basic/npm-install.sh",
-          "requires_sudo": true,
-          "check_cmd": "command -v npm"
-        },
-        {
-          "id": "pip",
-          "name": "Pip (Python)",
-          "description": "Python 包管理器配置",
-          "script": "basic/pip-install.sh",
-          "requires_sudo": false,
-          "check_cmd": "command -v pip3"
-        },
-        {
-          "id": "ranger",
-          "name": "Ranger",
-          "description": "终端文件管理器",
+          "id": "ranger-config",
+          "name": "Ranger 配置",
+          "description": "Ranger 文件管理器配置",
           "script": "ranger/install.sh",
           "requires_sudo": false,
-          "check_cmd": "command -v ranger"
-        }
-      ]
-    },
-    {
-      "id": "system",
-      "name": "系统配置",
-      "icon": "🛠",
-      "tools": [
-        {
-          "id": "sshkey",
-          "name": "SSH 密钥生成",
-          "description": "生成 SSH 密钥对",
-          "script": "basic/sshkey-generate.sh",
-          "requires_sudo": false,
-          "check_cmd": "test -f ~/.ssh/id_rsa.pub || test -f ~/.ssh/id_ed25519.pub"
-        },
-        {
-          "id": "source-change",
-          "name": "Ubuntu 换源",
-          "description": "更换 apt 软件源为国内镜像",
-          "script": "basic/ubuntu-source-change.sh",
-          "requires_sudo": true,
-          "check_cmd": "grep -q 'mirrors' /etc/apt/sources.list"
-        },
-        {
-          "id": "dns-adjust",
-          "name": "DNS 配置",
-          "description": "调整 DNS 解析设置",
-          "script": "basic/dns-adjust.sh",
-          "requires_sudo": true,
-          "check_cmd": "grep -q '8.8.8.8' /etc/resolv.conf"
-        },
-        {
-          "id": "curl",
-          "name": "Curl 安装",
-          "description": "安装 curl 命令行工具",
-          "script": "basic/curl-install.sh",
-          "requires_sudo": true,
-          "check_cmd": "command -v curl"
-        }
-      ]
-    },
-    {
-      "id": "repos",
-      "name": "代码仓库",
-      "icon": "📚",
-      "tools": [
-        {
-          "id": "linux-repo",
-          "name": "Linux 软件包仓库",
-          "description": "个人维护的软件包集合",
-          "script": "basic/linux-repository-install.sh",
-          "requires_sudo": true,
-          "requires_ssh": true,
-          "check_cmd": "test -d ./linux-package-repository"
-        },
-        {
-          "id": "install-after-ssh",
-          "name": "SSH后安装",
-          "description": "配置SSH密钥后需安装的工具",
-          "script": "basic/install-after-sshkey.sh",
-          "requires_sudo": false,
-          "requires_ssh": true,
-          "check_cmd": "test -d ~/workspace/repos"
+          "check_cmd": "test -d ~/.config/ranger"
         }
       ]
     }

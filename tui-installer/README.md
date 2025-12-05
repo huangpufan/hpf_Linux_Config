@@ -90,7 +90,16 @@ tui-installer/
     └── test_keys.py          # 按键测试工具
 
 ../install-script/            # 实际安装脚本（项目外部）
-├── basic/                    # 基础环境脚本
+├── tools/                    # 独立工具安装脚本
+│   ├── apt/                  # APT 安装的工具
+│   ├── snap/                 # Snap 安装的工具
+│   ├── cargo/                # Cargo 安装的工具
+│   ├── npm/                  # NPM 安装的工具
+│   ├── pip/                  # Pip 安装的工具
+│   └── curl/                 # 通过 curl 脚本安装的工具
+├── setup/                    # 系统配置脚本
+├── presets/                  # 预设安装组合
+├── basic/                    # 原有脚本（已迁移）
 ├── nvim/                     # Neovim 配置
 └── lib/                      # 公共库
 ```
@@ -129,23 +138,31 @@ make test-keys   # 运行按键测试工具
 {
   "categories": [
     {
-      "id": "base",
-      "name": "基础环境",
+      "id": "apt-tools",
+      "name": "APT 工具",
       "icon": "📦",
       "tools": [
         {
-          "id": "apt-snap",
-          "name": "系统基础包",
-          "description": "Git, Tmux, Htop...",
-          "script": "basic/apt-snap-install.sh",
+          "id": "bat",
+          "name": "Bat",
+          "description": "带语法高亮的 cat 替代品",
+          "script": "tools/apt/bat.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v git"
+          "check_cmd": "command -v bat || command -v batcat"
         }
       ]
     }
   ]
 }
 ```
+
+### 脚本组织结构
+
+工具安装脚本已重构为模块化结构：
+
+- **独立脚本**: 每个工具一个独立安装脚本 (`tools/apt/bat.sh`, `tools/cargo/eza.sh` 等)
+- **预设组合**: 常用工具组合 (`presets/minimal.sh`, `presets/dev-cli.sh` 等)
+- **系统配置**: 环境配置脚本 (`setup/npm-registry.sh` 等)
 
 #### 工具配置字段
 
