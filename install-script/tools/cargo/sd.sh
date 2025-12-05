@@ -16,7 +16,8 @@ is_installed() {
 }
 
 do_install() {
-    bash "$SCRIPT_DIR/_ensure.sh"
+    # 使用 source 确保 PATH 设置生效
+    source "$SCRIPT_DIR/_ensure.sh"
     cargo install sd
 }
 

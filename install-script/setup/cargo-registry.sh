@@ -9,8 +9,9 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 configure_registry() {
     local config_dir="$HOME/.cargo"
-    local config_file="$config_dir/config"
-    local repo_config="$REPO_ROOT/basic/cargo-config"
+    local config_file="$config_dir/config.toml"
+    local old_config="$config_dir/config"
+    local repo_config="$REPO_ROOT/basic/cargo-config.toml"
     
     # 加载 cargo 环境
     if [ -f "$HOME/.cargo/env" ]; then
@@ -23,11 +24,17 @@ configure_registry() {
         return 0
     fi
     
+    # 移除旧的 config 链接（已弃用）
+    if [ -L "$old_config" ]; then
+        rm -f "$old_config"
+        log_info "Removed deprecated config symlink"
+    fi
+    
     # 如果配置文件不存在且仓库配置存在，创建符号链接
     if [ ! -L "$config_file" ] && [ ! -e "$config_file" ] && [ -e "$repo_config" ]; then
         mkdir -p "$config_dir"
         ln -s "$repo_config" "$config_file"
-        log_info "Cargo config linked to repo config"
+        log_info "Cargo config.toml linked to repo config"
     else
         log_info "Cargo config already exists"
     fi
