@@ -1,51 +1,42 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
-# Define proxy functions
-proxy() {
-    export hostip=$(grep -oP '(?<=nameserver\ ).*' /etc/resolv.conf)
-    export all_proxy="socks5://${hostip}:7890"
-}
+TSINGHUA_MIRROR="-i https://pypi.tuna.tsinghua.edu.cn/simple"
 
-unp() {
-    unset all_proxy
-    unset ALL_PROXY
-}
-
-# Use python3 to check if pysocks is already installed
-if python3 -c "import pysocks" >/dev/null 2>&1; then
+# Install pysocks if not already installed
+if python3 -c "import socks" >/dev/null 2>&1; then
     echo "pysocks is already installed."
 else
-    unp
-    python3 -m pip install --user pysocks   -i https://pypi.tuna.tsinghua.edu.cn/simple
+    echo "Installing pysocks..."
+    python3 -m pip install --user pysocks $TSINGHUA_MIRROR
 fi
 
-# Cancel proxy
-unp
-
-# Check if gdbfrontend is already installed
+# Install gdbfrontend if not already installed
 if python3 -m gdbfrontend --version >/dev/null 2>&1; then
     echo "gdbfrontend is already installed."
 else
     echo "Installing gdbfrontend..."
-    sudo python3 -m pip install gdbfrontend  -i https://pypi.tuna.tsinghua.edu.cn/simple
+    sudo python3 -m pip install gdbfrontend $TSINGHUA_MIRROR || echo "[WARN] gdbfrontend installation failed"
 fi
 
-# Check if pipx is already installed
+# Install pipx if not already installed
 if command -v pipx >/dev/null 2>&1; then
     echo "pipx is already installed."
 else
     echo "Installing pipx..."
-    python3 -m pip install --user pipx -i https://pypi.tuna.tsinghua.edu.cn/simple
-    sudo apt-get install python3-venv
+    python3 -m pip install --user pipx $TSINGHUA_MIRROR
+    sudo apt-get install -y python3-venv || true
 fi
 
-# Check if gdbgui is already installed via pipx
-if pipx list | grep gdbgui >/dev/null 2>&1; then
+# Ensure pipx is in PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# Install gdbgui via pipx if not already installed
+if pipx list 2>/dev/null | grep -q gdbgui; then
     echo "gdbgui is already installed via pipx."
 else
     echo "Installing gdbgui..."
-    pipx install gdbgui --force
+    pipx install gdbgui --force || echo "[WARN] gdbgui installation failed"
 fi
 
-# Enable proxy
-proxy
+echo "Python tools installation completed!"

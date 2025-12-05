@@ -1,20 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
-# 修改 /etc/resolv.conf 中的 nameserver
+# Modify nameserver in /etc/resolv.conf
 sudo sed -i 's/^nameserver.*/nameserver 223.6.6.6/' /etc/resolv.conf
 
-# 检查 /etc/wsl.conf 是否存在，如果不存在则创建
+# Check if /etc/wsl.conf exists, create if not
 if [ ! -f /etc/wsl.conf ]; then
-    touch /etc/wsl.conf
+    sudo touch /etc/wsl.conf
 fi
 
-# 检查 /etc/wsl.conf 是否已包含所需内容
+# Check if /etc/wsl.conf already contains the required content
 if ! grep -q "\[network\]" /etc/wsl.conf || ! grep -q "generateResolvConf = false" /etc/wsl.conf; then
-    # 如果不包含，则添加内容
-    sudo echo -e "\n[network]\ngenerateResolvConf = false" >> /etc/wsl.conf
-    echo "已添加 generateResolvConf = false 到 /etc/wsl.conf"
+    # If not, add the content
+    echo -e "\n[network]\ngenerateResolvConf = false" | sudo tee -a /etc/wsl.conf >/dev/null
+    echo "Added generateResolvConf = false to /etc/wsl.conf"
 else
-    echo "/etc/wsl.conf 已包含所需内容，无需修改"
+    echo "/etc/wsl.conf already contains the required content, no modification needed"
 fi
 
-echo "脚本执行完毕"
+echo "DNS adjustment completed!"

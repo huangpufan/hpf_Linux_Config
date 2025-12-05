@@ -1,18 +1,28 @@
-BASHRC="/home/$(whoami)/.bashrc"
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
 GIT_EMAIL="59730801@qq.com"
 GIT_NAME="huangpufan"
 SSH_KEY_PATH="$HOME/.ssh/id_ed25519"
 
-# 检查 SSH 密钥是否已经存在，如果不存在则创建一个
-if [ ! -f "$SSH_KEY_PATH.pub" ]; then
-  ssh-keygen -t ed25519 -C "$GIT_EMAIL" -f "$SSH_KEY_PATH" -q -N ""
+# Check if SSH key already exists
+if [ -f "$SSH_KEY_PATH.pub" ]; then
+    echo "SSH key already exists at $SSH_KEY_PATH.pub"
+else
+    echo "Generating new SSH key..."
+    mkdir -p "$HOME/.ssh"
+    ssh-keygen -t ed25519 -C "$GIT_EMAIL" -f "$SSH_KEY_PATH" -q -N ""
+    echo "SSH key generated successfully!"
 fi
 
-# 配置 Git 用户名和邮箱
+# Configure Git user name and email
 git config --global user.name "$GIT_NAME"
 git config --global user.email "$GIT_EMAIL"
 
-# 打印换行（正确的方式）
-printf "\n"
-echo 'Github: https://github.com/settings/ssh/new'
-echo 'Gitee: https://gitee.com/profile/sshkeys'
+echo ""
+echo "Your SSH public key:"
+cat "$SSH_KEY_PATH.pub"
+echo ""
+echo "Add this key to:"
+echo "  Github: https://github.com/settings/ssh/new"
+echo "  Gitee:  https://gitee.com/profile/sshkeys"

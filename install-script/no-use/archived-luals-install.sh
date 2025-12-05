@@ -1,10 +1,25 @@
-#!/bin/bash
-MYPATH="/home/$(whoami)"
-mkdir ss
-rm -rf ss
-rm -rf $MYPATH/hpf_Linux_Config/install_package/lua-language-server-folder
-rm -rf $MYPATH/.local/bin/lua-language-server-folder ~/.local/bin/lua-language-server
- 
-mkdir $MYPATH/.local/bin/lua-language-server-folder
-tar -xf $MYPATH/hpf_Linux_Config/install_package/lua-language-server-3.7.0-linux-x64.tar.gz -C  $MYPATH/.local/bin/lua-language-server-folder
-ln -s $MYPATH/.local/bin/lua-language-server-folder/bin/lua-language-server $MYPATH/.local/bin/lua-language-server
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+# ARCHIVED: This script is no longer maintained
+# lua-language-server can now be installed via package managers or mason.nvim
+
+TARBALL="$HOME/hpf_Linux_Config/install_package/lua-language-server-3.7.0-linux-x64.tar.gz"
+INSTALL_DIR="$HOME/.local/bin/lua-language-server-folder"
+BIN_LINK="$HOME/.local/bin/lua-language-server"
+
+# Check if tarball exists
+if [ ! -f "$TARBALL" ]; then
+    echo "[ERROR] Tarball not found: $TARBALL"
+    exit 1
+fi
+
+# Clean up old installation
+rm -rf "$INSTALL_DIR" "$BIN_LINK"
+
+# Install
+mkdir -p "$INSTALL_DIR"
+tar -xf "$TARBALL" -C "$INSTALL_DIR"
+ln -s "$INSTALL_DIR/bin/lua-language-server" "$BIN_LINK"
+
+echo "lua-language-server installed to $BIN_LINK"

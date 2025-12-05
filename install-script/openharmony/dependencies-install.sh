@@ -1,19 +1,16 @@
-# git lfs install 
-# wget https://github.com/git-lfs/git-lfs/releases/download/v3.4.1/git-lfs-linux-amd64-v3.4.1.tar.gz
-# tar -xf git-lfs-linux-amd64-v3.4.1.tar.gz
-# cd git-lfs-3.4.1/
-# sudo bash install.sh
-#
-#!/bin/bash
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
-# 所有需要安装的包
+# OpenHarmony build dependencies installation script
+
+# All packages to install
 packages=(
     apt-utils binutils bison flex bc build-essential make mtd-utils gcc-arm-linux-gnueabi 
     u-boot-tools python3.9 python3-pip git zip unzip curl wget gcc g++ ruby dosfstools 
     mtools default-jre default-jdk scons python3-distutils perl openssl libssl-dev cpio 
     git-lfs m4 ccache zlib1g-dev tar rsync liblz4-tool genext2fs binutils-dev 
     device-tree-compiler e2fsprogs git-core gnupg gnutls-bin gperf lib32ncurses5-dev 
-    libffi-dev zlib* libelf-dev libx11-dev libgl1-mesa-dev lib32z1-dev xsltproc 
+    libffi-dev libelf-dev libx11-dev libgl1-mesa-dev lib32z1-dev xsltproc 
     x11proto-core-dev libc6-dev-i386 libxml2-dev lib32z-dev libdwarf-dev
     grsync xxd libglib2.0-dev libpixman-1-dev kmod jfsutils reiserfsprogs xfsprogs 
     squashfs-tools pcmciautils quota ppp libtinfo-dev libtinfo5 libncurses5 
@@ -22,27 +19,38 @@ packages=(
     gdb-multiarch patchelf libstdc++-13-dev clangd
 )
 
-# 更新软件包列表
+# Update package lists
 echo "Updating package lists..."
 sudo apt update
 
-# 创建日志文件
-touch installation_errors.log
+# Create log file
+LOG_FILE="$HOME/installation_errors.log"
+: > "$LOG_FILE"
 
-# 安装包
+# Install packages
 for package in "${packages[@]}"; do
     echo "Installing $package..."
-    if sudo apt install -y "$package"; then
+    if sudo apt install -y "$package" 2>/dev/null; then
         echo "Successfully installed $package"
     else
-        echo "Failed to install $package" >> installation_errors.log
+        echo "Failed to install $package" >> "$LOG_FILE"
     fi
 done
 
-# pip install
-cd ~/project/OpenHarmony
-python3 -m pip install --user build/hb
+# Install OpenHarmony build tools via pip
+OH_PROJECT_DIR="$HOME/project/OpenHarmony"
+if [ -d "$OH_PROJECT_DIR" ] && [ -d "$OH_PROJECT_DIR/build/hb" ]; then
+    echo "Installing OpenHarmony build tools..."
+    cd "$OH_PROJECT_DIR"
+    python3 -m pip install --user build/hb
+fi
 
-# 显示安装结果
+# Display installation results
+echo ""
 echo "Installation completed."
-echo "Check installation_errors.log for any failed installations."
+if [ -s "$LOG_FILE" ]; then
+    echo "Some packages failed to install. Check $LOG_FILE for details."
+else
+    echo "All packages installed successfully!"
+    rm -f "$LOG_FILE"
+fi
