@@ -15,7 +15,7 @@ from rich.text import Text
 from rich import box
 
 from .constants import LOG_DISPLAY_LINES
-from .models import AppState, STATUS_ICONS, Status
+from .models import AppState, STATUS_ICONS, Status, Tool
 from .theme import Theme
 
 
@@ -174,9 +174,9 @@ def make_tool_list(state: AppState) -> Panel:
     # Build dynamic subtitle based on current tool status
     tool = state.current_tool
     if tool and tool.status == Status.INSTALLED:
-        subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 L:日志 [已安装][/]"
+        subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 [已安装][/]"
     else:
-        subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 Enter/i:安装 a:批量 L:日志[/]"
+        subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 Enter/i:安装 a:批量[/]"
     
     return Panel(
         table,
@@ -230,18 +230,28 @@ def highlight_log_line(line: str) -> Text:
     return text
 
 
-def make_logs(state: AppState) -> Panel:
-    """Render logs for current tool with syntax highlighting"""
+def make_preview(state: AppState) -> Panel:
+    """Render script preview or live logs panel for current tool"""
     tool = state.current_tool
     if not tool:
         return Panel(
-            Text("没有选中工具", style=Theme.OVERLAY0),
-            title=f"[bold {Theme.TEXT}]日志[/]",
-            border_style=Theme.YELLOW,
+            Text("选择一个工具查看详情", style=Theme.OVERLAY0),
+            title=f"[bold {Theme.TEXT}]脚本预览[/]",
+            border_style=Theme.SURFACE2,
             style=f"on {Theme.BASE}",
             box=box.ROUNDED
         )
     
+    # If tool is running or has logs, show logs instead of script preview
+    if tool.status == Status.RUNNING or len(tool.logs) > 0:
+        return _make_preview_logs(tool)
+    
+    # Otherwise show script preview
+    return _make_preview_script(tool)
+
+
+def _make_preview_logs(tool: Tool) -> Panel:
+    """Render live logs in the preview panel"""
     # Get last N lines - auto-scroll by always showing most recent
     max_lines = LOG_DISPLAY_LINES
     log_lines = list(tool.logs)[-max_lines:]
@@ -254,41 +264,41 @@ def make_logs(state: AppState) -> Panel:
                 log_text.append("\n")
             log_text.append_text(highlight_log_line(line))
     else:
-        log_text = Text(f"暂无日志 - 按 [i] 安装后查看", style=Theme.OVERLAY0)
+        log_text = Text(f"等待输出...", style=Theme.OVERLAY0)
     
     status_icon, status_color, status_text = STATUS_ICONS[tool.status]
-    title = f"[bold {Theme.TEXT}]{tool.name}[/] - [{status_color}]{status_text}[/]"
+    title = f"[bold {Theme.MAUVE}]📋 {tool.name}[/] - [{status_color}]{status_text}[/]"
     
     # Show elapsed time and line count in subtitle
-    subtitle_parts = [f"Enter:返回列表"]
+    subtitle_parts = []
     if tool.elapsed_time:
         subtitle_parts.append(f"耗时: {tool.elapsed_time}")
     if len(tool.logs) > max_lines:
         subtitle_parts.append(f"显示最新 {max_lines}/{len(tool.logs)} 行")
-    subtitle = f"[{Theme.OVERLAY0}]{' | '.join(subtitle_parts)}[/]"
+    subtitle = f"[{Theme.OVERLAY0}]{' | '.join(subtitle_parts)}[/]" if subtitle_parts else ""
+    
+    # Use different border color based on status
+    if tool.status == Status.RUNNING:
+        border_style = Theme.BLUE
+    elif tool.status == Status.SUCCESS:
+        border_style = Theme.GREEN
+    elif tool.status == Status.FAILED:
+        border_style = Theme.RED
+    else:
+        border_style = Theme.MAUVE
     
     return Panel(
         log_text,
         title=title,
-        subtitle=subtitle,
-        border_style=Theme.YELLOW,
+        subtitle=subtitle if subtitle else None,
+        border_style=border_style,
         style=f"on {Theme.BASE}",
         box=box.ROUNDED
     )
 
 
-def make_preview(state: AppState) -> Panel:
+def _make_preview_script(tool: Tool) -> Panel:
     """Render script preview panel for current tool (with cached syntax highlighting)"""
-    tool = state.current_tool
-    if not tool:
-        return Panel(
-            Text("选择一个工具查看详情", style=Theme.OVERLAY0),
-            title=f"[bold {Theme.TEXT}]脚本预览[/]",
-            border_style=Theme.SURFACE2,
-            style=f"on {Theme.BASE}",
-            box=box.ROUNDED
-        )
-    
     # Build info section
     info_parts = []
     info_parts.append(f"[bold {Theme.CYAN}]{tool.name}[/]")
@@ -339,38 +349,34 @@ def make_preview(state: AppState) -> Panel:
 
 def make_footer(state: AppState) -> Panel:
     """Render footer with context-sensitive keybindings"""
-    if state.view_mode == "logs":
-        help_text = "[Enter] 返回列表  [q] 退出"
+    # Show context-sensitive help with focus indicator
+    selected_count = len(state.get_selected_tools())
+    
+    if state.focus_panel == "sidebar":
+        # Left panel focused - Enter switches to tool list
+        help_parts = [
+            f"[h/l] 切换面板",
+            f"[j/k] 移动分类",
+            "[Enter] 进入分类",
+            "[q] 退出",
+        ]
     else:
-        # Show context-sensitive help with focus indicator
-        selected_count = len(state.get_selected_tools())
+        # Right panel focused - Enter installs tool
+        help_parts = [
+            f"[h/l] 切换面板",
+            f"[j/k] 移动工具",
+            "[Space] 选择",
+            "[Enter/i] 安装",
+        ]
         
-        if state.focus_panel == "sidebar":
-            # Left panel focused - Enter switches to tool list
-            help_parts = [
-                f"[h/l] 切换面板",
-                f"[j/k] 移动分类",
-                "[Enter] 进入分类",
-                "[L] 日志",
-                "[q] 退出",
-            ]
+        if selected_count > 0:
+            help_parts.append(f"[a] 批量({selected_count})")
         else:
-            # Right panel focused - Enter installs tool
-            help_parts = [
-                f"[h/l] 切换面板",
-                f"[j/k] 移动工具",
-                "[Space] 选择",
-                "[Enter/i] 安装",
-            ]
-            
-            if selected_count > 0:
-                help_parts.append(f"[a] 批量({selected_count})")
-            else:
-                help_parts.append("[a] 批量安装")
-            
-            help_parts.extend(["[L] 日志", "[q] 退出"])
+            help_parts.append("[a] 批量安装")
         
-        help_text = "  ".join(help_parts)
+        help_parts.append("[q] 退出")
+    
+    help_text = "  ".join(help_parts)
     
     return Panel(
         Text(help_text, style=Theme.TEXT, justify="center"),
@@ -393,24 +399,14 @@ def render_ui(state: AppState) -> Layout:
     layout["header"].update(make_header(state))
     layout["footer"].update(make_footer(state))
     
-    # Toggle body view - different layouts for list vs logs mode
-    if state.view_mode == "logs":
-        # Logs mode: sidebar + full-width logs panel
-        layout["main"].split_row(
-            Layout(name="sidebar", size=26),
-            Layout(name="body", ratio=1),
-        )
-        layout["sidebar"].update(make_sidebar(state))
-        layout["body"].update(make_logs(state))
-    else:
-        # List mode: sidebar + tool list + script preview
-        layout["main"].split_row(
-            Layout(name="sidebar", size=26),
-            Layout(name="body", ratio=1, minimum_size=40),
-            Layout(name="preview", ratio=1, minimum_size=45),
-        )
-        layout["sidebar"].update(make_sidebar(state))
-        layout["body"].update(make_tool_list(state))
-        layout["preview"].update(make_preview(state))
+    # Main layout: sidebar + tool list + preview/logs panel
+    layout["main"].split_row(
+        Layout(name="sidebar", size=26),
+        Layout(name="body", ratio=1, minimum_size=40),
+        Layout(name="preview", ratio=1, minimum_size=45),
+    )
+    layout["sidebar"].update(make_sidebar(state))
+    layout["body"].update(make_tool_list(state))
+    layout["preview"].update(make_preview(state))
     
     return layout

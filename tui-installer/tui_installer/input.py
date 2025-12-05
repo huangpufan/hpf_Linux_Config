@@ -81,27 +81,23 @@ async def handle_input(state: AppState, key: str):
     
     # Navigation - vertical (j/k based on focus_panel)
     elif key in ('j', 'DOWN'):
-        if state.view_mode == "list":
-            if state.focus_panel == "sidebar":
-                state.move_category(1)
-            else:
-                state.move_tool(1)
+        if state.focus_panel == "sidebar":
+            state.move_category(1)
+        else:
+            state.move_tool(1)
     
     elif key in ('k', 'UP'):
-        if state.view_mode == "list":
-            if state.focus_panel == "sidebar":
-                state.move_category(-1)
-            else:
-                state.move_tool(-1)
+        if state.focus_panel == "sidebar":
+            state.move_category(-1)
+        else:
+            state.move_tool(-1)
     
     # Navigation - horizontal (h/l to switch focus panel)
     elif key in ('h', 'LEFT'):
-        if state.view_mode == "list":
-            state.focus_panel = "sidebar"
+        state.focus_panel = "sidebar"
     
     elif key in ('l', 'RIGHT'):
-        if state.view_mode == "list":
-            state.focus_panel = "body"
+        state.focus_panel = "body"
     
     # Selection
     elif key == ' ':  # Space
@@ -109,10 +105,7 @@ async def handle_input(state: AppState, key: str):
     
     # Enter key - context-sensitive action
     elif key in ('\r', '\n'):  # Enter
-        if state.view_mode == "logs":
-            # In logs view: return to list
-            state.view_mode = "list"
-        elif state.focus_panel == "sidebar":
+        if state.focus_panel == "sidebar":
             # In sidebar: enter the category (switch focus to body)
             state.focus_panel = "body"
         else:
@@ -137,8 +130,4 @@ async def handle_input(state: AppState, key: str):
         if state.get_selected_tools():
             task = asyncio.create_task(install_selected(state))
             state.running_tasks.append(task)
-    
-    # Toggle logs view (alternative keybinding)
-    elif key == 'L':
-        state.view_mode = "logs" if state.view_mode == "list" else "list"
 
