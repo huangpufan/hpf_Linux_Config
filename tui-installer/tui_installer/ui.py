@@ -71,7 +71,7 @@ def make_sidebar(state: AppState) -> Panel:
     """Render category sidebar navigation"""
     table = Table(show_header=False, box=None, expand=True, padding=(0, 0))
     table.add_column("Marker", width=2)
-    table.add_column("Icon", width=2)
+    table.add_column("Icon", width=3)
     table.add_column("Name")
     
     is_focused = state.focus_panel == "sidebar"
@@ -119,6 +119,7 @@ def make_tool_list(state: AppState) -> Panel:
     is_focused = state.focus_panel == "body"
     
     table = Table(box=box.SIMPLE, expand=True, show_header=True, show_lines=False)
+    table.add_column("", width=1, justify="center")  # 焦点指示符
     table.add_column("", width=2, justify="center")  # 选择列，去掉表头
     table.add_column("状态", width=6)
     table.add_column("工具", width=18)
@@ -128,6 +129,14 @@ def make_tool_list(state: AppState) -> Panel:
     for idx, tool in enumerate(cat.tools):
         is_row_focused = (idx == state.current_tool_idx)
         
+        # Focus indicator (▶ when focused on this row AND panel is focused)
+        if is_row_focused and is_focused:
+            marker = Text("▶", style=f"bold {Theme.CYAN}")
+        elif is_row_focused:
+            marker = Text("›", style=Theme.OVERLAY0)
+        else:
+            marker = Text(" ")
+        
         # Checkbox
         check = f"[{Theme.GREEN}]✓[/]" if tool.selected else "·"
         
@@ -135,11 +144,21 @@ def make_tool_list(state: AppState) -> Panel:
         icon, color, text_label = STATUS_ICONS[tool.status]
         status_text = Text(text_label, style=f"bold {color}")
         
-        # Highlight focused row
-        row_style = f"on {Theme.SURFACE0}" if is_row_focused else ""
-        name = f"[bold {Theme.TEXT}]{tool.name}[/]" if is_row_focused else tool.name
+        # Highlight focused row - more prominent when panel is focused
+        if is_row_focused and is_focused:
+            # Panel focused + row focused: bright background + cyan text
+            row_style = f"on {Theme.SURFACE1}"
+            name = f"[bold {Theme.CYAN}]{tool.name}[/]"
+        elif is_row_focused:
+            # Row focused but panel not: subtle background
+            row_style = f"on {Theme.SURFACE0}"
+            name = f"[bold {Theme.TEXT}]{tool.name}[/]"
+        else:
+            row_style = ""
+            name = tool.name
         
         table.add_row(
+            marker,
             check,
             status_text,
             name,
@@ -155,9 +174,9 @@ def make_tool_list(state: AppState) -> Panel:
     # Build dynamic subtitle based on current tool status
     tool = state.current_tool
     if tool and tool.status == Status.INSTALLED:
-        subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 Enter:日志 [已安装][/]"
+        subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 L:日志 [已安装][/]"
     else:
-        subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 i:安装 a:批量安装 Enter:日志[/]"
+        subtitle = f"[{Theme.OVERLAY0}]j/k:移动 Space:选择 Enter/i:安装 a:批量 L:日志[/]"
     
     return Panel(
         table,
@@ -325,20 +344,32 @@ def make_footer(state: AppState) -> Panel:
     else:
         # Show context-sensitive help with focus indicator
         selected_count = len(state.get_selected_tools())
-        focus_hint = "分类" if state.focus_panel == "sidebar" else "工具"
-        help_parts = [
-            f"[h/l] 切换面板",
-            f"[j/k] 移动({focus_hint})",
-            "[Space] 选择",
-            "[i] 安装当前",
-        ]
         
-        if selected_count > 0:
-            help_parts.append(f"[a] 批量安装({selected_count})")
+        if state.focus_panel == "sidebar":
+            # Left panel focused - Enter switches to tool list
+            help_parts = [
+                f"[h/l] 切换面板",
+                f"[j/k] 移动分类",
+                "[Enter] 进入分类",
+                "[L] 日志",
+                "[q] 退出",
+            ]
         else:
-            help_parts.append("[a] 批量安装")
+            # Right panel focused - Enter installs tool
+            help_parts = [
+                f"[h/l] 切换面板",
+                f"[j/k] 移动工具",
+                "[Space] 选择",
+                "[Enter/i] 安装",
+            ]
+            
+            if selected_count > 0:
+                help_parts.append(f"[a] 批量({selected_count})")
+            else:
+                help_parts.append("[a] 批量安装")
+            
+            help_parts.extend(["[L] 日志", "[q] 退出"])
         
-        help_parts.extend(["[Enter] 日志", "[q] 退出"])
         help_text = "  ".join(help_parts)
     
     return Panel(

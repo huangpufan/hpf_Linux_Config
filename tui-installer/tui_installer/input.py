@@ -107,12 +107,21 @@ async def handle_input(state: AppState, key: str):
     elif key == ' ':  # Space
         state.toggle_selection()
     
-    # View toggle
+    # Enter key - context-sensitive action
     elif key in ('\r', '\n'):  # Enter
-        if state.view_mode == "list":
-            state.view_mode = "logs"
-        else:
+        if state.view_mode == "logs":
+            # In logs view: return to list
             state.view_mode = "list"
+        elif state.focus_panel == "sidebar":
+            # In sidebar: enter the category (switch focus to body)
+            state.focus_panel = "body"
+        else:
+            # In body (tool list): install current tool (same as 'i')
+            if tool := state.current_tool:
+                if tool.is_installable:
+                    tool.selected = True
+                    task = asyncio.create_task(execute_tool(tool, state))
+                    state.running_tasks.append(task)
     
     # Install current tool
     elif key in ('i', 'I'):
