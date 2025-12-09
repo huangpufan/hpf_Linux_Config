@@ -34,7 +34,7 @@
     {
       "id": "setup",
       "name": "系统配置",
-      "icon": "⚙️",
+      "icon": "🛠",
       "tools": [
         {
           "id": "bashrc",
