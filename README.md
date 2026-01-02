@@ -1,5 +1,7 @@
 # HPF Linux Config
 
+**[English](README.md) | [中文](README-CN.md)**
+
 > A modern, modular Linux development environment configuration for WSL2, featuring a TUI installer and curated CLI tools.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
