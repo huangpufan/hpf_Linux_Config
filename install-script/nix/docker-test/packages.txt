@@ -1,0 +1,34 @@
+# Nix 包列表 - 用于 nix profile install
+# 格式: nixpkgs#package-name
+
+# 核心工具 (替代 cargo 安装)
+nixpkgs#eza
+nixpkgs#bat
+nixpkgs#fzf
+nixpkgs#zoxide
+nixpkgs#ripgrep
+nixpkgs#fd
+nixpkgs#sd
+nixpkgs#broot
+
+# 系统监控 (替代 snap 安装)
+nixpkgs#htop
+nixpkgs#btop
+nixpkgs#dust
+nixpkgs#procs
+
+# Git 工具
+nixpkgs#git
+nixpkgs#lazygit
+nixpkgs#delta
+
+# 文件管理
+nixpkgs#ranger
+nixpkgs#ncdu
+
+# 终端工具
+nixpkgs#tmux
+nixpkgs#neovim
+nixpkgs#jq
+nixpkgs#tldr
+nixpkgs#neofetch
