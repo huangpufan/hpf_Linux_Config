@@ -1,1 +1,4 @@
 linux-package-repository
+
+# Auto Claude data directory
+.auto-claude/
