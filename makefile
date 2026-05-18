@@ -1,5 +1,3 @@
-run_tui_installer:
-	sudo python -m tui_installer
 push:
 	chmod +777 ./*
 	./push_nvim_config.sh
@@ -16,4 +14,3 @@ delete-nvim:
 link-nvim:
 	ln -s ~/hpf_Linux_Config/nvim  ~/.config/nvim 
 #single_file_compile_commands_json:
-

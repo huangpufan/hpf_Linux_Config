@@ -7,7 +7,7 @@ REPO_DIR="$SCRIPT_DIR/linux-package-repository"
 # Clone repository if it doesn't exist
 if [ ! -d "$REPO_DIR" ]; then
     echo "Cloning linux-package-repository..."
-    git clone git@github.com:huangpufan/linux-package-repository.git "$REPO_DIR" --depth=1
+    git clone https://github.com/huangpufan/linux-package-repository.git "$REPO_DIR" --depth=1
 fi
 
 echo "Updating linux-package-repository..."

@@ -1,3 +1,5 @@
+# 保留/继承代理变量；默认代理逻辑由 ~/.bashrc 管理
+
 if [ -s /home/hpf/.bashrc ]; then
     source /home/hpf/.bashrc
 fi

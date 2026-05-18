@@ -16,6 +16,7 @@ log_info "=========================================="
 # APT 工具
 log_info "Installing APT tools..."
 bash "$TOOLS_DIR/apt/git.sh" || true
+bash "$TOOLS_DIR/apt/gh.sh" || true
 bash "$TOOLS_DIR/apt/tmux.sh" || true
 bash "$TOOLS_DIR/apt/htop.sh" || true
 bash "$TOOLS_DIR/apt/bat.sh" || true
@@ -28,4 +29,3 @@ bash "$TOOLS_DIR/curl/zoxide.sh" || true
 log_info "=========================================="
 log_info "  Minimal Toolset Installation Complete!"
 log_info "=========================================="
-

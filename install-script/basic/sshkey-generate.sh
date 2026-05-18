@@ -1,28 +1,27 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-GIT_EMAIL="59730801@qq.com"
-GIT_NAME="huangpufan"
-SSH_KEY_PATH="$HOME/.ssh/id_ed25519"
+SSH_KEY_PATH="${SSH_KEY_PATH:-$HOME/.ssh/id_ed25519}"
+SSH_KEY_PUB="${SSH_KEY_PATH}.pub"
+SSH_COMMENT="$(git config --global user.email 2>/dev/null || true)"
 
-# Check if SSH key already exists
-if [ -f "$SSH_KEY_PATH.pub" ]; then
-    echo "SSH key already exists at $SSH_KEY_PATH.pub"
+if [ -z "$SSH_COMMENT" ]; then
+    SSH_COMMENT="59730801@qq.com"
+fi
+
+mkdir -p "$HOME/.ssh"
+
+if [ -f "$SSH_KEY_PUB" ]; then
+    echo "SSH key already exists at $SSH_KEY_PUB"
 else
-    echo "Generating new SSH key..."
-    mkdir -p "$HOME/.ssh"
-    ssh-keygen -t ed25519 -C "$GIT_EMAIL" -f "$SSH_KEY_PATH" -q -N ""
+    echo "Generating new SSH key at $SSH_KEY_PATH ..."
+    ssh-keygen -t ed25519 -C "$SSH_COMMENT" -f "$SSH_KEY_PATH" -q -N ""
     echo "SSH key generated successfully!"
 fi
 
-# Configure Git user name and email
-git config --global user.name "$GIT_NAME"
-git config --global user.email "$GIT_EMAIL"
-
 echo ""
 echo "Your SSH public key:"
-cat "$SSH_KEY_PATH.pub"
+cat "$SSH_KEY_PUB"
 echo ""
-echo "Add this key to:"
-echo "  Github: https://github.com/settings/ssh/new"
-echo "  Gitee:  https://gitee.com/profile/sshkeys"
+echo "Next step:"
+echo "  For GitHub, prefer: bash ~/hpf_Linux_Config/install-script/setup/github-ssh.sh"

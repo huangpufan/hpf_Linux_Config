@@ -3,23 +3,26 @@
     {
       "id": "presets",
       "name": "预设组合",
-      "icon": "🎯",
       "tools": [
         {
           "id": "preset-minimal",
           "name": "最小工具集",
-          "description": "基础命令行工具: git, tmux, htop, bat, fzf, zoxide",
+          "description": "基础命令行工具：git、gh、tmux、htop、bat、fzf、zoxide",
           "script": "presets/minimal.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v fzf && command -v zoxide"
+          "requires_ssh": false,
+          "check_cmd": "command -v gh && command -v fzf && command -v zoxide",
+          "timeout": 3600
         },
         {
           "id": "preset-dev-cli",
           "name": "CLI 开发工具集",
-          "description": "现代 CLI 工具: lazygit, eza, broot, fkill 等",
+          "description": "现代 CLI 工具：lazygit、eza、broot、fkill 等",
           "script": "presets/dev-cli.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v lazygit && command -v eza"
+          "requires_ssh": false,
+          "check_cmd": "command -v lazygit && command -v eza",
+          "timeout": 3600
         },
         {
           "id": "preset-dev-full",
@@ -27,14 +30,25 @@
           "description": "CLI + 编译器 + 调试工具 + 高级文件管理",
           "script": "presets/dev-full.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v yazi && command -v gdbgui"
+          "requires_ssh": false,
+          "check_cmd": "command -v yazi && pipx list 2>/dev/null | grep -q gdbgui",
+          "timeout": 3600
+        },
+        {
+          "id": "preset-all-tools",
+          "name": "全部工具",
+          "description": "运行当前仓库维护的全部预设工具脚本",
+          "script": "presets/all-tools.sh",
+          "requires_sudo": true,
+          "requires_ssh": false,
+          "check_cmd": "command -v bandwhich && command -v yazi",
+          "timeout": 3600
         }
       ]
     },
     {
       "id": "setup",
       "name": "系统配置",
-      "icon": "🛠",
       "tools": [
         {
           "id": "bashrc",
@@ -42,7 +56,9 @@
           "description": "配置 .bashrc 基础环境变量",
           "script": "basic/bashrc-init.sh",
           "requires_sudo": false,
-          "check_cmd": "grep -q 'hpf_Linux_Config' ~/.bashrc"
+          "requires_ssh": false,
+          "check_cmd": "grep -q 'hpf_Linux_Config' ~/.bashrc",
+          "timeout": 1800
         },
         {
           "id": "folder-create",
@@ -50,15 +66,39 @@
           "description": "创建标准工作目录结构",
           "script": "basic/folder-create.sh",
           "requires_sudo": false,
-          "check_cmd": "test -d ~/workspace || test -d ~/project"
+          "requires_ssh": false,
+          "check_cmd": "test -d ~/workspace || test -d ~/project",
+          "timeout": 1800
         },
         {
-          "id": "sshkey",
-          "name": "SSH 密钥生成",
-          "description": "生成 SSH 密钥对",
-          "script": "basic/sshkey-generate.sh",
+          "id": "git-identity",
+          "name": "Git 身份配置",
+          "description": "配置 git user.name 与 user.email；通过参数或环境变量提供值",
+          "script": "setup/git-identity.sh",
           "requires_sudo": false,
-          "check_cmd": "test -f ~/.ssh/id_rsa.pub || test -f ~/.ssh/id_ed25519.pub"
+          "requires_ssh": false,
+          "check_cmd": "git config --global user.name >/dev/null 2>&1 && git config --global user.email >/dev/null 2>&1",
+          "timeout": 1800
+        },
+        {
+          "id": "github-auth",
+          "name": "GitHub CLI 认证",
+          "description": "使用 gh 登录 GitHub，并默认配置为 HTTPS + gh credential helper",
+          "script": "setup/github-auth.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "gh auth status --hostname github.com >/dev/null 2>&1 && gh config get git_protocol --host github.com 2>/dev/null | grep -qx https",
+          "timeout": 1800
+        },
+        {
+          "id": "github-ssh",
+          "name": "GitHub SSH 可选增强",
+          "description": "使用 gh 生成并上传 SSH key，然后把 GitHub git protocol 切到 ssh",
+          "script": "setup/github-ssh.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "test -f ~/.ssh/id_ed25519.pub && gh auth status --hostname github.com >/dev/null 2>&1 && gh config get git_protocol --host github.com 2>/dev/null | grep -qx ssh",
+          "timeout": 1800
         },
         {
           "id": "source-change",
@@ -66,7 +106,9 @@
           "description": "更换 apt 软件源为国内镜像",
           "script": "basic/ubuntu-source-change.sh",
           "requires_sudo": true,
-          "check_cmd": "grep -q 'mirrors' /etc/apt/sources.list"
+          "requires_ssh": false,
+          "check_cmd": "grep -q 'mirrors' /etc/apt/sources.list",
+          "timeout": 1800
         },
         {
           "id": "npm-registry",
@@ -74,7 +116,9 @@
           "description": "配置 npm 使用国内镜像源",
           "script": "setup/npm-registry.sh",
           "requires_sudo": false,
-          "check_cmd": "npm config get registry 2>/dev/null | grep -q npmmirror"
+          "requires_ssh": false,
+          "check_cmd": "npm config get registry 2>/dev/null | grep -q npmmirror",
+          "timeout": 1800
         },
         {
           "id": "cargo-registry",
@@ -82,22 +126,25 @@
           "description": "配置 cargo 使用国内镜像源",
           "script": "setup/cargo-registry.sh",
           "requires_sudo": false,
-          "check_cmd": "test -f ~/.cargo/config"
+          "requires_ssh": false,
+          "check_cmd": "test -f ~/.cargo/config.toml || test -L ~/.cargo/config.toml",
+          "timeout": 1800
         },
         {
           "id": "configs",
           "name": "Dotfiles 配置",
-          "description": "Tmux, Neofetch 等配置文件",
+          "description": "Tmux、Neofetch 等配置文件",
           "script": "basic/config-install.sh",
           "requires_sudo": false,
-          "check_cmd": "test -f ~/.tmux.conf"
+          "requires_ssh": false,
+          "check_cmd": "test -f ~/.tmux.conf",
+          "timeout": 1800
         }
       ]
     },
     {
       "id": "apt-tools",
       "name": "APT 工具",
-      "icon": "📦",
       "tools": [
         {
           "id": "git",
@@ -105,7 +152,19 @@
           "description": "分布式版本控制系统",
           "script": "tools/apt/git.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v git"
+          "requires_ssh": false,
+          "check_cmd": "command -v git",
+          "timeout": 1800
+        },
+        {
+          "id": "gh",
+          "name": "GitHub CLI",
+          "description": "GitHub 官方命令行工具，用于认证和仓库操作",
+          "script": "tools/apt/gh.sh",
+          "requires_sudo": true,
+          "requires_ssh": false,
+          "check_cmd": "command -v gh",
+          "timeout": 1800
         },
         {
           "id": "tmux",
@@ -113,7 +172,9 @@
           "description": "终端复用器",
           "script": "tools/apt/tmux.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v tmux"
+          "requires_ssh": false,
+          "check_cmd": "command -v tmux",
+          "timeout": 1800
         },
         {
           "id": "htop",
@@ -121,7 +182,9 @@
           "description": "交互式进程查看器",
           "script": "tools/apt/htop.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v htop"
+          "requires_ssh": false,
+          "check_cmd": "command -v htop",
+          "timeout": 1800
         },
         {
           "id": "bat",
@@ -129,7 +192,9 @@
           "description": "带语法高亮的 cat 替代品",
           "script": "tools/apt/bat.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v bat || command -v batcat"
+          "requires_ssh": false,
+          "check_cmd": "command -v bat || command -v batcat",
+          "timeout": 1800
         },
         {
           "id": "ranger",
@@ -137,7 +202,9 @@
           "description": "Vim 风格终端文件管理器",
           "script": "tools/apt/ranger.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v ranger"
+          "requires_ssh": false,
+          "check_cmd": "command -v ranger",
+          "timeout": 1800
         },
         {
           "id": "ncdu",
@@ -145,7 +212,9 @@
           "description": "NCurses 磁盘使用分析器",
           "script": "tools/apt/ncdu.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v ncdu"
+          "requires_ssh": false,
+          "check_cmd": "command -v ncdu",
+          "timeout": 1800
         },
         {
           "id": "tldr",
@@ -153,7 +222,9 @@
           "description": "简化的 man 手册",
           "script": "tools/apt/tldr.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v tldr"
+          "requires_ssh": false,
+          "check_cmd": "command -v tldr",
+          "timeout": 1800
         },
         {
           "id": "neofetch",
@@ -161,7 +232,9 @@
           "description": "系统信息展示工具",
           "script": "tools/apt/neofetch.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v neofetch"
+          "requires_ssh": false,
+          "check_cmd": "command -v neofetch",
+          "timeout": 1800
         },
         {
           "id": "xclip",
@@ -169,7 +242,9 @@
           "description": "命令行剪贴板工具",
           "script": "tools/apt/xclip.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v xclip"
+          "requires_ssh": false,
+          "check_cmd": "command -v xclip",
+          "timeout": 1800
         },
         {
           "id": "ag",
@@ -177,15 +252,19 @@
           "description": "快速代码搜索工具",
           "script": "tools/apt/silversearcher-ag.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v ag"
+          "requires_ssh": false,
+          "check_cmd": "command -v ag",
+          "timeout": 1800
         },
         {
           "id": "build-essential",
           "name": "Build Essential",
-          "description": "编译工具链 (gcc, g++, make)",
+          "description": "编译工具链 (gcc、g++、make)",
           "script": "tools/apt/build-essential.sh",
           "requires_sudo": true,
-          "check_cmd": "dpkg -l | grep -qw build-essential"
+          "requires_ssh": false,
+          "check_cmd": "dpkg -l | grep -qw build-essential",
+          "timeout": 1800
         },
         {
           "id": "xmake",
@@ -193,14 +272,15 @@
           "description": "现代化构建系统",
           "script": "tools/apt/xmake.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v xmake"
+          "requires_ssh": false,
+          "check_cmd": "command -v xmake",
+          "timeout": 1800
         }
       ]
     },
     {
       "id": "curl-tools",
       "name": "Curl 安装工具",
-      "icon": "🌐",
       "tools": [
         {
           "id": "fzf",
@@ -208,7 +288,9 @@
           "description": "命令行模糊查找工具",
           "script": "tools/curl/fzf.sh",
           "requires_sudo": false,
-          "check_cmd": "command -v fzf"
+          "requires_ssh": false,
+          "check_cmd": "command -v fzf",
+          "timeout": 1800
         },
         {
           "id": "zoxide",
@@ -216,7 +298,9 @@
           "description": "智能目录跳转 (cd 替代品)",
           "script": "tools/curl/zoxide.sh",
           "requires_sudo": false,
-          "check_cmd": "command -v zoxide"
+          "requires_ssh": false,
+          "check_cmd": "command -v zoxide",
+          "timeout": 1800
         },
         {
           "id": "lazygit",
@@ -224,7 +308,9 @@
           "description": "终端 Git UI",
           "script": "tools/curl/lazygit.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v lazygit"
+          "requires_ssh": false,
+          "check_cmd": "command -v lazygit",
+          "timeout": 1800
         },
         {
           "id": "nvm",
@@ -232,14 +318,15 @@
           "description": "Node.js 版本管理器",
           "script": "tools/curl/nvm.sh",
           "requires_sudo": false,
-          "check_cmd": "test -d ~/.nvm"
+          "requires_ssh": false,
+          "check_cmd": "test -d ~/.nvm",
+          "timeout": 1800
         }
       ]
     },
     {
       "id": "cargo-tools",
       "name": "Cargo 工具",
-      "icon": "🦀",
       "tools": [
         {
           "id": "eza",
@@ -247,7 +334,9 @@
           "description": "现代化 ls 替代品",
           "script": "tools/cargo/eza.sh",
           "requires_sudo": false,
-          "check_cmd": "command -v eza"
+          "requires_ssh": false,
+          "check_cmd": "command -v eza",
+          "timeout": 1800
         },
         {
           "id": "yazi",
@@ -255,7 +344,9 @@
           "description": "终端文件管理器",
           "script": "tools/cargo/yazi.sh",
           "requires_sudo": false,
-          "check_cmd": "command -v yazi"
+          "requires_ssh": false,
+          "check_cmd": "command -v yazi",
+          "timeout": 1800
         },
         {
           "id": "broot",
@@ -263,7 +354,9 @@
           "description": "Tree 的现代替代品",
           "script": "tools/cargo/broot.sh",
           "requires_sudo": false,
-          "check_cmd": "command -v broot"
+          "requires_ssh": false,
+          "check_cmd": "command -v broot",
+          "timeout": 1800
         },
         {
           "id": "mprocs",
@@ -271,7 +364,9 @@
           "description": "并行运行多个命令",
           "script": "tools/cargo/mprocs.sh",
           "requires_sudo": false,
-          "check_cmd": "command -v mprocs"
+          "requires_ssh": false,
+          "check_cmd": "command -v mprocs",
+          "timeout": 1800
         },
         {
           "id": "sd",
@@ -279,7 +374,9 @@
           "description": "Sed 的现代替代品",
           "script": "tools/cargo/sd.sh",
           "requires_sudo": false,
-          "check_cmd": "command -v sd"
+          "requires_ssh": false,
+          "check_cmd": "command -v sd",
+          "timeout": 1800
         },
         {
           "id": "ouch",
@@ -287,14 +384,15 @@
           "description": "压缩/解压缩工具",
           "script": "tools/cargo/ouch.sh",
           "requires_sudo": false,
-          "check_cmd": "command -v ouch"
+          "requires_ssh": false,
+          "check_cmd": "command -v ouch",
+          "timeout": 1800
         }
       ]
     },
     {
       "id": "npm-tools",
       "name": "NPM 工具",
-      "icon": "📗",
       "tools": [
         {
           "id": "fkill",
@@ -302,14 +400,15 @@
           "description": "交互式进程杀手",
           "script": "tools/npm/fkill.sh",
           "requires_sudo": false,
-          "check_cmd": "command -v fkill"
+          "requires_ssh": false,
+          "check_cmd": "command -v fkill",
+          "timeout": 1800
         }
       ]
     },
     {
       "id": "snap-tools",
       "name": "Snap 工具",
-      "icon": "🔷",
       "tools": [
         {
           "id": "btop",
@@ -317,7 +416,9 @@
           "description": "资源监控器 (htop 替代品)",
           "script": "tools/snap/btop.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v btop"
+          "requires_ssh": false,
+          "check_cmd": "command -v btop",
+          "timeout": 1800
         },
         {
           "id": "dust",
@@ -325,7 +426,9 @@
           "description": "磁盘使用分析 (du 替代品)",
           "script": "tools/snap/dust.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v dust"
+          "requires_ssh": false,
+          "check_cmd": "command -v dust",
+          "timeout": 1800
         },
         {
           "id": "procs",
@@ -333,7 +436,9 @@
           "description": "进程查看器 (ps 替代品)",
           "script": "tools/snap/procs.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v procs"
+          "requires_ssh": false,
+          "check_cmd": "command -v procs",
+          "timeout": 1800
         },
         {
           "id": "zellij",
@@ -341,7 +446,9 @@
           "description": "终端工作区 (tmux 替代品)",
           "script": "tools/snap/zellij.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v zellij"
+          "requires_ssh": false,
+          "check_cmd": "command -v zellij",
+          "timeout": 1800
         },
         {
           "id": "lnav",
@@ -349,7 +456,9 @@
           "description": "日志文件导航器",
           "script": "tools/snap/lnav.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v lnav"
+          "requires_ssh": false,
+          "check_cmd": "command -v lnav",
+          "timeout": 1800
         },
         {
           "id": "bandwhich",
@@ -357,14 +466,15 @@
           "description": "带宽使用监控",
           "script": "tools/snap/bandwhich.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v bandwhich"
+          "requires_ssh": false,
+          "check_cmd": "command -v bandwhich",
+          "timeout": 1800
         }
       ]
     },
     {
       "id": "pip-tools",
       "name": "Pip 工具",
-      "icon": "🐍",
       "tools": [
         {
           "id": "pysocks",
@@ -372,7 +482,9 @@
           "description": "SOCKS 代理支持",
           "script": "tools/pip/pysocks.sh",
           "requires_sudo": false,
-          "check_cmd": "python3 -c 'import socks' 2>/dev/null"
+          "requires_ssh": false,
+          "check_cmd": "python3 -c 'import socks' 2>/dev/null",
+          "timeout": 1800
         },
         {
           "id": "gdbgui",
@@ -380,7 +492,9 @@
           "description": "浏览器端 GDB 前端",
           "script": "tools/pip/gdbgui.sh",
           "requires_sudo": false,
-          "check_cmd": "pipx list 2>/dev/null | grep -q gdbgui"
+          "requires_ssh": false,
+          "check_cmd": "pipx list 2>/dev/null | grep -q gdbgui",
+          "timeout": 1800
         },
         {
           "id": "gdbfrontend",
@@ -388,14 +502,15 @@
           "description": "GDB 前端界面",
           "script": "tools/pip/gdbfrontend.sh",
           "requires_sudo": true,
-          "check_cmd": "python3 -m gdbfrontend --version 2>/dev/null"
+          "requires_ssh": false,
+          "check_cmd": "python3 -m gdbfrontend --version 2>/dev/null",
+          "timeout": 1800
         }
       ]
     },
     {
       "id": "compiler",
       "name": "编译器",
-      "icon": "🔩",
       "tools": [
         {
           "id": "gcc",
@@ -403,7 +518,9 @@
           "description": "GCC/G++ 编译器工具链",
           "script": "basic/latestgccg++-install.sh",
           "requires_sudo": true,
-          "check_cmd": "gcc --version | grep -q '11'"
+          "requires_ssh": false,
+          "check_cmd": "gcc --version | grep -q '11'",
+          "timeout": 1800
         },
         {
           "id": "clang",
@@ -411,14 +528,15 @@
           "description": "LLVM/Clang 编译器工具链",
           "script": "basic/clang13-install.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v clang-13"
+          "requires_ssh": false,
+          "check_cmd": "command -v clang-13",
+          "timeout": 1800
         }
       ]
     },
     {
       "id": "editor",
       "name": "编辑器",
-      "icon": "📝",
       "tools": [
         {
           "id": "nvim",
@@ -426,7 +544,9 @@
           "description": "现代化 Vim 编辑器 (v0.10+)",
           "script": "nvim/nvim-install.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v nvim"
+          "requires_ssh": false,
+          "check_cmd": "command -v nvim",
+          "timeout": 1800
         },
         {
           "id": "vim",
@@ -434,22 +554,25 @@
           "description": "经典 Vim 编辑器配置",
           "script": "vim/vim-install.sh",
           "requires_sudo": false,
-          "check_cmd": "command -v vim"
+          "requires_ssh": false,
+          "check_cmd": "command -v vim",
+          "timeout": 1800
         }
       ]
     },
     {
       "id": "dev",
       "name": "开发工具",
-      "icon": "🔧",
       "tools": [
         {
           "id": "cgdb",
           "name": "CGDB",
-          "description": "带有Curses界面的GDB前端",
+          "description": "带 Curses 界面的 GDB 前端",
           "script": "gdb/cgdb-install.sh",
           "requires_sudo": true,
-          "check_cmd": "command -v cgdb"
+          "requires_ssh": false,
+          "check_cmd": "command -v cgdb",
+          "timeout": 1800
         },
         {
           "id": "ranger-config",
@@ -457,7 +580,9 @@
           "description": "Ranger 文件管理器配置",
           "script": "ranger/install.sh",
           "requires_sudo": false,
-          "check_cmd": "test -d ~/.config/ranger"
+          "requires_ssh": false,
+          "check_cmd": "test -d ~/.config/ranger",
+          "timeout": 1800
         }
       ]
     }

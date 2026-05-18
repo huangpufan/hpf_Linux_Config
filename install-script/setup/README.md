@@ -8,7 +8,7 @@
 - Shell 配置（bashrc）
 - 目录结构创建
 - 软件源配置
-- SSH 密钥管理
+- Git 身份与 GitHub 认证
 - 包管理器源配置
 
 ## 脚本列表
@@ -18,7 +18,9 @@
 | `bashrc-init.sh` | 初始化 bashrc 配置 |
 | `folder-create.sh` | 创建标准工作目录结构 |
 | `ubuntu-source-change.sh` | 更换 Ubuntu apt 软件源 |
-| `sshkey-generate.sh` | 生成 SSH 密钥 |
+| `git-identity.sh` | 配置 git user.name / user.email |
+| `github-auth.sh` | 使用 gh 完成 GitHub HTTPS 认证 |
+| `github-ssh.sh` | 使用 gh 生成/上传 SSH key，并切换到 SSH |
 | `npm-registry.sh` | 配置 npm 镜像源 |
 | `cargo-registry.sh` | 配置 cargo 镜像源 |
 | `profile-set.sh` | 配置 profile 文件 |
@@ -30,10 +32,13 @@
 这些脚本通常在初始安装时运行，也可以单独运行：
 
 ```bash
-# 初始化 bashrc
-bash install-script/setup/bashrc-init.sh
+# 配置 git 身份
+HPF_GIT_NAME="Your Name" HPF_GIT_EMAIL="you@example.com" \
+bash install-script/setup/git-identity.sh
 
-# 创建目录结构
-bash install-script/setup/folder-create.sh
+# 默认完成 GitHub HTTPS 认证
+bash install-script/setup/github-auth.sh
+
+# 如果确实需要 SSH，再执行
+bash install-script/setup/github-ssh.sh
 ```
-

@@ -18,7 +18,7 @@ if [ -d "$CGDB_DIR" ]; then
     rm -rf "$CGDB_DIR"
 fi
 
-git clone git@github.com:cgdb/cgdb.git "$CGDB_DIR" --depth=1
+git clone https://github.com/cgdb/cgdb.git "$CGDB_DIR" --depth=1
 cd "$CGDB_DIR"
 ./autogen.sh
 ./configure
