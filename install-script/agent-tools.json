@@ -107,7 +107,7 @@
           "script": "basic/ubuntu-source-change.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "grep -q 'mirrors' /etc/apt/sources.list",
+          "check_cmd": ". /etc/os-release && if [ \"$VERSION_ID\" = \"24.04\" ]; then grep -q 'mirrors.aliyun.com/ubuntu' /etc/apt/sources.list.d/ubuntu.sources; else grep -q 'mirrors.aliyun.com/ubuntu' /etc/apt/sources.list; fi",
           "timeout": 1800
         },
         {
@@ -524,12 +524,12 @@
         },
         {
           "id": "clang",
-          "name": "Clang 13",
-          "description": "LLVM/Clang 编译器工具链",
+          "name": "Clang",
+          "description": "LLVM/Clang 编译器工具链（24.04 使用发行版版本）",
           "script": "basic/clang13-install.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "command -v clang-13",
+          "check_cmd": ". /etc/os-release && if [ \"$VERSION_ID\" = \"24.04\" ]; then command -v clang >/dev/null && command -v lldb >/dev/null && command -v lld >/dev/null; else command -v clang-13 >/dev/null && command -v lldb-13 >/dev/null && command -v lld-13 >/dev/null; fi",
           "timeout": 1800
         }
       ]

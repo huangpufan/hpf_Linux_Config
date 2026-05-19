@@ -6,7 +6,8 @@ set -Eeuo pipefail
 # All packages to install
 packages=(
     apt-utils binutils bison flex bc build-essential make mtd-utils gcc-arm-linux-gnueabi 
-    u-boot-tools python3.9 python3-pip git zip unzip curl wget gcc g++ ruby dosfstools 
+    # Ubuntu 24.04 defaults to Python 3.12, so rely on the distro python3 package.
+    u-boot-tools python3 python3-pip git zip unzip curl wget gcc g++ ruby dosfstools
     mtools default-jre default-jdk scons python3-distutils perl openssl libssl-dev cpio 
     git-lfs m4 ccache zlib1g-dev tar rsync liblz4-tool genext2fs binutils-dev 
     device-tree-compiler e2fsprogs git-core gnupg gnutls-bin gperf lib32ncurses5-dev 

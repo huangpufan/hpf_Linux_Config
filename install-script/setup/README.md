@@ -2,6 +2,10 @@
 
 系统环境配置相关的脚本，不涉及具体工具的安装。
 
+如果你是 agent，且任务是“安装整机环境”，不要从这个目录开始自由发挥。
+先读仓库根目录 `AGENTS.md`，再读 `docs/agent-install-playbook.md`，最后再回到
+这个目录执行具体 setup 步骤。
+
 ## 目录说明
 
 这些脚本主要用于配置系统环境，包括：
@@ -10,6 +14,11 @@
 - 软件源配置
 - Git 身份与 GitHub 认证
 - 包管理器源配置
+
+当前支持 Ubuntu 20.04/22.04/24.04。
+其中 Ubuntu 24.04 的 `ubuntu-source-change.sh` 会写入
+`/etc/apt/sources.list.d/ubuntu.sources`，而不是旧版的
+`/etc/apt/sources.list`。
 
 ## 脚本列表
 
@@ -29,7 +38,17 @@
 
 ## 使用方式
 
-这些脚本通常在初始安装时运行，也可以单独运行：
+这些脚本通常应通过 runner 调用；只有在明确需要时才直接执行脚本。
+
+推荐：
+
+```bash
+python3 install-script/agent-runner.py install git-identity
+python3 install-script/agent-runner.py install github-auth
+python3 install-script/agent-runner.py install source-change
+```
+
+直接脚本：
 
 ```bash
 # 配置 git 身份

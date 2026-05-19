@@ -7,6 +7,34 @@
 - 工具清单：`install-script/agent-tools.json`
 - 确定性执行器：`install-script/agent-runner.py`
 
+## 支持版本
+
+- Ubuntu 20.04
+- Ubuntu 22.04
+- Ubuntu 24.04
+
+其中 `source-change` 在 Ubuntu 24.04 上会检查并改写
+`/etc/apt/sources.list.d/ubuntu.sources`；在 20.04/22.04 上仍使用
+`/etc/apt/sources.list`。
+
+## 阅读顺序
+
+如果 agent 的任务是“安装环境”或“检查安装状态”，建议按下面的顺序读：
+
+1. 根目录 `AGENTS.md`
+2. 本文档
+3. `install-script/agent-tools.json`
+4. 目标脚本所在子目录
+
+目录分工：
+
+- `install-script/presets/`：预设组合入口
+- `install-script/setup/`：Git 身份、GitHub 认证、换源、registry 等系统配置
+- `install-script/basic/`：基础环境引导与兼容性脚本
+- `install-script/tools/`：单工具安装脚本
+- `install-script/openharmony/`：OpenHarmony 专用环境
+- `nvim/`：编辑器配置，不是默认机器安装入口
+
 ## 目标
 
 让 agent 在安装 Linux 开发环境时保持三点：
@@ -30,7 +58,7 @@
 - 是否需要 GitHub 认证；默认走 `gh + HTTPS`，只有明确要求时才切换 SSH
 - 是否存在会影响脚本的前置条件，比如 Node、Cargo、Snap
 
-如果意图不明确，先问用户；如果只是执行路径不明确，不要自行发明流程，直接使用 runner。
+如果意图不明确，先问用户；如果只是执行路径不明确，不要自行发明流程，先回到 `AGENTS.md` / 本文档 / runner。
 
 ### 2. 列出可执行项
 

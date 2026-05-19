@@ -8,6 +8,16 @@ This folder now follows the repo-wide agent flow:
 2. Default GitHub path is `gh + HTTPS`, not manual SSH key upload.
 3. Configure git identity first, then GitHub auth, then the rest of the basic environment.
 
+Supported Ubuntu versions:
+
+- Ubuntu 20.04
+- Ubuntu 22.04
+- Ubuntu 24.04
+
+For Ubuntu 24.04, `ubuntu-source-change.sh` manages
+`/etc/apt/sources.list.d/ubuntu.sources` and disables legacy active entries in
+`/etc/apt/sources.list` to avoid duplicate mirrors.
+
 Recommended flow:
 
 ```bash

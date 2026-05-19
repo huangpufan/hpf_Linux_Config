@@ -42,9 +42,18 @@ python3 install-script/agent-runner.py preset minimal
 
 ## Agent Workflow
 
-Read the playbook before automating installs:
+For install tasks, read these files in order:
 
+- [AGENTS.md](AGENTS.md)
 - [docs/agent-install-playbook.md](docs/agent-install-playbook.md)
+
+Install-related code lives mainly under `install-script/`:
+
+- `install-script/presets/` is the preset entrypoint
+- `install-script/setup/` covers system and account setup
+- `install-script/basic/` covers base environment bootstrap
+- `install-script/tools/` contains one installer per tool
+- `install-script/openharmony/` is OpenHarmony-specific and not part of the default machine bootstrap
 
 The runner uses `install-script/agent-tools.json` as the single catalog. Install status is determined only by `check_cmd`; there is no persisted TUI state anymore. The runner also expects this repository to live at `~/hpf_Linux_Config`.
 
@@ -83,6 +92,7 @@ Each install streams stdout/stderr to the terminal and writes a log to `~/.local
 
 ```text
 hpf_Linux_Config/
+├── AGENTS.md
 ├── docs/
 │   └── agent-install-playbook.md
 ├── install-script/
@@ -119,7 +129,7 @@ make link-nvim
 
 ## Requirements
 
-- Ubuntu 20.04/22.04 (WSL2 recommended)
+- Ubuntu 20.04/22.04/24.04 (WSL2 recommended)
 - Python 3.8+
 - Git
 - `gh` can be installed by this repo via `install-script/tools/apt/gh.sh`

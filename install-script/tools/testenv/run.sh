@@ -3,8 +3,9 @@ set -Eeuo pipefail
 trap 'echo "[ERROR] $0:$LINENO: $BASH_COMMAND" >&2' ERR
 
 # Usage:
-#   run.sh [jammy|focal|IMAGE[:TAG]] [COMMAND]
+#   run.sh [noble|jammy|focal|IMAGE[:TAG]] [COMMAND]
 # Examples:
+#   run.sh noble
 #   run.sh jammy
 #   run.sh focal 'cat /etc/os-release'
 #   run.sh ubuntu:24.04 'echo hello'
@@ -17,6 +18,7 @@ CMD_TO_RUN="${2:-}"
 
 resolve_image() {
   case "$IMAGE_INPUT" in
+    noble) echo "ubuntu:24.04";;
     jammy) echo "ubuntu:22.04";;
     focal) echo "ubuntu:20.04";;
     *) echo "$IMAGE_INPUT";;
@@ -38,12 +40,20 @@ runtime() {
 
 RUNTIME="$(runtime)"
 
+TTY_FLAGS=()
+if [ -t 0 ] && [ -t 1 ]; then
+  TTY_FLAGS=(-it)
+elif [ -t 0 ]; then
+  TTY_FLAGS=(-i)
+fi
+
 # Mount repo read-only to /mnt/ws, then copy into /root/ws (writable)
 MNT_RO="/mnt/ws"
 WORKDIR_IN="/root/ws"
 
 RUN_BASE=(
-  "$RUNTIME" run --rm -it
+  "$RUNTIME" run --rm
+  "${TTY_FLAGS[@]}"
   -v "$REPO_ROOT:$MNT_RO:ro"
   -w /root
   "$IMAGE"
@@ -78,5 +88,4 @@ EOSCRIPT
 }
 
 "${RUN_BASE[@]}" "$(prepare_and_exec)"
-
 

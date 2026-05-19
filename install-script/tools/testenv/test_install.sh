@@ -149,7 +149,7 @@ fi
 # ========================================
 # 测试 3: basic/clang13-install.sh
 # ========================================
-test_script "/root/ws/basic/clang13-install.sh" "Clang 13 安装" 180 || true
+test_script "/root/ws/basic/clang13-install.sh" "Clang 工具链安装" 180 || true
 
 # 验证
 if command -v clang-13 >/dev/null 2>&1 || command -v clang >/dev/null 2>&1; then
@@ -281,4 +281,3 @@ else
 fi
 
 exit $EXIT_CODE
-

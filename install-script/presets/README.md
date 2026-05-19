@@ -2,6 +2,9 @@
 
 预设的工具安装组合，方便一键安装常用工具集。
 
+如果你是 agent，在“安装环境”任务里应把这个目录视为组合入口，而不是第一阅读入口。
+先读仓库根目录 `AGENTS.md` 和 `docs/agent-install-playbook.md`，再决定是否执行某个 preset。
+
 ## 可用预设
 
 | 预设 | 说明 |
@@ -12,6 +15,16 @@
 | `all-tools.sh` | 所有工具：安装全部可用工具 |
 
 ## 使用方式
+
+推荐通过 runner：
+
+```bash
+python3 install-script/agent-runner.py preset minimal --dry-run
+python3 install-script/agent-runner.py preset minimal
+python3 install-script/agent-runner.py preset dev-full
+```
+
+直接脚本：
 
 ```bash
 # 安装最小工具集
@@ -38,4 +51,3 @@ bash "$TOOLS_DIR/curl/fzf.sh"
 bash "$TOOLS_DIR/cargo/eza.sh"
 # ...
 ```
-

@@ -3,6 +3,9 @@
 每个工具保留独立安装脚本，runner 只是统一调度层。
 当前仓库默认固定在 `~/hpf_Linux_Config`。
 
+如果你是 agent，且任务是“安装环境”，不要把这个目录当第一阅读入口。
+先读仓库根目录 `AGENTS.md`，再读 `docs/agent-install-playbook.md`，然后回到这里找单工具脚本。
+
 ## 目录结构
 
 ```text

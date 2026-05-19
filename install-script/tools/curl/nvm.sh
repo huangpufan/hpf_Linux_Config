@@ -10,6 +10,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 TOOL_NAME="nvm"
 NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+NVM_VERSION="v0.40.4"
 
 is_installed() {
     [ -d "$NVM_DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]
@@ -17,20 +18,23 @@ is_installed() {
 
 do_install() {
     # 安装 nvm
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-    
+    curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh" | bash
+
     # 加载 nvm
     export NVM_DIR="$HOME/.nvm"
+    # nvm upstream functions are not fully compatible with `set -u`.
+    set +u
     # shellcheck source=/dev/null
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     # shellcheck source=/dev/null
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-    
-    # 安装 Node.js 18
-    log_info "Installing Node.js 18..."
-    nvm install 18
-    nvm use 18
-    nvm alias default v18
+
+    # 默认跟随 Node.js LTS，而不是 Current。
+    log_info "Installing latest Node.js LTS..."
+    nvm install --lts
+    nvm use --lts
+    nvm alias default 'lts/*'
+    set -u
 }
 
 main() {
@@ -45,4 +49,3 @@ main() {
 }
 
 main "$@"
-

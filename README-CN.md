@@ -42,9 +42,18 @@ python3 install-script/agent-runner.py preset minimal
 
 ## Agent 工作流
 
-安装前先读 playbook：
+安装任务先看这些文件，按这个顺序读：
 
+- [AGENTS.md](AGENTS.md)
 - [docs/agent-install-playbook.md](docs/agent-install-playbook.md)
+
+安装相关代码主要集中在 `install-script/`，其中：
+
+- `install-script/presets/` 是预设组合入口
+- `install-script/setup/` 是系统与账号配置
+- `install-script/basic/` 是基础环境引导
+- `install-script/tools/` 是单工具安装脚本
+- `install-script/openharmony/` 是 OpenHarmony 专用环境脚本，不属于默认机器初始化
 
 当前仓库的唯一工具目录是 `install-script/agent-tools.json`。安装状态只由 `check_cmd` 判定，不再维护 TUI 本地状态。runner 还会强制检查仓库是否位于 `~/hpf_Linux_Config`。
 
@@ -83,6 +92,7 @@ python3 install-script/agent-runner.py preset all-tools
 
 ```text
 hpf_Linux_Config/
+├── AGENTS.md
 ├── docs/
 │   └── agent-install-playbook.md
 ├── install-script/
@@ -119,7 +129,7 @@ make link-nvim
 
 ## 环境要求
 
-- Ubuntu 20.04/22.04（推荐 WSL2）
+- Ubuntu 20.04/22.04/24.04（推荐 WSL2）
 - Python 3.8+
 - Git
 - `gh` 可由本仓库通过 `install-script/tools/apt/gh.sh` 安装
