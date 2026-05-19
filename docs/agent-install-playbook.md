@@ -86,19 +86,25 @@ python3 install-script/agent-runner.py check all
 
 ### 4. 新机器建议顺序
 
+默认先执行 bootstrap，再执行工具预设。bootstrap 会先创建目录与 bashrc
+配置，安装 git/gh，生成 SSH key，触发 `gh` 网页认证，补充常用 `gh`
+scope，上传 SSH public key，并把 GitHub git protocol 切到 `ssh`。
+这样后续 `nvm`、release 下载、仓库 clone 等 GitHub 访问不会默认走 HTTPS。
+
 ```bash
-python3 install-script/agent-runner.py install gh
+python3 install-script/agent-runner.py preset bootstrap
 HPF_GIT_NAME="Your Name" HPF_GIT_EMAIL="you@example.com" \
 python3 install-script/agent-runner.py install git-identity
-python3 install-script/agent-runner.py install github-auth
 python3 install-script/agent-runner.py preset minimal
 ```
 
-如用户明确要 SSH：
+如果要完整初始化，直接执行：
 
 ```bash
-python3 install-script/agent-runner.py install github-ssh
+python3 install-script/agent-runner.py preset all-tools
 ```
+
+`all-tools` 会先执行 `bootstrap`，再进入完整工具安装。
 
 ### 5. 先 dry-run，再执行
 
@@ -118,10 +124,50 @@ python3 install-script/agent-runner.py preset minimal
 
 支持的 preset 名称：
 
+- `bootstrap`
 - `minimal`
 - `dev-cli`
 - `dev-full`
 - `all-tools`
+
+## 单工具补充：Neovim
+
+`nvim` 不能只用 `command -v nvim` 判断是否安装完整。这个工具至少包含四层状态：
+
+1. Neovim 二进制：当前脚本固定安装到 `~/.local/nvim-<version>/`，并通过
+   `~/.local/bin/nvim` 暴露命令。
+2. 配置链接：`~/.config/nvim` 必须指向 `~/hpf_Linux_Config/nvim`。
+3. 插件目录：`lazy.nvim` 和插件必须落到 `~/.local/share/nvim/lazy/`。
+4. 启动验收：`nvim --headless '+qa'` 必须无错误退出。
+
+标准安装方式仍然走 runner：
+
+```bash
+python3 install-script/agent-runner.py install nvim --dry-run
+python3 install-script/agent-runner.py install nvim
+python3 install-script/agent-runner.py check nvim
+```
+
+安装后如果要做更细的人工复核，使用：
+
+```bash
+which -a nvim
+nvim --version
+test -L ~/.config/nvim && readlink ~/.config/nvim
+find ~/.local/share/nvim/lazy -maxdepth 1 -mindepth 1 -type d | wc -l
+nvim --headless '+checkhealth' '+w! /tmp/hpf-nvim-checkhealth.txt' '+qa'
+```
+
+注意事项：
+
+- Ubuntu 24.04 会因为 PEP 668 拦截普通 `pip3 install --user pynvim`。优先用
+  `apt install python3-pynvim` 补 Python provider。
+- Node provider 需要 `npm install -g neovim`；脚本会尽量安装，失败时应在汇报中说明。
+- `checkhealth` 中 `lazy-rocks/hererocks` 的 `luarocks` 提示在当前配置没有插件依赖
+  `luarocks` 时可以忽略；真正需要拦截的是 headless 启动报错、`lazy.nvim`
+  缺失、插件同步失败。
+- `install-script/nvim/readme.md` 中的 `CopilotAuto` 是后续人工认证/启用提示，不属于
+  自动安装验收项；如果要启用 Copilot，需要用户在 Neovim 内完成对应账号授权。
 
 ## Runner 约定
 

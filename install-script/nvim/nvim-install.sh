@@ -20,9 +20,17 @@ sudo apt -y install gcc wget iputils-ping python3-pip git bear tig || true
 sudo apt -y install ninja-build gettext libtool libtool-bin autoconf || true
 sudo apt -y install automake cmake g++ pkg-config unzip curl doxygen || true
 sudo apt -y install ccls npm cargo xclip shellcheck ripgrep || true
+sudo apt -y install python3-pynvim || true
 
-# Install pynvim
-pip3 install --user pynvim -i https://pypi.tuna.tsinghua.edu.cn/simple || true
+# Install optional Neovim providers. Ubuntu 24.04 blocks pip --user for the
+# system Python (PEP 668), so prefer the distro pynvim package above.
+if ! python3 -c "import pynvim" >/dev/null 2>&1; then
+    pip3 install --user pynvim -i https://pypi.tuna.tsinghua.edu.cn/simple || true
+fi
+
+if command -v npm >/dev/null 2>&1; then
+    npm install -g neovim || true
+fi
 
 # Version-specific packages
 if [[ "$ubuntu_version" == "22.04" ]]; then
@@ -76,6 +84,19 @@ if [ -x "$SCRIPT_DIR/clipboard-prepare.sh" ]; then
 else
     echo "[WARN] clipboard-prepare.sh not found or not executable at $SCRIPT_DIR" >&2
 fi
+
+echo ""
+echo "Syncing Neovim plugins..."
+NVIM_BIN="$HOME/.local/bin/nvim"
+"$NVIM_BIN" --headless "+Lazy! sync" "+qa"
+
+echo ""
+echo "Refreshing Treesitter parsers..."
+"$NVIM_BIN" --headless "+Lazy load nvim-treesitter" "+TSUpdateSync" "+qa" || true
+
+echo ""
+echo "Running Neovim smoke check..."
+"$NVIM_BIN" --headless "+qa"
 
 echo ""
 echo "Neovim $NEOVIM_VERSION installed successfully!"

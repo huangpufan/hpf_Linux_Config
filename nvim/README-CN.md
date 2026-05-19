@@ -129,27 +129,56 @@ nvim/
 
 ## 🔧 安装
 
-1. 备份现有 Neovim 配置：
-   ```bash
-   mv ~/.config/nvim ~/.config/nvim.bak
-   ```
+本仓库内的标准安装入口是 `install-script/agent-runner.py`，不要只手动链接配置目录。
 
-2. 克隆或链接此配置：
-   ```bash
-   ln -s /path/to/this/nvim ~/.config/nvim
-   ```
+```bash
+cd ~/hpf_Linux_Config
+python3 install-script/agent-runner.py install nvim --dry-run
+python3 install-script/agent-runner.py install nvim
+python3 install-script/agent-runner.py check nvim
+```
 
-3. 打开 Neovim，lazy.nvim 会自动安装插件：
-   ```bash
-   nvim
-   ```
+安装脚本会完成：
 
-4. 安装 LSP 服务器：
-   ```vim
-   :MasonInstallAll
-   ```
+- 安装 Neovim 依赖与 provider 依赖
+- 安装固定版本 Neovim 到 `~/.local/nvim-<version>/`
+- 创建 `~/.local/bin/nvim`
+- 将 `~/.config/nvim` 链接到 `~/hpf_Linux_Config/nvim`
+- 同步 `lazy.nvim` 插件并执行 headless 启动验收
+
+安装后可人工复核：
+
+```bash
+which -a nvim
+nvim --version
+test -L ~/.config/nvim && readlink ~/.config/nvim
+nvim --headless '+qa'
+nvim --headless '+checkhealth' '+w! /tmp/hpf-nvim-checkhealth.txt' '+qa'
+```
+
+LSP 服务器可在 Neovim 内按需安装：
+
+```vim
+:MasonInstallAll
+```
 
 ## 📝 注意事项
+
+### Ubuntu 24.04 Python provider
+
+Ubuntu 24.04 默认启用 PEP 668，可能拦截普通 `pip3 install --user pynvim`。优先使用：
+
+```bash
+sudo apt install python3-pynvim
+```
+
+### Node provider
+
+如果 `:checkhealth` 提示缺少 Node provider：
+
+```bash
+npm install -g neovim
+```
 
 ### Markdown 预览
 如果 Markdown 预览无法工作：

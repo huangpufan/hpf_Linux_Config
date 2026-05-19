@@ -5,6 +5,16 @@
       "name": "预设组合",
       "tools": [
         {
+          "id": "preset-bootstrap",
+          "name": "环境引导与 GitHub SSH",
+          "description": "安装前置配置：目录、bashrc、git/gh、GitHub 认证、SSH key 上传",
+          "script": "presets/bootstrap.sh",
+          "requires_sudo": true,
+          "requires_ssh": false,
+          "check_cmd": "test -d ~/workspace && grep -q 'Bashrc Already Set' ~/.bashrc && command -v gh && gh auth status --hostname github.com >/dev/null 2>&1 && test -f ~/.ssh/id_ed25519.pub && gh config get git_protocol --host github.com 2>/dev/null | grep -qx ssh",
+          "timeout": 3600
+        },
+        {
           "id": "preset-minimal",
           "name": "最小工具集",
           "description": "基础命令行工具：git、gh、tmux、htop、bat、fzf、zoxide",
@@ -57,7 +67,7 @@
           "script": "basic/bashrc-init.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "grep -q 'hpf_Linux_Config' ~/.bashrc",
+          "check_cmd": "grep -q 'Bashrc Already Set' ~/.bashrc",
           "timeout": 1800
         },
         {
@@ -87,7 +97,7 @@
           "script": "setup/github-auth.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "gh auth status --hostname github.com >/dev/null 2>&1 && gh config get git_protocol --host github.com 2>/dev/null | grep -qx https",
+          "check_cmd": "gh auth status --hostname github.com >/dev/null 2>&1 && gh config get git_protocol --host github.com 2>/dev/null | grep -Eq '^(https|ssh)$'",
           "timeout": 1800
         },
         {
@@ -135,7 +145,7 @@
           "name": "Dotfiles 配置",
           "description": "Tmux、Neofetch 等配置文件",
           "script": "basic/config-install.sh",
-          "requires_sudo": false,
+          "requires_sudo": true,
           "requires_ssh": false,
           "check_cmd": "test -f ~/.tmux.conf",
           "timeout": 1800
@@ -343,7 +353,7 @@
           "name": "Yazi",
           "description": "终端文件管理器",
           "script": "tools/cargo/yazi.sh",
-          "requires_sudo": false,
+          "requires_sudo": true,
           "requires_ssh": false,
           "check_cmd": "command -v yazi",
           "timeout": 1800
@@ -401,7 +411,7 @@
           "script": "tools/npm/fkill.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "command -v fkill",
+          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; command -v fkill",
           "timeout": 1800
         }
       ]
@@ -519,7 +529,7 @@
           "script": "basic/latestgccg++-install.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "gcc --version | grep -q '11'",
+          "check_cmd": "command -v gcc-11 >/dev/null 2>&1 || gcc --version | grep -q '11'",
           "timeout": 1800
         },
         {
@@ -545,7 +555,7 @@
           "script": "nvim/nvim-install.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "command -v nvim",
+          "check_cmd": "command -v nvim && test -L ~/.config/nvim && test -d ~/.local/share/nvim/lazy/lazy.nvim && timeout 120s nvim --headless '+qa'",
           "timeout": 1800
         },
         {
