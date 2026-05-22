@@ -6,5 +6,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR/tmux"
 bash install-tmux-config.sh
 
+cd "$SCRIPT_DIR/herdr"
+bash install-herdr-config.sh
+
 cd "$SCRIPT_DIR/neofetch"
 bash neofetch-cfg-install.sh

@@ -143,11 +143,11 @@
         {
           "id": "configs",
           "name": "Dotfiles 配置",
-          "description": "Tmux、Neofetch 等配置文件",
+          "description": "Tmux、Herdr、Neofetch 等配置文件",
           "script": "basic/config-install.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "test -f ~/.tmux.conf",
+          "check_cmd": "test -L ~/.tmux.conf && test -L ~/.config/herdr/config.toml",
           "timeout": 1800
         }
       ]
@@ -330,6 +330,16 @@
           "requires_sudo": false,
           "requires_ssh": false,
           "check_cmd": "test -d ~/.nvm",
+          "timeout": 1800
+        },
+        {
+          "id": "herdr",
+          "name": "Herdr",
+          "description": "面向 AI coding agents 的终端工作区管理器",
+          "script": "tools/curl/herdr.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "command -v herdr",
           "timeout": 1800
         }
       ]
