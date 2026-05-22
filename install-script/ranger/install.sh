@@ -13,4 +13,7 @@ sudo apt-get install -y catdoc           # doc preview
 sudo apt-get install -y docx2txt         # docx preview
 sudo apt-get install -y xlsx2csv         # xlsx preview
 
+mkdir -p "$HOME/.config/ranger"
+ranger --copy-config=all >/dev/null 2>&1 || true
+
 echo "Ranger and preview tools installed successfully!"

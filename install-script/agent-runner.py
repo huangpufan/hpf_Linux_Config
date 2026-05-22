@@ -21,6 +21,7 @@ CONFIG_PATH = INSTALL_ROOT / "agent-tools.json"
 LOG_ROOT = Path.home() / ".local" / "share" / "hpf-linux-config" / "logs"
 EXPECTED_REPO_ROOT = Path.home() / "hpf_Linux_Config"
 PRESET_TOOL_IDS = {
+    "bootstrap": "preset-bootstrap",
     "minimal": "preset-minimal",
     "dev-cli": "preset-dev-cli",
     "dev-full": "preset-dev-full",

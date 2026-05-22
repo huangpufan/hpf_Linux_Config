@@ -17,7 +17,7 @@ is_installed() {
 
 do_install() {
     bash "$SCRIPT_DIR/_ensure.sh"
-    sudo python3 -m pip install gdbfrontend $TSINGHUA_MIRROR || {
+    sudo python3 -m pip install --break-system-packages gdbfrontend $TSINGHUA_MIRROR || {
         log_warn "gdbfrontend installation failed"
         return 1
     }
@@ -35,4 +35,3 @@ main() {
 }
 
 main "$@"
-

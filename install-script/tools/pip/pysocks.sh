@@ -15,7 +15,7 @@ is_installed() {
 }
 
 do_install() {
-    python3 -m pip install --user pysocks $TSINGHUA_MIRROR
+    python3 -m pip install --user --break-system-packages pysocks $TSINGHUA_MIRROR
 }
 
 main() {
@@ -30,4 +30,3 @@ main() {
 }
 
 main "$@"
-

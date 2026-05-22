@@ -14,9 +14,29 @@ ensure_cargo() {
         # shellcheck source=/dev/null
         . "$HOME/.cargo/env"
     fi
+    export PATH="$HOME/.cargo/bin:$PATH"
     
     if command -v cargo >/dev/null 2>&1; then
-        log_info "cargo is already installed: $(cargo --version)"
+        if cargo --version >/dev/null 2>&1; then
+            log_info "cargo is already installed: $(cargo --version)"
+            return 0
+        fi
+
+        if command -v rustup >/dev/null 2>&1; then
+            log_info "cargo exists but no default Rust toolchain is configured; installing stable"
+            rustup default stable
+            log_info "cargo is ready: $(cargo --version)"
+            return 0
+        fi
+
+        log_err "cargo exists but cannot run, and rustup was not found"
+        return 1
+    fi
+
+    if command -v rustup >/dev/null 2>&1; then
+        log_info "rustup is installed; installing stable Rust toolchain"
+        rustup default stable
+        log_info "cargo installed successfully: $(cargo --version)"
         return 0
     fi
     
@@ -28,6 +48,7 @@ ensure_cargo() {
         # shellcheck source=/dev/null
         . "$HOME/.cargo/env"
     fi
+    export PATH="$HOME/.cargo/bin:$PATH"
     
     if ! command -v cargo >/dev/null 2>&1; then
         log_err "Failed to install cargo"

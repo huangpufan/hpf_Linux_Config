@@ -26,8 +26,7 @@ ensure_pipx() {
     fi
     
     log_info "Installing pipx..."
-    python3 -m pip install --user pipx $TSINGHUA_MIRROR
-    apt_install python3-venv || true
+    apt_install pipx python3-venv
     
     # 确保 pipx 在 PATH 中
     export PATH="$HOME/.local/bin:$PATH"
@@ -39,4 +38,3 @@ main() {
 }
 
 main "$@"
-

@@ -16,8 +16,8 @@ is_installed() {
 }
 
 do_install() {
-    # 确保 npm 环境
-    bash "$SCRIPT_DIR/_ensure.sh"
+    # shellcheck source=./_ensure.sh
+    . "$SCRIPT_DIR/_ensure.sh"
     
     npm install --global fkill-cli
 }
@@ -34,4 +34,3 @@ main() {
 }
 
 main "$@"
-

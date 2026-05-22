@@ -20,7 +20,24 @@ do_install() {
     source "$SCRIPT_DIR/_ensure.sh"
     ensure_cargo
     configure_cargo_registry
-    cargo install --locked yazi-fm yazi-cli
+
+    if cargo install --locked yazi-fm yazi-cli; then
+        return 0
+    fi
+
+    log_warn "Cargo install failed; falling back to official GitHub release .deb"
+    local download_dir="$HOME/download/yazi"
+    mkdir -p "$download_dir"
+    rm -f "$download_dir"/yazi-*.deb
+
+    if command -v gh >/dev/null 2>&1; then
+        gh release download --repo sxyazi/yazi --pattern 'yazi-x86_64-unknown-linux-gnu.deb' --clobber --dir "$download_dir"
+    else
+        curl -L -o "$download_dir/yazi-x86_64-unknown-linux-gnu.deb" \
+            https://github.com/sxyazi/yazi/releases/latest/download/yazi-x86_64-unknown-linux-gnu.deb
+    fi
+
+    sudo apt-get install -y "$download_dir"/yazi-x86_64-unknown-linux-gnu.deb
 }
 
 main() {
@@ -35,4 +52,3 @@ main() {
 }
 
 main "$@"
-

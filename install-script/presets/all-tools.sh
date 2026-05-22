@@ -13,10 +13,12 @@ log_info "=========================================="
 log_info "  Installing All Available Tools"
 log_info "=========================================="
 
+# 先完成目录、bashrc、GitHub SSH 等前置配置，避免后续 GitHub 下载走 HTTPS 卡住。
+bash "$SCRIPT_DIR/bootstrap.sh"
+
 # 安装完整开发环境（包含大部分工具）
 bash "$SCRIPT_DIR/dev-full.sh"
 
 log_info "=========================================="
 log_info "  All Tools Installation Complete!"
 log_info "=========================================="
-
