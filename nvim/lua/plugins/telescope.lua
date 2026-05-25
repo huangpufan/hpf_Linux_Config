@@ -11,7 +11,6 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope-fzf-native.nvim",
       "xiyaowong/telescope-emoji.nvim",
-      "gbrlsnchs/telescope-lsp-handlers.nvim",
     },
     config = function()
       local telescope = require("telescope")
@@ -79,7 +78,6 @@ return {
       -- Load extensions
       pcall(telescope.load_extension, "fzf")
       pcall(telescope.load_extension, "emoji")
-      pcall(telescope.load_extension, "lsp_handlers")
       pcall(telescope.load_extension, "bookmarks")
     end,
   },
@@ -99,10 +97,4 @@ return {
     cmd = "Telescope",
   },
 
-  -- LSP handlers
-  {
-    "gbrlsnchs/telescope-lsp-handlers.nvim",
-    event = "VeryLazy",
-  },
 }
-

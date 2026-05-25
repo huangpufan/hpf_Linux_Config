@@ -75,8 +75,8 @@ function M.setup(wk)
     { "<space>l", group = "Language" },
     { "<space>la", "<cmd>lua vim.lsp.buf.code_action()<cr>", desc = "Code action" },
     { "<space>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", desc = "Format current buffer" },
-    { "<space>lj", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", desc = "LSP goto next" },
-    { "<space>lk", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", desc = "LSP goto prev" },
+    { "<space>lj", "<cmd>lua vim.diagnostic.jump({ count = 1, bufnr = 0 })<cr>", desc = "LSP goto next" },
+    { "<space>lk", "<cmd>lua vim.diagnostic.jump({ count = -1, bufnr = 0 })<cr>", desc = "LSP goto prev" },
     { "<space>ln", "<cmd>lua vim.lsp.buf.rename()<cr>", desc = "Rename" },
     { "<space>ls", "<cmd>lua vim.lsp.buf.signature_help()<cr>", desc = "Signature help" },
     { "<space>lq", "<cmd>lua vim.diagnostic.setloclist()<cr>", desc = "Set loc list" },
@@ -138,4 +138,3 @@ function M.setup(wk)
 end
 
 return M
-
