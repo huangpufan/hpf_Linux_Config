@@ -28,9 +28,9 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- Disable some built-in providers
+vim.g.python3_host_prog = vim.fn.expand("~/.local/share/nvim/python3-provider/bin/python")
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
 -- Load core configuration
 require("core")
-

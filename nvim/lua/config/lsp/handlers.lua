@@ -14,8 +14,12 @@ local function lsp_keymaps(bufnr)
   map("n", "gi", vim.lsp.buf.implementation, opts)
   map("n", "<C-k>", vim.lsp.buf.signature_help, opts)
   map("n", "gr", vim.lsp.buf.references, opts)
-  map("n", "[d", vim.diagnostic.goto_prev, opts)
-  map("n", "]d", vim.diagnostic.goto_next, opts)
+  map("n", "[d", function()
+    vim.diagnostic.jump({ count = -1, float = true })
+  end, opts)
+  map("n", "]d", function()
+    vim.diagnostic.jump({ count = 1, float = true })
+  end, opts)
 end
 
 M.on_attach = function(client, bufnr)
@@ -42,22 +46,17 @@ M.capabilities = function()
 end
 
 function M.setup()
-  -- Diagnostic signs
-  local signs = {
-    { name = "DiagnosticSignError", text = "" },
-    { name = "DiagnosticSignWarn", text = "" },
-    { name = "DiagnosticSignHint", text = "" },
-    { name = "DiagnosticSignInfo", text = "" },
-  }
-
-  for _, sign in ipairs(signs) do
-    vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
-  end
-
   -- Diagnostic config
   vim.diagnostic.config({
     virtual_text = true,
-    signs = { active = signs },
+    signs = {
+      text = {
+        [vim.diagnostic.severity.ERROR] = "",
+        [vim.diagnostic.severity.WARN] = "",
+        [vim.diagnostic.severity.HINT] = "",
+        [vim.diagnostic.severity.INFO] = "",
+      },
+    },
     update_in_insert = false,
     underline = true,
     severity_sort = true,
@@ -72,9 +71,17 @@ function M.setup()
   })
 
   -- Hover and signature help borders
-  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+  local hover = vim.lsp.handlers.hover
+  vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
+    config = vim.tbl_deep_extend("force", config or {}, { border = "rounded" })
+    return hover(err, result, ctx, config)
+  end
+
+  local signature_help = vim.lsp.handlers.signature_help
+  vim.lsp.handlers["textDocument/signatureHelp"] = function(err, result, ctx, config)
+    config = vim.tbl_deep_extend("force", config or {}, { border = "rounded" })
+    return signature_help(err, result, ctx, config)
+  end
 end
 
 return M
-

@@ -561,11 +561,11 @@
         {
           "id": "nvim",
           "name": "Neovim",
-          "description": "现代化 Vim 编辑器 (v0.10+)",
+          "description": "现代化 Vim 编辑器 (v0.12+)",
           "script": "nvim/nvim-install.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "command -v nvim && test -L ~/.config/nvim && test -d ~/.local/share/nvim/lazy/lazy.nvim && timeout 120s nvim --headless '+qa'",
+        "check_cmd": "timeout 300s bash nvim/nvim-verify.sh",
           "timeout": 1800
         },
         {

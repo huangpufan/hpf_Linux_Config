@@ -6,9 +6,11 @@ return {
   -- Markdown preview
   {
     "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreview" },
+    cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
     ft = { "markdown" },
-    build = "cd app && npm install",
+    build = function()
+      vim.fn["mkdp#util#install_sync"](1)
+    end,
     init = function()
       vim.g.mkdp_auto_close = 0
     end,
@@ -29,4 +31,3 @@ return {
     end,
   },
 }
-

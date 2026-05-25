@@ -49,7 +49,10 @@ return {
   -- Color picker
   {
     "uga-rosa/ccc.nvim",
-    cmd = { "CccPick", "CccConvert", "CccHighlighter" },
+    cmd = { "CccPick", "CccConvert", "CccHighlighterEnable", "CccHighlighterDisable", "CccHighlighterToggle" },
+    config = function()
+      require("ccc").setup()
+    end,
   },
 
   -- Color highlighter
@@ -74,4 +77,3 @@ return {
     config = true,
   },
 }
-

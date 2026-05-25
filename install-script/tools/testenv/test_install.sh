@@ -177,7 +177,7 @@ cd /root/ws/nvim
 apt install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl || true
 
 # 只测试 nvim 二进制下载部分
-NEOVIM_VERSION="0.10.4"
+NEOVIM_VERSION="0.12.2"
 URL="https://github.com/neovim/neovim/releases/download/v${NEOVIM_VERSION}/nvim-linux-x86_64.tar.gz"
 WORKDIR="$(mktemp -d)"
 pushd "$WORKDIR" >/dev/null

@@ -144,10 +144,21 @@ return {
     branch = "main",
     cmd = { "BookmarkToggle", "BookmarkAnnotate", "BookmarkShowAll" },
     config = function()
-      require("bookmarks").setup({
+      local bookmarks = require("bookmarks")
+      bookmarks.setup({
         mappings_enabled = false,
         virt_pattern = { "*.lua", "*.md", "*.c", "*.h", "*.sh" },
       })
+
+      vim.api.nvim_create_user_command("BookmarkToggle", function()
+        bookmarks.add_bookmarks(false)
+      end, {})
+      vim.api.nvim_create_user_command("BookmarkAnnotate", function()
+        bookmarks.add_bookmarks(false)
+      end, {})
+      vim.api.nvim_create_user_command("BookmarkShowAll", function()
+        bookmarks.toggle_bookmarks()
+      end, {})
     end,
   },
 
@@ -274,6 +285,13 @@ return {
   {
     "jakemason/ouroboros",
     cmd = "Ouroboros",
+    dependencies = "nvim-lua/plenary.nvim",
+    config = function()
+      local ouroboros = require("ouroboros")
+      ouroboros.setup({})
+      vim.api.nvim_create_user_command("Ouroboros", function()
+        ouroboros.switch()
+      end, {})
+    end,
   },
 }
-

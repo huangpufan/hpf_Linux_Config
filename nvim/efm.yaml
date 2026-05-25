@@ -19,6 +19,7 @@ tools:
 
   sh-shellcheck: &sh-shellcheck
     lint-command: 'shellcheck -f gcc -x'
+    lint-ignore-exit-code: true
     lint-source: 'shellcheck'
     lint-formats:
       - '%f:%l:%c: %trror: %m'

@@ -151,12 +151,17 @@ python3 install-script/agent-runner.py check nvim
 安装后如果要做更细的人工复核，使用：
 
 ```bash
+install-script/nvim/nvim-verify.sh
 which -a nvim
 nvim --version
 test -L ~/.config/nvim && readlink ~/.config/nvim
 find ~/.local/share/nvim/lazy -maxdepth 1 -mindepth 1 -type d | wc -l
 nvim --headless '+checkhealth' '+w! /tmp/hpf-nvim-checkhealth.txt' '+qa'
 ```
+
+其中 `python3 install-script/agent-runner.py check nvim` 会调用
+`install-script/nvim/nvim-verify.sh`，覆盖启动、`checkhealth`、插件加载、
+插件命令入口、LSP attach、Treesitter parser 以及已知易脏插件缓存目录。
 
 注意事项：
 
