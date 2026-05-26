@@ -28,7 +28,7 @@ nvim/
 │       ├── colorscheme.lua   # 主题设置
 │       ├── ui.lua            # UI 插件
 │       ├── editor.lua        # 编辑器增强
-│       ├── completion.lua    # 补全 (nvim-cmp)
+│       ├── completion.lua    # 补全 (blink.cmp)
 │       ├── formatting.lua    # 格式化与 lint
 │       ├── treesitter.lua    # Treesitter 配置
 │       ├── telescope.lua     # Telescope 搜索
@@ -61,9 +61,9 @@ nvim/
 
 ### LSP 与补全
 - 🔧 多语言 LSP 支持
-- ✏️ nvim-cmp 自动补全
+- ✏️ blink.cmp 自动补全
 - 🧹 conform.nvim 格式化与 nvim-lint 异步 lint
-- 📝 LuaSnip 代码片段
+- 📝 LuaSnip 代码片段与自定义 `snippets/`
 - 💡 代码操作与诊断
 
 ### 导航与搜索

@@ -1,5 +1,5 @@
 --[[
-  Completion plugins (nvim-cmp and snippets)
+  Completion plugins (blink.cmp and snippets)
 --]]
 
 return {
@@ -21,19 +21,13 @@ return {
 
   -- Completion engine
   {
-    "hrsh7th/nvim-cmp",
+    "Saghen/blink.cmp",
     event = "InsertEnter",
+    version = "1.*",
     dependencies = {
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "saadparwaiz1/cmp_luasnip",
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-nvim-lua",
-      "ray-x/cmp-treesitter",
-      "lukas-reineke/cmp-under-comparator",
+      "L3MON4D3/LuaSnip",
     },
-    config = function()
-      local cmp = require("cmp")
+    opts = function()
       local luasnip = require("luasnip")
 
       local has_words_before = function()
@@ -41,116 +35,96 @@ return {
         return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
       end
 
-      local kind_icons = {
-        Text = "",
-        Method = "m",
-        Function = "",
-        Constructor = "",
-        Field = "",
-        Variable = "",
-        Class = "",
-        Interface = "",
-        Module = "",
-        Property = "",
-        Unit = "",
-        Value = "",
-        Enum = "",
-        Keyword = "",
-        Snippet = "",
-        Color = "",
-        File = "",
-        Reference = "",
-        Folder = "",
-        EnumMember = "",
-        Constant = "",
-        Struct = "",
-        Event = "",
-        Operator = "",
-        TypeParameter = "",
-      }
+      local expand_or_jump_snippet = function()
+        if luasnip.expand_or_locally_jumpable then
+          if luasnip.expand_or_locally_jumpable() then
+            luasnip.expand_or_jump()
+            return true
+          end
+        elseif luasnip.expand_or_jumpable() then
+          luasnip.expand_or_jump()
+          return true
+        end
 
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
-        },
-        window = {
-          completion = cmp.config.window.bordered(),
-          documentation = cmp.config.window.bordered(),
-        },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-u>"] = cmp.mapping.scroll_docs(-1),
-          ["<C-d>"] = cmp.mapping.scroll_docs(1),
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<C-e>"] = cmp.mapping({
-            i = cmp.mapping.abort(),
-            c = cmp.mapping.close(),
-          }),
-          ["<CR>"] = cmp.mapping.confirm({ select = false }),
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            elseif has_words_before() then
-              cmp.complete()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-        }),
-        formatting = {
-          fields = { "kind", "abbr", "menu" },
-          format = function(entry, vim_item)
-            vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
-            vim_item.menu = ({
-              nvim_lsp = "[LSP]",
-              luasnip = "[Snippet]",
-              buffer = "[Buffer]",
-              path = "[Path]",
-              treesitter = "[TS]",
-            })[entry.source.name]
-            return vim_item
-          end,
-        },
-        sources = {
-          { name = "nvim_lsp" },
-          { name = "luasnip" },
-          { name = "treesitter" },
-          { name = "buffer" },
-          { name = "path" },
-        },
-        sorting = {
-          comparators = {
-            cmp.config.compare.offset,
-            cmp.config.compare.exact,
-            cmp.config.compare.score,
-            require("cmp-under-comparator").under,
-            cmp.config.compare.kind,
-            cmp.config.compare.sort_text,
-            cmp.config.compare.length,
-            cmp.config.compare.order,
+        return false
+      end
+
+      local jump_back_snippet = function()
+        if luasnip.locally_jumpable then
+          if luasnip.locally_jumpable(-1) then
+            luasnip.jump(-1)
+            return true
+          end
+        elseif luasnip.jumpable(-1) then
+          luasnip.jump(-1)
+          return true
+        end
+
+        return false
+      end
+
+      return {
+        keymap = {
+          preset = "default",
+          ["<C-u>"] = { "scroll_documentation_up", "fallback" },
+          ["<C-d>"] = { "scroll_documentation_down", "fallback" },
+          ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
+          ["<C-e>"] = { "hide", "fallback" },
+          ["<CR>"] = { "accept", "fallback" },
+          ["<Tab>"] = {
+            "select_next",
+            function(cmp)
+              if expand_or_jump_snippet() then
+                return true
+              end
+
+              if has_words_before() then
+                return cmp.show()
+              end
+
+              return false
+            end,
+            "fallback",
+          },
+          ["<S-Tab>"] = {
+            "select_prev",
+            function()
+              return jump_back_snippet()
+            end,
+            "fallback",
           },
         },
-        confirm_opts = {
-          behavior = cmp.ConfirmBehavior.Replace,
-          select = false,
+        snippets = {
+          preset = "luasnip",
         },
-        experimental = {
-          ghost_text = false,
+        completion = {
+          list = {
+            selection = {
+              preselect = false,
+              auto_insert = false,
+            },
+          },
+          menu = {
+            border = "rounded",
+          },
+          documentation = {
+            auto_show = false,
+            window = {
+              border = "rounded",
+            },
+          },
+          ghost_text = {
+            enabled = false,
+          },
         },
-      })
+        sources = {
+          default = { "lsp", "path", "snippets", "buffer" },
+        },
+        fuzzy = {
+          implementation = "prefer_rust",
+        },
+      }
     end,
+    opts_extend = { "sources.default" },
   },
 }
-

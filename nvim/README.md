@@ -28,7 +28,7 @@ nvim/
 │       ├── colorscheme.lua   # Theme settings
 │       ├── ui.lua            # UI plugins
 │       ├── editor.lua        # Editor enhancements
-│       ├── completion.lua    # Completion (nvim-cmp)
+│       ├── completion.lua    # Completion (blink.cmp)
 │       ├── formatting.lua    # Formatting and linting
 │       ├── treesitter.lua    # Treesitter config
 │       ├── telescope.lua     # Telescope and pickers
@@ -61,9 +61,9 @@ nvim/
 
 ### LSP & Completion
 - 🔧 LSP support for multiple languages
-- ✏️ Auto-completion with nvim-cmp
+- ✏️ Auto-completion with blink.cmp
 - 🧹 Formatting with conform.nvim and linting with nvim-lint
-- 📝 Snippets with LuaSnip
+- 📝 Snippets with LuaSnip and custom `snippets/`
 - 💡 Code actions and diagnostics
 
 ### Navigation & Search

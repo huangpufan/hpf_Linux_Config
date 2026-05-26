@@ -10,6 +10,7 @@ return {
     dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
+      "Saghen/blink.cmp",
     },
     config = function()
       require("config.lsp.handlers").setup()
