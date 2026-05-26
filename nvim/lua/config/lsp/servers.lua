@@ -98,12 +98,6 @@ local servers = {
   }),
   jsonls = server_config(),
   marksman = server_config(),
-
-  efm = server_config({
-    cmd = { "efm-langserver", "-c", vim.fn.stdpath("config") .. "/efm.yaml" },
-    init_options = { documentFormatting = true },
-    filetypes = { "sh", "rst" },
-  }),
 }
 
 local server_names = {}

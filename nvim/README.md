@@ -8,7 +8,6 @@ A modern, modular Neovim configuration for C/C++ and general development.
 nvim/
 ├── init.lua                  # Main entry point
 ├── lazy-lock.json            # Plugin version lock file
-├── efm.yaml                  # EFM language server config
 │
 ├── lua/
 │   ├── core/                 # Core configuration
@@ -30,6 +29,7 @@ nvim/
 │       ├── ui.lua            # UI plugins
 │       ├── editor.lua        # Editor enhancements
 │       ├── completion.lua    # Completion (nvim-cmp)
+│       ├── formatting.lua    # Formatting and linting
 │       ├── treesitter.lua    # Treesitter config
 │       ├── telescope.lua     # Telescope and pickers
 │       ├── git.lua           # Git integration
@@ -62,6 +62,7 @@ nvim/
 ### LSP & Completion
 - 🔧 LSP support for multiple languages
 - ✏️ Auto-completion with nvim-cmp
+- 🧹 Formatting with conform.nvim and linting with nvim-lint
 - 📝 Snippets with LuaSnip
 - 💡 Code actions and diagnostics
 

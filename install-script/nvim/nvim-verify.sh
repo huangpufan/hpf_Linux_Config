@@ -48,9 +48,9 @@ check_basic_state() {
         *) fail "expected NVIM v0.12.2, got: $version" ;;
     esac
 
-    [ -L "$HOME/.config/nvim" ] || fail "~/.config/nvim is not a symlink"
+    [ -L "$HOME/.config/nvim" ] || fail "$HOME/.config/nvim is not a symlink"
     [ "$(readlink -f "$HOME/.config/nvim")" = "$(readlink -f "$NVIM_CONFIG")" ] ||
-        fail "~/.config/nvim does not point to $NVIM_CONFIG"
+        fail "$HOME/.config/nvim does not point to $NVIM_CONFIG"
     [ -d "$HOME/.local/share/nvim/lazy/lazy.nvim" ] ||
         fail "lazy.nvim is not installed under ~/.local/share/nvim/lazy"
 
@@ -68,9 +68,10 @@ check_external_tools() {
         bash-language-server
         vscode-json-language-server
         marksman
-        efm-langserver
         shellcheck
         shfmt
+        stylua
+        prettier
         rst-lint
         pandoc
     )
@@ -198,10 +199,35 @@ check_lsp_matrix() {
     verify_lsp "$workdir/test.lua" '{"lua_ls"}'
     verify_lsp "$workdir/test.c" '{"clangd"}'
     verify_lsp "$workdir/test.py" '{"pyright"}'
-    verify_lsp "$workdir/test.sh" '{"bashls","efm"}'
+    verify_lsp "$workdir/test.sh" '{"bashls"}'
     verify_lsp "$workdir/test.json" '{"jsonls"}'
     verify_lsp "$workdir/test.md" '{"marksman"}'
     pass "LSP attach matrix"
+}
+
+check_format_lint_matrix() {
+    log "checking formatter and linter matrix"
+    local workdir="$TMPDIR/format-lint"
+    mkdir -p "$workdir"
+
+    printf 'local  x={1,2}\n' >"$workdir/test.lua"
+    timeout 30s nvim --headless "$workdir/test.lua" \
+        '+lua require("conform").format({ async = false, timeout_ms = 10000, lsp_format = "never" })' \
+        '+write' '+qa'
+    grep -q 'local x = { 1, 2 }' "$workdir/test.lua" ||
+        fail "conform stylua smoke test did not format Lua"
+
+    printf '%s\n' "#!/usr/bin/env bash" "echo \$UNQUOTED" >"$workdir/test.sh"
+    timeout 30s nvim --headless "$workdir/test.sh" \
+        "+lua local lint=require('lint'); lint.try_lint('shellcheck'); local ok=vim.wait(10000, function() return #vim.diagnostic.get(0) > 0 end, 100); if not ok then print('LINT_FAIL\tshellcheck'); vim.cmd('cquit 1') end" \
+        '+qa'
+
+    printf 'Title\n=====\n\nBad `link\n' >"$workdir/test.rst"
+    timeout 30s nvim --headless "$workdir/test.rst" \
+        "+lua local lint=require('lint'); lint.try_lint('rst_lint'); local ok=vim.wait(10000, function() return #vim.diagnostic.get(0) > 0 end, 100); if not ok then print('LINT_FAIL\trst_lint'); vim.cmd('cquit 1') end" \
+        '+qa'
+
+    pass "formatter and linter matrix"
 }
 
 verify_lsp() {
@@ -302,6 +328,7 @@ main() {
     check_plugin_loads
     check_plugin_commands
     check_lsp_matrix
+    check_format_lint_matrix
     check_treesitter_matrix
     check_plugin_cache_clean
     pass "Neovim verification complete"

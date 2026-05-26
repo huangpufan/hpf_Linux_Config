@@ -20,11 +20,11 @@ sudo apt -y install gcc wget iputils-ping python3-pip git bear tig || true
 sudo apt -y install ninja-build gettext libtool libtool-bin autoconf || true
 sudo apt -y install automake cmake g++ pkg-config unzip curl doxygen || true
 sudo apt -y install ccls npm cargo xclip shellcheck ripgrep || true
-sudo apt -y install clangd efm-langserver lua5.4 shfmt pandoc python3-restructuredtext-lint python3-venv || true
+sudo apt -y install clangd lua5.4 shfmt pandoc python3-restructuredtext-lint python3-venv || true
 sudo apt -y install python3-pynvim || true
 
 if command -v npm >/dev/null 2>&1; then
-    npm install -g neovim pyright bash-language-server@5.4.3 vscode-langservers-extracted || true
+    npm install -g neovim pyright bash-language-server@5.4.3 vscode-langservers-extracted prettier@3.8.3 || true
 fi
 
 install_lua_language_server() {
@@ -80,11 +80,23 @@ if command -v cargo >/dev/null 2>&1; then
     if [ "$tree_sitter_ok" = false ]; then
         cargo install tree-sitter-cli --version 0.26.9 --locked --registry crates-io || true
     fi
+
+    stylua_ok=false
+    if command -v stylua >/dev/null 2>&1; then
+        stylua_version="$(stylua --version 2>/dev/null | awk '{print $2}')"
+        if [ "$stylua_version" = "2.5.2" ]; then
+            stylua_ok=true
+        fi
+    fi
+
+    if [ "$stylua_ok" = false ]; then
+        cargo install stylua --version 2.5.2 --locked --registry crates-io || true
+    fi
 fi
 
 # Version-specific packages
 if [[ "$ubuntu_version" == "22.04" ]]; then
-    sudo apt -y install efm-langserver lua5.4 || true
+    sudo apt -y install lua5.4 || true
 fi
 
 echo ""
@@ -132,8 +144,9 @@ echo ""
 echo "Setting up Neovim Python provider..."
 PY_PROVIDER_DIR="$HOME/.local/share/nvim/python3-provider"
 if command -v python3 >/dev/null 2>&1; then
-    python3 -m venv "$PY_PROVIDER_DIR" &&
+    if python3 -m venv "$PY_PROVIDER_DIR"; then
         "$PY_PROVIDER_DIR/bin/python" -m pip install --upgrade pip pynvim || true
+    fi
 fi
 
 # Call clipboard-prepare.sh using absolute path from script directory

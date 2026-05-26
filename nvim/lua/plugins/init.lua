@@ -17,6 +17,7 @@ return {
   { import = "plugins.editor" },
   { import = "plugins.completion" },
   { import = "plugins.lsp" },
+  { import = "plugins.formatting" },
   { import = "plugins.treesitter" },
   { import = "plugins.telescope" },
   { import = "plugins.git" },
@@ -24,4 +25,3 @@ return {
   { import = "plugins.markdown" },
   { import = "plugins.tools" },
 }
-

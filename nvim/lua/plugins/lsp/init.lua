@@ -55,22 +55,6 @@ return {
     lazy = true,
   },
 
-  -- None-ls (formatters and linters)
-  {
-    "nvimtools/none-ls.nvim",
-    event = "VeryLazy",
-    config = function()
-      local null_ls = require("null-ls")
-      null_ls.setup({
-        sources = {
-          null_ls.builtins.formatting.stylua,
-          null_ls.builtins.formatting.prettier,
-          null_ls.builtins.formatting.shfmt,
-        },
-      })
-    end,
-  },
-
   -- Fidget (LSP progress)
   {
     "j-hui/fidget.nvim",
@@ -125,11 +109,4 @@ return {
       })
     end,
   },
-
-  -- EFM language server
-  {
-    "mattn/efm-langserver",
-    ft = "bash",
-  },
 }
-

@@ -8,7 +8,6 @@
 nvim/
 ├── init.lua                  # 主入口文件
 ├── lazy-lock.json            # 插件版本锁定文件
-├── efm.yaml                  # EFM 语言服务器配置
 │
 ├── lua/
 │   ├── core/                 # 核心配置
@@ -30,6 +29,7 @@ nvim/
 │       ├── ui.lua            # UI 插件
 │       ├── editor.lua        # 编辑器增强
 │       ├── completion.lua    # 补全 (nvim-cmp)
+│       ├── formatting.lua    # 格式化与 lint
 │       ├── treesitter.lua    # Treesitter 配置
 │       ├── telescope.lua     # Telescope 搜索
 │       ├── git.lua           # Git 集成
@@ -62,6 +62,7 @@ nvim/
 ### LSP 与补全
 - 🔧 多语言 LSP 支持
 - ✏️ nvim-cmp 自动补全
+- 🧹 conform.nvim 格式化与 nvim-lint 异步 lint
 - 📝 LuaSnip 代码片段
 - 💡 代码操作与诊断
 

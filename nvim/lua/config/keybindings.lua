@@ -74,7 +74,13 @@ function M.setup(wk)
     -- Language/LSP
     { "<space>l", group = "Language" },
     { "<space>la", "<cmd>lua vim.lsp.buf.code_action()<cr>", desc = "Code action" },
-    { "<space>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", desc = "Format current buffer" },
+    {
+      "<space>lf",
+      function()
+        require("conform").format({ async = true, lsp_format = "fallback" })
+      end,
+      desc = "Format current buffer",
+    },
     { "<space>lj", "<cmd>lua vim.diagnostic.jump({ count = 1, bufnr = 0 })<cr>", desc = "LSP goto next" },
     { "<space>lk", "<cmd>lua vim.diagnostic.jump({ count = -1, bufnr = 0 })<cr>", desc = "LSP goto prev" },
     { "<space>ln", "<cmd>lua vim.lsp.buf.rename()<cr>", desc = "Rename" },
