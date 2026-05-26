@@ -7,6 +7,12 @@ return {
   {
     "voldikss/vim-floaterm",
     cmd = { "FloatermToggle", "FloatermNew" },
+    keys = {
+      { "<C-p>", "<cmd>FloatermToggle<cr>", mode = { "n", "t" }, desc = "Toggle floating terminal" },
+      { "<C-q>", "<cmd>FloatermNew<cr>", mode = { "n", "t" }, desc = "New floating terminal" },
+      { "<C-left>", "<cmd>FloatermPrev<cr>", mode = { "n", "t" }, desc = "Previous floating terminal" },
+      { "<C-right>", "<cmd>FloatermNext<cr>", mode = { "n", "t" }, desc = "Next floating terminal" },
+    },
     init = function()
       vim.g.floaterm_width = 0.90
       vim.g.floaterm_height = 0.90
@@ -76,4 +82,3 @@ return {
     lazy = true,
   },
 }
-
