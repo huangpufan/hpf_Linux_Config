@@ -18,7 +18,17 @@ function M.setup(wk)
     { "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", desc = "Go to declaration" },
     { "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", desc = "Go to definition" },
     { "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", desc = "Go to implementation" },
-    { "gr", "<cmd>lua vim.lsp.buf.references()<cr>", desc = "Go to reference" },
+    {
+      "gr",
+      function()
+        require("telescope.builtin").lsp_references({
+          include_declaration = false,
+          show_line = true,
+          trim_text = true,
+        })
+      end,
+      desc = "Go to reference",
+    },
     { "gw", "<cmd>Telescope diagnostics<cr>", desc = "Diagnostics" },
 
     -- Misc

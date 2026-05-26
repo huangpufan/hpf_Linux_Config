@@ -13,7 +13,13 @@ local function lsp_keymaps(bufnr)
   map("n", "K", vim.lsp.buf.hover, opts)
   map("n", "gi", vim.lsp.buf.implementation, opts)
   map("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-  map("n", "gr", vim.lsp.buf.references, opts)
+  map("n", "gr", function()
+    require("telescope.builtin").lsp_references({
+      include_declaration = false,
+      show_line = true,
+      trim_text = true,
+    })
+  end, opts)
   map("n", "[d", function()
     vim.diagnostic.jump({ count = -1, float = true })
   end, opts)
