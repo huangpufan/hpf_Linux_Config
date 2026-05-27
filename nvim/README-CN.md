@@ -25,6 +25,7 @@ nvim/
 │   │
 │   └── plugins/              # 插件配置
 │       ├── init.lua          # 插件列表索引
+│       ├── snacks.lua        # Snacks 实用模块
 │       ├── colorscheme.lua   # 主题设置
 │       ├── ui.lua            # UI 插件
 │       ├── editor.lua        # 编辑器增强
@@ -56,6 +57,7 @@ nvim/
 ### 核心特性
 - 🚀 延迟加载，快速启动
 - 📦 使用 [lazy.nvim](https://github.com/folke/lazy.nvim) 管理插件
+- 🍿 通过 snacks.nvim 提供大文件、快速文件显示、buffer 删除、单词引用和 Lazygit 实用模块
 - 🎨 美观的 Catppuccin 主题
 - ⌨️ 现代快捷键 (Ctrl+C/V/S/A)
 
@@ -83,6 +85,7 @@ nvim/
 - 💬 快速注释
 - 🔄 会话持久化
 - 📐 多光标编辑
+- 🧹 使用 snacks.nvim 进行不破坏窗口布局的 buffer 删除与隐藏 buffer 清理
 
 ## ⌨️ 快捷键
 
@@ -92,6 +95,7 @@ nvim/
 | `<Space>` | Leader 键 |
 | `<C-s>` | 保存所有 |
 | `<C-w>` | 关闭 buffer |
+| `<A-x>` | 关闭隐藏 buffer |
 | `<C-n>` | 切换文件树 |
 | `q` | 关闭窗口 |
 | `<Space>q` | 退出 Neovim |

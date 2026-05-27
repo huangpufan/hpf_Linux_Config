@@ -12,6 +12,7 @@ return {
   { "kkharji/sqlite.lua" },
 
   -- Import plugin modules
+  { import = "plugins.snacks" },
   { import = "plugins.colorscheme" },
   { import = "plugins.ui" },
   { import = "plugins.editor" },

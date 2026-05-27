@@ -96,12 +96,6 @@ return {
     end,
   },
 
-  -- Close buffers
-  {
-    "kazhala/close-buffers.nvim",
-    event = "VeryLazy",
-  },
-
   -- Alpha dashboard
   {
     "goolord/alpha-nvim",
@@ -316,4 +310,3 @@ return {
     opts = {},
   },
 }
-

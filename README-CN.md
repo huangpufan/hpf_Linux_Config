@@ -15,7 +15,7 @@
 - **GitHub 认证流程** - 默认 `gh + HTTPS`，只有明确需要时才切到 SSH。
 - **模块化脚本** - 每个工具保留独立安装脚本，位于 `install-script/`。
 - **预设组合** - 提供 `minimal`、`dev-cli`、`dev-full`、`all-tools`。
-- **Neovim 配置** - 内置面向 C/C++ 开发的 Neovim 配置。
+- **Neovim 配置** - 内置面向 C/C++ 开发的 Neovim 配置，并小范围使用 snacks.nvim 实用模块。
 
 ## 快速开始
 
@@ -126,6 +126,8 @@ bash install-script/presets/all-tools.sh
 ```bash
 make link-nvim
 ```
+
+Neovim 配置仍保留 Telescope、nvim-tree、alpha 和终端插件的现有主路径，仅使用 snacks.nvim 处理大文件、快速文件显示、buffer 删除、单词引用和 Lazygit。
 
 ## 环境要求
 

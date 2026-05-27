@@ -100,12 +100,6 @@ return {
     end,
   },
 
-  -- Cursor word highlight
-  {
-    "itchyny/vim-cursorword",
-    event = "VeryLazy",
-  },
-
   -- Spider (subword motion)
   {
     "chrisgrieser/nvim-spider",

@@ -85,20 +85,6 @@ autocmd("TextYankPost", {
 })
 
 --------------------------------------------------------------------------------
--- Lazygit
---------------------------------------------------------------------------------
-
--- Close floaterm when lazygit exits
-autocmd("TermClose", {
-  pattern = "term://*lazygit*",
-  command = "FloatermKill",
-})
-
--- Define LazyGit command
-vim.api.nvim_create_user_command("LazyGit", "FloatermNew --height=0.9 --width=0.9 lazygit", {})
-vim.keymap.set("n", "g=", ":LazyGit<CR>", { desc = "Open LazyGit" })
-
---------------------------------------------------------------------------------
 -- Highlights
 --------------------------------------------------------------------------------
 
@@ -152,4 +138,3 @@ vim.notify = function(msg, ...)
   end
   notify(msg, ...)
 end
-

@@ -15,7 +15,7 @@
 - **GitHub Auth Flow** - Default `gh + HTTPS`; optional SSH bootstrap only when explicitly needed.
 - **Modular Scripts** - Each tool keeps its own install script under `install-script/`.
 - **Preset Bundles** - `minimal`, `dev-cli`, `dev-full`, and `all-tools`.
-- **Neovim Config** - Included config for C/C++ development with LSP support.
+- **Neovim Config** - Included config for C/C++ development with LSP support and scoped snacks.nvim utility modules.
 
 ## Quick Start
 
@@ -126,6 +126,8 @@ Link the bundled config with:
 ```bash
 make link-nvim
 ```
+
+The Neovim config keeps Telescope, nvim-tree, alpha, and terminal plugins on their existing paths while using snacks.nvim for big files, quick file display, buffer deletion, word references, and Lazygit.
 
 ## Requirements
 

@@ -137,46 +137,27 @@ map("v", "q", "<cmd>q<cr>", with_desc("Close window"))
 map("n", "<space>q", "<cmd>qa<cr>", with_desc("Close nvim"))
 
 --------------------------------------------------------------------------------
--- Close buffer function
+-- Buffer closing
 --------------------------------------------------------------------------------
-vim.cmd([[
-function! CloseBuffer()
-  let buflisted = getbufinfo({'buflisted': 1})
-  let cur_winnr = winnr()
-  let cur_bufnr = bufnr('%')
+local function close_current_buffer()
+  vim.cmd("wall")
 
-  if len(buflisted) < 2
-    enew
-    execute 'bd' cur_bufnr
-    return
-  endif
+  local buf = vim.api.nvim_get_current_buf()
+  Snacks.bufdelete.delete({
+    buf = buf,
+    force = vim.bo[buf].buftype == "terminal",
+  })
+end
 
-  for winid in getbufinfo(cur_bufnr)[0].windows
-    execute win_id2win(winid).'wincmd w'
-    if cur_bufnr == buflisted[-1].bufnr
-      bp
-    else
-      bn
-    endif
-  endfor
+local function close_hidden_buffers()
+  Snacks.bufdelete.invisible()
+end
 
-  execute cur_winnr.'wincmd w'
-
-  let is_terminal = getbufvar(cur_bufnr, '&buftype') ==# 'terminal'
-  if is_terminal
-    bd! #
-  else
-    silent! bd #
-  endif
-endfunction
-]])
-
-map("n", "<C-w>", ":wa<CR>:call CloseBuffer()<CR>", with_desc("Close buffer"))
-map("n", "<A-x>", ":BDelete hidden<cr>", with_desc("Close hidden buffers"))
-map("i", "<A-x>", "<C-o>:BDelete hidden<cr>", with_desc("Close hidden buffers"))
+map("n", "<C-w>", close_current_buffer, with_desc("Close buffer"))
+map("n", "<A-x>", close_hidden_buffers, with_desc("Close hidden buffers"))
+map("i", "<A-x>", close_hidden_buffers, with_desc("Close hidden buffers"))
 
 --------------------------------------------------------------------------------
 -- LSP keymaps
 --------------------------------------------------------------------------------
 map("n", "<Space>rs", ":LspRestart clangd<CR>", with_desc("Restart clangd"))
-

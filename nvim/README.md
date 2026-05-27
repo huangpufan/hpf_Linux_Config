@@ -25,6 +25,7 @@ nvim/
 │   │
 │   └── plugins/              # Plugin configurations
 │       ├── init.lua          # Plugin specs index
+│       ├── snacks.lua        # Snacks utility modules
 │       ├── colorscheme.lua   # Theme settings
 │       ├── ui.lua            # UI plugins
 │       ├── editor.lua        # Editor enhancements
@@ -56,6 +57,7 @@ nvim/
 ### Core Features
 - 🚀 Fast startup with lazy loading
 - 📦 Plugin management via [lazy.nvim](https://github.com/folke/lazy.nvim)
+- 🍿 Utility modules via snacks.nvim for big files, quick file display, buffer deletion, word references, and Lazygit
 - 🎨 Beautiful UI with Catppuccin theme
 - ⌨️ Modern keybindings (Ctrl+C/V/S/A)
 
@@ -83,6 +85,7 @@ nvim/
 - 💬 Easy commenting
 - 🔄 Session persistence
 - 📐 Multi-cursor editing
+- 🧹 Layout-safe buffer deletion and hidden buffer cleanup with snacks.nvim
 
 ## ⌨️ Key Bindings
 
@@ -92,6 +95,7 @@ nvim/
 | `<Space>` | Leader key |
 | `<C-s>` | Save all |
 | `<C-w>` | Close buffer |
+| `<A-x>` | Close hidden buffers |
 | `<C-n>` | Toggle file tree |
 | `q` | Close window |
 | `<Space>q` | Quit Neovim |
