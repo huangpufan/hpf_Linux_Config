@@ -33,7 +33,7 @@ resize_mode = "prefix+shift+z"
 tabs = "alt"
 
 [ui.toast]
-delivery = "system"
+delivery = "herdr"
 
 [ui]
 show_agent_labels_on_pane_borders = true
