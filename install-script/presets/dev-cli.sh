@@ -22,7 +22,6 @@ log_info "Installing additional APT tools..."
 bash "$TOOLS_DIR/apt/ranger.sh" || true
 bash "$TOOLS_DIR/apt/ncdu.sh" || true
 bash "$TOOLS_DIR/apt/tldr.sh" || true
-bash "$TOOLS_DIR/apt/fd.sh" || true
 bash "$TOOLS_DIR/apt/yq.sh" || true
 bash "$TOOLS_DIR/apt/duf.sh" || true
 bash "$TOOLS_DIR/apt/gdu.sh" || true
@@ -34,7 +33,7 @@ log_info "Installing curl-based tools..."
 bash "$TOOLS_DIR/curl/lazygit.sh" || true
 bash "$TOOLS_DIR/curl/nvm.sh" || true
 
-# Cargo 工具
+# Cargo 工具（优先于 apt 版，获取最新版本）
 log_info "Installing Cargo tools..."
 bash "$TOOLS_DIR/cargo/eza.sh" || true
 bash "$TOOLS_DIR/cargo/broot.sh" || true
@@ -45,6 +44,8 @@ bash "$TOOLS_DIR/cargo/delta.sh" || true
 bash "$TOOLS_DIR/cargo/doggo.sh" || true
 bash "$TOOLS_DIR/cargo/tre.sh" || true
 bash "$TOOLS_DIR/cargo/btm.sh" || true
+bash "$TOOLS_DIR/cargo/fd.sh" || true
+bash "$TOOLS_DIR/cargo/bat.sh" || true
 bash "$TOOLS_DIR/snap/glow.sh" || true
 bash "$TOOLS_DIR/cargo/tealdeer.sh" || true
 

@@ -199,11 +199,11 @@
         {
           "id": "bat",
           "name": "Bat",
-          "description": "带语法高亮的 cat 替代品",
-          "script": "tools/apt/bat.sh",
+          "description": "带语法高亮的 cat 替代品 (cargo 最新版)",
+          "script": "tools/cargo/bat.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "command -v bat || command -v batcat",
+          "check_cmd": "command -v bat",
           "timeout": 1800
         },
         {
@@ -239,11 +239,11 @@
         {
           "id": "fd",
           "name": "Fd",
-          "description": "find 的现代替代品",
-          "script": "tools/apt/fd.sh",
+          "description": "find 的现代替代品 (cargo 最新版)",
+          "script": "tools/cargo/fd.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "command -v fd || command -v fdfind",
+          "check_cmd": "command -v fd",
           "timeout": 1800
         },
         {
@@ -634,12 +634,12 @@
       "tools": [
         {
           "id": "gcc",
-          "name": "GCC/G++ 11",
-          "description": "GCC/G++ 编译器工具链",
+          "name": "GCC/G++",
+          "description": "GCC/G++ 编译器工具链（24.04=GCC13, 22.04/20.04=GCC11）",
           "script": "basic/latestgccg++-install.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "command -v gcc-11 >/dev/null 2>&1 || gcc --version | grep -q '11'",
+          "check_cmd": ". /etc/os-release && if [ \"$VERSION_ID\" = \"24.04\" ]; then command -v gcc-13 >/dev/null 2>&1 && gcc --version | grep -qE '^gcc .* 1[3-9]\\.'; else command -v gcc-11 >/dev/null 2>&1 || gcc --version | grep -q '11'; fi",
           "timeout": 1800
         },
         {

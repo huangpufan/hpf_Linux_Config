@@ -19,7 +19,8 @@ bash "$TOOLS_DIR/apt/git.sh" || true
 bash "$TOOLS_DIR/apt/gh.sh" || true
 bash "$TOOLS_DIR/apt/tmux.sh" || true
 bash "$TOOLS_DIR/apt/htop.sh" || true
-bash "$TOOLS_DIR/apt/bat.sh" || true
+# bat 使用 cargo 安装最新版
+bash "$TOOLS_DIR/cargo/bat.sh" || true
 
 # Curl 工具
 log_info "Installing curl-based tools..."
