@@ -25,6 +25,10 @@
 git clone https://github.com/huangpufan/hpf_Linux_Config.git ~/hpf_Linux_Config
 cd ~/hpf_Linux_Config
 
+# 部署运行时配置（GNU stow）
+sudo apt-get install -y stow
+stow home -t $HOME
+
 # 如未安装 gh，先装 GitHub CLI
 python3 install-script/agent-runner.py install gh
 
@@ -96,20 +100,18 @@ hpf_Linux_Config/
 ├── ARCHITECTURE.md
 ├── docs/
 │   └── agent-install-playbook.md
-├── home/                          # 运行时配置的 stow 根目录
-│   ├── .config/
-│   │   ├── bash/
-│   │   │   ├── aliases
-│   │   │   ├── env
-│   │   │   └── source
-│   │   ├── herdr/
-│   │   │   └── config.toml
-│   │   └── tmux/
-│   │       └── tmux.conf
+├── home/                          # stow 根目录 — 部署：stow home -t $HOME
+│   ├── .bash-aliases              #   → ~/.bash-aliases
+│   ├── .bash-env                  #   → ~/.bash-env
+│   ├── .bash-source               #   → ~/.bash-source
+│   ├── .tmux.conf                 #   → ~/.tmux.conf
 │   ├── .cargo/
-│   │   └── config.toml
-│   └── .cgdb/
-│       └── cgdbrc
+│   │   └── config.toml            #   → ~/.cargo/config.toml
+│   ├── .cgdb/
+│   │   └── cgdbrc                 #   → ~/.cgdb/cgdbrc
+│   └── .config/
+│       └── herdr/
+│           └── config.toml        #   → ~/.config/herdr/config.toml
 ├── install-script/
 │   ├── agent-runner.py
 │   ├── agent-tools.json
@@ -118,7 +120,7 @@ hpf_Linux_Config/
 │   ├── setup/
 │   ├── basic/
 │   └── lib/
-├── nvim/
+├── nvim/                          # 手动链接：make link-nvim
 └── makefile
 ```
 
@@ -134,9 +136,41 @@ bash install-script/presets/dev-full.sh
 bash install-script/presets/all-tools.sh
 ```
 
+## 使用 GNU Stow 管理运行时配置
+
+运行时配置（shell 别名、tmux、cargo、herdr 等）统一放在 `home/` 目录下，通过 [GNU Stow](https://www.gnu.org/software/stow/) 部署到 `$HOME`。
+
+### 部署
+
+```bash
+cd ~/hpf_Linux_Config
+stow home -t $HOME
+# 或：make stow
+```
+
+### 撤销部署（移除所有符号链接）
+
+```bash
+cd ~/hpf_Linux_Config
+stow -D home -t $HOME
+```
+
+### 新增配置文件
+
+1. 将文件放到 `home/` 下对应 `$HOME` 的路径。
+   - 示例：`~/.config/kitty/kitty.conf` → `home/.config/kitty/kitty.conf`
+2. 提交并推送。
+3. 重新部署：
+
+```bash
+stow home -t $HOME
+```
+
+Stow 会自动为 `home/` 下的新文件创建符号链接，已有文件会跳过。
+
 ## Neovim 配置
 
-链接仓库内置的 Neovim 配置：
+Neovim 单独管理（不走 stow），因为它位于仓库根目录。链接方式：
 
 ```bash
 make link-nvim

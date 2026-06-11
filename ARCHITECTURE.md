@@ -68,27 +68,14 @@ herdr 的配置源。定义每台机器上需要安装的工具和包。
 install-script/
 └── basic/                          # 基础安装配置
     ├── herdr/
-    │   └── config.toml             # herdr 主配置（核心）
-    │       ├── 包列表（apt/pip/cargo/npm）
-    │       ├── 工具定义（安装方式、版本）
-    │       └── 机器特定配置
-    ├── nvim/
-    │   └── init.lua                # 引导配置（跳板）
-    └── zsh/
-        └── .zshrc                  # 引导配置（跳板）
+    │   ├── config.toml             # herdr 主配置（核心）
+    │   │   ├── 包列表（apt/pip/cargo/npm）
+    │   │   ├── 工具定义（安装方式、版本）
+    │   │   └── 机器特定配置
+    │   └── install-herdr-config.sh # 安装脚本，将 herdr 配置链接到 $HOME
+    ├── ...
+    └── bash/                       # ⚠ 已废弃 — 迁移到 home/
 ```
-
-**关于引导配置：**
-`install-script/basic/nvim/init.lua` 和 `install-script/basic/zsh/.zshrc` 是 **新机器初始化时的临时跳板配置**。它们的目的是让工具能在安装阶段先启动起来。安装完成后，`home/` 下的完整配置会通过 stow 部署覆盖它们。
-
-**引导配置 vs 运行时配置：**
-
-| 维度 | 引导配置 (install-script/) | 运行时配置 (home/) |
-|------|--------------------------|-------------------|
-| 阶段 | 安装时使用 | 日常使用 |
-| 复杂度 | 轻量，仅基本设置 | 完整，含插件管理 |
-| 覆盖 | 被 home/ 覆盖 | 最终生效版本 |
-| 更新 | 几乎不改 | 随需要更新 |
 
 ### 阶段3：运行时配置
 
@@ -97,32 +84,31 @@ install-script/
 日常使用的最终配置文件。通过 GNU stow 部署到 `$HOME` 目录。
 
 ```
-home/
-├── .config/
-│   ├── nvim/                    # Neovim（lazy.nvim 插件管理）
-│   ├── zsh/                     # Zsh（zinit 插件管理）
-│   ├── git/                     # Git 配置
-│   ├── tmux/                    # Tmux
-│   ├── herdr/                   # herdr 状态配置
-│   │   ├── config.toml          #   通用配置
-│   │   ├── config.local.toml    #   机器特定覆盖
-│   │   └── state.json           #   运行时状态（不 git 追踪）
-│   ├── bat/                     # Bat 主题
-│   ├── ripgrep/                 # Ripgrep
-│   ├── lf/                      # lf 文件管理器
-│   ├── btop/                    # btop 系统监控
-│   ├── kitty/                   # Kitty 终端
-│   └── starship.toml            # Starship 提示符
-├── .local/bin/                  # 自定义脚本
-├── .zshenv                      # Zsh 环境变量
-└── .gitconfig                   # Git 全局配置
+home/                          # stow 根目录
+├── .bash-aliases              # → ~/.bash-aliases
+├── .bash-env                  # → ~/.bash-env
+├── .bash-source               # → ~/.bash-source
+├── .tmux.conf                 # → ~/.tmux.conf
+├── .cargo/
+│   └── config.toml            # → ~/.cargo/config.toml
+├── .cgdb/
+│   └── cgdbrc                 # → ~/.cgdb/cgdbrc
+└── .config/
+    └── herdr/
+        └── config.toml        # → ~/.config/herdr/config.toml
 ```
 
 **部署方式：**
 ```bash
 cd ~/hpf_Linux_Config
-stow home -t $HOME
+stow home -t $HOME          # 部署所有符号链接
+stow -D home -t $HOME       # 撤销所有符号链接
 ```
+
+**新增配置文件：**
+1. 将文件放到 `home/` 下与 `$HOME` 对应的路径
+2. `git add` 并提交
+3. 重新运行 `stow home -t $HOME`，Stow 自动创建符号链接
 
 **herdr 配置说明：**
 - `config.toml` — 通用配置，git 追踪
@@ -141,9 +127,7 @@ flowchart TD
     D --> E[安装 herdr]
     E --> F[herdr 执行安装<br/>读取 install-script/basic/herdr/config.toml]
     F --> G[安装 apt 包、pip 包、cargo 工具等]
-    G --> H[引导配置生效<br/>工具可启动]
-    H --> I[工具加载 home/ 的完整配置]
-    I --> J[系统就绪 ✓]
+    G --> H[运行时配置已生效 ✓]
     
     F -.-> K[可选：更新 SSOT/ 状态]
 ```

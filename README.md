@@ -25,6 +25,10 @@ The repository is expected to live at `~/hpf_Linux_Config`.
 git clone https://github.com/huangpufan/hpf_Linux_Config.git ~/hpf_Linux_Config
 cd ~/hpf_Linux_Config
 
+# Deploy runtime configs with GNU stow
+sudo apt-get install -y stow
+stow home -t $HOME
+
 # Install GitHub CLI if needed
 python3 install-script/agent-runner.py install gh
 
@@ -96,20 +100,18 @@ hpf_Linux_Config/
 ├── ARCHITECTURE.md
 ├── docs/
 │   └── agent-install-playbook.md
-├── home/                          # stow root for runtime configs
-│   ├── .config/
-│   │   ├── bash/
-│   │   │   ├── aliases
-│   │   │   ├── env
-│   │   │   └── source
-│   │   ├── herdr/
-│   │   │   └── config.toml
-│   │   └── tmux/
-│   │       └── tmux.conf
+├── home/                          # stow root — deploy with: stow home -t $HOME
+│   ├── .bash-aliases              #   → ~/.bash-aliases
+│   ├── .bash-env                  #   → ~/.bash-env
+│   ├── .bash-source               #   → ~/.bash-source
+│   ├── .tmux.conf                 #   → ~/.tmux.conf
 │   ├── .cargo/
-│   │   └── config.toml
-│   └── .cgdb/
-│       └── cgdbrc
+│   │   └── config.toml            #   → ~/.cargo/config.toml
+│   ├── .cgdb/
+│   │   └── cgdbrc                 #   → ~/.cgdb/cgdbrc
+│   └── .config/
+│       └── herdr/
+│           └── config.toml        #   → ~/.config/herdr/config.toml
 ├── install-script/
 │   ├── agent-runner.py
 │   ├── agent-tools.json
@@ -118,7 +120,7 @@ hpf_Linux_Config/
 │   ├── setup/
 │   ├── basic/
 │   └── lib/
-├── nvim/
+├── nvim/                          # linked manually: make link-nvim
 └── makefile
 ```
 
@@ -134,15 +136,41 @@ bash install-script/presets/dev-full.sh
 bash install-script/presets/all-tools.sh
 ```
 
-## Neovim Configuration
+## Managing Runtime Configs with GNU Stow
 
-Link the bundled config with:
+Runtime configurations (shell aliases, tmux, git, herdr, etc.) live under `home/` and are deployed to `$HOME` with [GNU Stow](https://www.gnu.org/software/stow/).
+
+### Deploy
 
 ```bash
-make link-nvim
+cd ~/hpf_Linux_Config
+stow home -t $HOME
+# or: make stow
 ```
 
-The Neovim config keeps Telescope, nvim-tree, alpha, and terminal plugins on their existing paths while using snacks.nvim for big files, quick file display, buffer deletion, word references, and Lazygit.
+### Undeploy (remove all symlinks)
+
+```bash
+cd ~/hpf_Linux_Config
+stow -D home -t $HOME
+```
+
+### Adding a new config file
+
+1. Place the file at the correct path under `home/` matching where it should appear in `$HOME`.
+   - Example: `~/.config/kitty/kitty.conf` → `home/.config/kitty/kitty.conf`
+2. Commit and push.
+3. Re-deploy:
+
+```bash
+stow home -t $HOME
+```
+
+Stow automatically creates symlinks for any new files under `home/` and skips existing ones.
+
+## Neovim Configuration
+
+Neovim is managed separately (not through stow) because it lives at the repo root for historical reasons.
 
 ## Requirements
 
