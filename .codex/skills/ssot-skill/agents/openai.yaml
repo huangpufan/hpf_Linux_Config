@@ -1,0 +1,4 @@
+interface:
+  display_name: "SSOT Skill Shim"
+  short_description: "Route old SSOT prompts"
+  default_prompt: "Use $ssot-skill only to route legacy prompts to the split SSOT Skill bundle."

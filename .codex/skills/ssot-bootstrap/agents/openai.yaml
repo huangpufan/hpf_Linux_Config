@@ -1,0 +1,4 @@
+interface:
+  display_name: "SSOT Bootstrap"
+  short_description: "Create repository SSOT"
+  default_prompt: "Use $ssot-bootstrap to create or continue repository SSOT bootstrap."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "SSOT Doctor"
+  short_description: "Verify SSOT health"
+  default_prompt: "Use $ssot-doctor to check SSOT health or review stop gates."

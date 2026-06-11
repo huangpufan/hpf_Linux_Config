@@ -1,0 +1,4 @@
+interface:
+  display_name: "SSOT Preflight"
+  short_description: "Read repository SSOT before work"
+  default_prompt: "Use $ssot-preflight before starting substantive repository work."
