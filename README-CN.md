@@ -93,8 +93,23 @@ python3 install-script/agent-runner.py preset all-tools
 ```text
 hpf_Linux_Config/
 ├── AGENTS.md
+├── ARCHITECTURE.md
 ├── docs/
 │   └── agent-install-playbook.md
+├── home/                          # 运行时配置的 stow 根目录
+│   ├── .config/
+│   │   ├── bash/
+│   │   │   ├── aliases
+│   │   │   ├── env
+│   │   │   └── source
+│   │   ├── herdr/
+│   │   │   └── config.toml
+│   │   └── tmux/
+│   │       └── tmux.conf
+│   ├── .cargo/
+│   │   └── config.toml
+│   └── .cgdb/
+│       └── cgdbrc
 ├── install-script/
 │   ├── agent-runner.py
 │   ├── agent-tools.json

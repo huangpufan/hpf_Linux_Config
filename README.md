@@ -93,8 +93,23 @@ Each install streams stdout/stderr to the terminal and writes a log to `~/.local
 ```text
 hpf_Linux_Config/
 ├── AGENTS.md
+├── ARCHITECTURE.md
 ├── docs/
 │   └── agent-install-playbook.md
+├── home/                          # stow root for runtime configs
+│   ├── .config/
+│   │   ├── bash/
+│   │   │   ├── aliases
+│   │   │   ├── env
+│   │   │   └── source
+│   │   ├── herdr/
+│   │   │   └── config.toml
+│   │   └── tmux/
+│   │       └── tmux.conf
+│   ├── .cargo/
+│   │   └── config.toml
+│   └── .cgdb/
+│       └── cgdbrc
 ├── install-script/
 │   ├── agent-runner.py
 │   ├── agent-tools.json

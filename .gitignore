@@ -2,3 +2,7 @@ linux-package-repository
 
 # Auto Claude data directory
 .auto-claude/
+*.log
+.cache/
+__pycache__/
+*.pyc
