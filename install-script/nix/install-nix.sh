@@ -134,7 +134,7 @@ install_packages() {
     package_groups["更多工具"]="nixpkgs#fd nixpkgs#htop nixpkgs#btop nixpkgs#lazygit nixpkgs#delta"
     package_groups["文件管理"]="nixpkgs#ranger nixpkgs#broot nixpkgs#dust nixpkgs#ncdu"
     package_groups["终端工具"]="nixpkgs#tmux nixpkgs#neovim nixpkgs#jq nixpkgs#tldr"
-    package_groups["其他工具"]="nixpkgs#sd nixpkgs#procs nixpkgs#git nixpkgs#neofetch"
+    package_groups["其他工具"]="nixpkgs#sd nixpkgs#procs nixpkgs#git nixpkgs#jq"
 
     # 按分组安装
     for group in "核心工具" "更多工具" "文件管理" "终端工具" "其他工具"; do

@@ -143,7 +143,7 @@
         {
           "id": "configs",
           "name": "Dotfiles 配置",
-          "description": "Tmux、Herdr、Neofetch 等配置文件",
+          "description": "Tmux、Herdr 等配置文件",
           "script": "basic/config-install.sh",
           "requires_sudo": true,
           "requires_ssh": false,
@@ -237,13 +237,43 @@
           "timeout": 1800
         },
         {
-          "id": "neofetch",
-          "name": "Neofetch",
-          "description": "系统信息展示工具",
-          "script": "tools/apt/neofetch.sh",
+          "id": "fd",
+          "name": "Fd",
+          "description": "find 的现代替代品",
+          "script": "tools/apt/fd.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "command -v neofetch",
+          "check_cmd": "command -v fd || command -v fdfind",
+          "timeout": 1800
+        },
+        {
+          "id": "yq",
+          "name": "Yq",
+          "description": "YAML 处理器 (jq 的 YAML 版)",
+          "script": "tools/apt/yq.sh",
+          "requires_sudo": true,
+          "requires_ssh": false,
+          "check_cmd": "command -v yq",
+          "timeout": 1800
+        },
+        {
+          "id": "gdu",
+          "name": "Gdu",
+          "description": "极速磁盘使用分析器",
+          "script": "tools/apt/gdu.sh",
+          "requires_sudo": true,
+          "requires_ssh": false,
+          "check_cmd": "command -v gdu",
+          "timeout": 1800
+        },
+        {
+          "id": "duf",
+          "name": "Duf",
+          "description": "现代 df 替代品 (磁盘使用率)",
+          "script": "tools/apt/duf.sh",
+          "requires_sudo": true,
+          "requires_ssh": false,
+          "check_cmd": "command -v duf",
           "timeout": 1800
         },
         {
@@ -406,6 +436,76 @@
           "requires_sudo": false,
           "requires_ssh": false,
           "check_cmd": "command -v ouch",
+          "timeout": 1800
+        },
+        {
+          "id": "just",
+          "name": "Just",
+          "description": "命令运行器 (make 的现代替代品)",
+          "script": "tools/cargo/just.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "command -v just",
+          "timeout": 1800
+        },
+        {
+          "id": "delta",
+          "name": "Delta",
+          "description": "git diff 语法高亮工具",
+          "script": "tools/cargo/delta.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "command -v delta",
+          "timeout": 1800
+        },
+        {
+          "id": "doggo",
+          "name": "Doggo",
+          "description": "现代 DNS 查询工具",
+          "script": "tools/cargo/doggo.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "command -v doggo",
+          "timeout": 1800
+        },
+        {
+          "id": "tre",
+          "name": "Tre",
+          "description": "tree 的现代替代品",
+          "script": "tools/cargo/tre.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "command -v tre",
+          "timeout": 1800
+        },
+        {
+          "id": "btm",
+          "name": "Btm (Bottom)",
+          "description": "图形化进程监控工具",
+          "script": "tools/cargo/btm.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "command -v btm",
+          "timeout": 1800
+        },
+        {
+          "id": "glow",
+          "name": "Glow",
+          "description": "终端 Markdown 渲染",
+          "script": "tools/snap/glow.sh",
+          "requires_sudo": true,
+          "requires_ssh": false,
+          "check_cmd": "command -v glow",
+          "timeout": 1800
+        },
+        {
+          "id": "tealdeer",
+          "name": "Tealdeer",
+          "description": "快速 tldr 客户端 (Rust)",
+          "script": "tools/cargo/tealdeer.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "command -v tldr",
           "timeout": 1800
         }
       ]

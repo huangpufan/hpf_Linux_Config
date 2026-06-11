@@ -117,7 +117,7 @@ test_tool_exists "tmux" "终端复用"
 test_tool_exists "nvim" "Neovim 编辑器"
 test_tool_exists "jq" "JSON 处理"
 test_tool_exists "tldr" "命令手册"
-test_tool_exists "neofetch" "系统信息"
+# test_tool_exists "neofetch" "系统信息"  # removed -- deprecated
 echo ""
 
 # ============================================================

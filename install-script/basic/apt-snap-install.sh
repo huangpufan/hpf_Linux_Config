@@ -26,7 +26,7 @@ bash "$APT_DIR/bat.sh" || true
 bash "$APT_DIR/ranger.sh" || true
 bash "$APT_DIR/ncdu.sh" || true
 bash "$APT_DIR/tldr.sh" || true
-bash "$APT_DIR/neofetch.sh" || true
+bash "$APT_DIR/fd.sh" || true
 bash "$APT_DIR/xclip.sh" || true
 bash "$APT_DIR/silversearcher-ag.sh" || true
 bash "$APT_DIR/build-essential.sh" || true

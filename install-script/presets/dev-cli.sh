@@ -22,7 +22,10 @@ log_info "Installing additional APT tools..."
 bash "$TOOLS_DIR/apt/ranger.sh" || true
 bash "$TOOLS_DIR/apt/ncdu.sh" || true
 bash "$TOOLS_DIR/apt/tldr.sh" || true
-bash "$TOOLS_DIR/apt/neofetch.sh" || true
+bash "$TOOLS_DIR/apt/fd.sh" || true
+bash "$TOOLS_DIR/apt/yq.sh" || true
+bash "$TOOLS_DIR/apt/duf.sh" || true
+bash "$TOOLS_DIR/apt/gdu.sh" || true
 bash "$TOOLS_DIR/apt/xclip.sh" || true
 bash "$TOOLS_DIR/apt/silversearcher-ag.sh" || true
 
@@ -37,6 +40,13 @@ bash "$TOOLS_DIR/cargo/eza.sh" || true
 bash "$TOOLS_DIR/cargo/broot.sh" || true
 bash "$TOOLS_DIR/cargo/sd.sh" || true
 bash "$TOOLS_DIR/cargo/ouch.sh" || true
+bash "$TOOLS_DIR/cargo/just.sh" || true
+bash "$TOOLS_DIR/cargo/delta.sh" || true
+bash "$TOOLS_DIR/cargo/doggo.sh" || true
+bash "$TOOLS_DIR/cargo/tre.sh" || true
+bash "$TOOLS_DIR/cargo/btm.sh" || true
+bash "$TOOLS_DIR/snap/glow.sh" || true
+bash "$TOOLS_DIR/cargo/tealdeer.sh" || true
 
 # NPM 工具
 log_info "Installing NPM tools..."
