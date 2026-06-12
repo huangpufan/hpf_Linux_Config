@@ -11,7 +11,7 @@ configure_registry() {
     local config_dir="$HOME/.cargo"
     local config_file="$config_dir/config.toml"
     local old_config="$config_dir/config"
-    local repo_config="$REPO_ROOT/basic/cargo-config.toml"
+    local repo_config="$REPO_ROOT/home/.cargo/config.toml"
     
     # 加载 cargo 环境
     if [ -f "$HOME/.cargo/env" ]; then

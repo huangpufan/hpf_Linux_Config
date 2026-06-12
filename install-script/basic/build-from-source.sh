@@ -1,4 +1,5 @@
-cd ~/download/
+#!/usr/bin/env bash
+cd ~/download/ || exit 1
 
 # Cmake 3.28.3 
 # Now use linux repo to alternate.

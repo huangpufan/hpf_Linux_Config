@@ -63,7 +63,7 @@ configure_cargo_registry() {
     local config_dir="$HOME/.cargo"
     local config_file="$config_dir/config.toml"
     local old_config="$config_dir/config"
-    local repo_config="$REPO_ROOT/basic/cargo-config.toml"
+    local repo_config="$REPO_ROOT/home/.cargo/config.toml"
     
     # 移除旧的 config 链接（已弃用）
     if [ -L "$old_config" ]; then

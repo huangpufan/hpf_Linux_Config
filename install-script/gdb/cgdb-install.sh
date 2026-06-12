@@ -2,6 +2,7 @@
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Check if cgdb is already installed
 if command -v cgdb >/dev/null 2>&1; then
@@ -26,10 +27,15 @@ make -j"$(nproc)"
 sudo make install
 rm -rf "$CGDB_DIR"
 
-# Setup cgdb config
+# Setup cgdb config — prefer stow-managed symlink, fall back to manual
 mkdir -p "$HOME/.cgdb"
 if [ ! -L "$HOME/.cgdb/cgdbrc" ] && [ ! -e "$HOME/.cgdb/cgdbrc" ]; then
-    ln -s "$SCRIPT_DIR/cgdbrc" "$HOME/.cgdb/cgdbrc"
+    # First check if stow has already deployed it under home/
+    if [ -f "$REPO_ROOT/home/.cgdb/cgdbrc" ]; then
+        ln -s "$REPO_ROOT/home/.cgdb/cgdbrc" "$HOME/.cgdb/cgdbrc"
+    else
+        ln -s "$SCRIPT_DIR/cgdbrc" "$HOME/.cgdb/cgdbrc"
+    fi
 fi
 
 echo "cgdb installed successfully!"

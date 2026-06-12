@@ -2,6 +2,7 @@
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Check if the Bashrc Already Set string exists in the .bashrc file
 if grep -q "Bashrc Already Set" ~/.bashrc; then
@@ -9,10 +10,10 @@ if grep -q "Bashrc Already Set" ~/.bashrc; then
     exit 0
 fi
 
-# Create symlinks for bash config files
-ln -sf "$SCRIPT_DIR/bash/env" ~/.bash-env
-ln -sf "$SCRIPT_DIR/bash/aliases" ~/.bash-aliases
-ln -sf "$SCRIPT_DIR/bash/source" ~/.bash-source
+# Create symlinks for bash config files — target the stow-managed home/ sources
+ln -sf "$REPO_ROOT/home/.bash-env" ~/.bash-env
+ln -sf "$REPO_ROOT/home/.bash-aliases" ~/.bash-aliases
+ln -sf "$REPO_ROOT/home/.bash-source" ~/.bash-source
 
 # Add the bashrc-append to the end of ~/.bashrc
 cat "$SCRIPT_DIR/bash/bashrcappend" >> ~/.bashrc

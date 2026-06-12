@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
 cd ~/hpf_Linux_Config
 echo "Sync hpf_Linux_Config"
 git pull

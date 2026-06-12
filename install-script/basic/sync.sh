@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
 ./bashrc-init.sh
 ./profile-set.sh
 ./folder-create.sh

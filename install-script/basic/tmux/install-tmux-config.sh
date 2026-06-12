@@ -2,10 +2,11 @@
 set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 
-# Set tmux configuration
+# Set tmux configuration — point to the stow-managed source
 rm -f ~/.tmux.conf
-ln -sf "$SCRIPT_DIR/tmux.conf" ~/.tmux.conf
+ln -sf "$REPO_ROOT/home/.tmux.conf" ~/.tmux.conf
 
 # Set tmux completion
 if [ -f "$SCRIPT_DIR/tmux-completion" ]; then
