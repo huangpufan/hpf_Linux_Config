@@ -2,6 +2,10 @@ linux-package-repository
 
 # Auto Claude data directory
 .auto-claude/
+
+# AI agent run artifacts (not part of config distribution)
+.sisyphus/
+.codex/
 *.log
 .cache/
 __pycache__/

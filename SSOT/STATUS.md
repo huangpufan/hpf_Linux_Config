@@ -4,13 +4,13 @@
 
 | 字段 | 值 |
 |---|---|
-| tracked_commit | `0d39135b3d036c66753ba39bb4510a21d6f67bb8` |
-| tracked_session | `bootstrap-2026-06-03` |
+| tracked_commit | `e81dc052503817ded1e73fd5001df3a3ce1852e9` |
+| tracked_session | `review-2026-06-12` |
 | tracked_skill_version | `2.16` |
 | documentation_language | `中文` |
 | documentation_language_evidence | `README-CN.md`、`docs/agent-install-playbook.md`、`AGENTS.md` 为中文主叙述；`README.md` 与 `nvim/README.md` 提供英文镜像，因此锁定 SSOT 正文为中文。 |
-| coverage_result | `bootstrap` |
-| last_stop_review | `bootstrap 进行中；最终 converged / tracked_commit / tracked_session / tracked_skill_version 尚未推进。` |
+| coverage_result | `updated` |
+| last_stop_review | `2026-06-12 审视优化：补充 LICENSE、将 .sisyphus/ 与 .codex/ 移入 .gitignore、清理 stow 迁移遗留脚本、更新 ARCHITECTURE.md 过时引用、清理 makefile 残留、同步 STATUS.md。` |
 
 ## 区域状态
 

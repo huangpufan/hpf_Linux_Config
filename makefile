@@ -11,4 +11,3 @@ link-nvim:
 # Deploy runtime configs with GNU stow
 stow:
 	stow home -t $(HOME)
-#single_file_compile_commands_json:

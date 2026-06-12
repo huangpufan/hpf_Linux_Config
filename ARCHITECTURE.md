@@ -52,9 +52,8 @@
 
 | 文件 | 内容 | 用途 |
 |------|------|------|
-| `package_list.json` | 已安装的 apt 包清单（~280+ 包） | 新机器重建时对比差异 |
-| `tool_versions.json` | CLI 工具的版本号 | 升级追踪，确认版本一致性 |
-| `sisyphus_state.json` | sisyphus 工作流状态 | 工作流断点续传 |
+| `STATUS.md` | SSOT 覆盖状态与事件源追踪 | 追踪文档覆盖缺口与变更来源 |
+| `README.md` | SSOT 区域索引与阅读路径 | 新读者快速了解 SSOT 结构 |
 
 **更新方式：** 手动维护。运行系统更新后，手动更新对应文件。
 
@@ -74,7 +73,7 @@ install-script/
     │   │   └── 机器特定配置
     │   └── install-herdr-config.sh # 安装脚本，将 herdr 配置链接到 $HOME
     ├── ...
-    └── bash/                       # ⚠ 已废弃 — 迁移到 home/
+    └── bash/                       # 基础 bash 配置
 ```
 
 ### 阶段3：运行时配置
@@ -153,6 +152,4 @@ flowchart TD
 | 目录 | 用途 | 不追踪原因 |
 |------|------|-----------|
 | `SSOT/` | 系统状态快照 | 手动维护，不参与安装/配置流程 |
-| `.sisyphus/` | 自定义工作流工具 | 独立于配置管理的工具 |
-| `.codex/` | AI 辅助工具 | 独立于配置管理的工具 |
 | `home/.config/herdr/state.json` | herdr 运行时状态 | 自动生成，机器相关 |
