@@ -67,7 +67,7 @@
           "script": "basic/bashrc-init.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "grep -q 'Bashrc Already Set' ~/.bashrc",
+          "check_cmd": "grep -qF '# Bashrc Already Set - managed by hpf_Linux_Config' ~/.bashrc && test \"$(readlink ~/.bash-env)\" = \"$HOME/hpf_Linux_Config/home/.bash-env\" && test \"$(readlink ~/.bash-aliases)\" = \"$HOME/hpf_Linux_Config/home/.bash-aliases\" && test \"$(readlink ~/.bash-source)\" = \"$HOME/hpf_Linux_Config/home/.bash-source\"",
           "timeout": 1800
         },
         {
@@ -145,9 +145,9 @@
           "name": "Dotfiles 配置",
           "description": "Tmux、Herdr 等配置文件",
           "script": "basic/config-install.sh",
-          "requires_sudo": true,
+          "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "test -L ~/.tmux.conf && test -L ~/.config/herdr/config.toml",
+          "check_cmd": "test \"$(readlink ~/.tmux.conf)\" = \"$HOME/hpf_Linux_Config/home/.tmux.conf\" && test \"$(readlink ~/.config/herdr/config.toml)\" = \"$HOME/hpf_Linux_Config/home/.config/herdr/config.toml\"",
           "timeout": 1800
         }
       ]

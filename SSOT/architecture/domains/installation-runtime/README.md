@@ -155,6 +155,7 @@ sequenceDiagram
 | 工具目录元数据 | `INSTALL-RUNTIME-CTX-CURRENT` | `agent-tools.json` | runner、agent、文档 | 仓库持久文件 | verified |
 | 执行日志 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | runner | 用户/agent | 每次执行写入 `~/.local/share/hpf-linux-config/logs/` | documented |
 | 目标机器环境状态 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | 主机环境 + 具体脚本 | `check_cmd` | 真实系统状态 | documented |
+| 运行时 dotfiles | `INSTALL-RUNTIME-CTX-CURRENT` | `home/` | `bashrc`、`configs`、stow | 仓库持久文件，安装时链接到 `$HOME` | verified |
 
 ## 配置 / 可变性模型
 
@@ -191,6 +192,7 @@ sequenceDiagram
 | 仓库路径不对 | `INSTALL-RUNTIME-CTX-CURRENT` | runner 校验失败 | 把仓库放回 `~/hpf_Linux_Config` | documented |
 | sudo 前置不满足 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `sudo -v` 失败 | 先解决权限 | documented |
 | `gh auth` 未完成 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `check_cmd` 失败 | 先跑 `github-auth` | verified |
+| dotfiles 链接缺失或指向旧路径 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `bashrc` / `configs` 的 `check_cmd` 失败 | 重新运行对应 tool，确认链接指向 `home/` 下权威文件 | verified |
 | 脚本成功但 check 失败 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | runner 返回验收失败 | 回到具体脚本与风险项排查 | documented |
 
 ## 验证

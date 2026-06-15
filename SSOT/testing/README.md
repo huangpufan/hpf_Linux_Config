@@ -16,6 +16,7 @@
 |---|---|---|---|---|
 | 查看全目录 | `python3 install-script/agent-runner.py list` | 确认 catalog 可解析 | runner | 不验证状态 |
 | 单项验收 | `python3 install-script/agent-runner.py check <tool>` | 验证 конкрет tool 状态 | playbook | 外部认证类工具可能受账户状态影响 |
+| Dotfiles 验收 | `python3 install-script/agent-runner.py check bashrc` / `python3 install-script/agent-runner.py check configs` | 验证 `.bash-*`、`.tmux.conf`、herdr 配置链接指向仓库 `home/` 权威文件 | catalog | 只能证明链接目标，不证明交互式 shell 已重新 source |
 | 全量盘点 | `python3 install-script/agent-runner.py check all` | 快速查看环境覆盖情况 | AGENTS | 输出多，需按失败项回溯 |
 | Neovim 深验 | `python3 install-script/agent-runner.py check nvim` / `install-script/nvim/nvim-verify.sh` | 覆盖 headless 启动、插件、provider 等 | playbook | 环境差异大 |
 
