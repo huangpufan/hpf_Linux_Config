@@ -36,7 +36,7 @@
 - `runner` 仍然是安装任务默认入口。
 - `agent-tools.json` 中的 `tool id`、`script`、`check_cmd`、`requires_sudo`、`timeout` 保持为唯一 catalog。
 - 修改 preset 或工具脚本后，要能回到 `check` 路径验证，而不是只看脚本输出。
-- `github-auth` 单工具仍默认 `gh + HTTPS`；`bootstrap` / `all-tools` 是本仓库所有者的个人新机路径，默认会生成/上传 SSH key 并把 GitHub git protocol 切到 `ssh`。
+- `github-auth` 单工具仍默认 `gh + HTTPS`；`bootstrap` / `all-tools` 是本仓库所有者的个人新机路径，检测到 `hpf` 账户时直接生成/上传 SSH key 并把 GitHub git protocol 切到 `ssh`，非 `hpf` 账户必须由 agent 先询问并通过 `HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes` 与 `HPF_GIT_EMAIL` 显式确认。
 
 ## decomposition_basis
 
@@ -58,7 +58,7 @@
 
 | 单元 | 职责 | Owner / 权威来源 | 备注 | 证据 |
 |---|---|---|---|---|
-| `agent-runner.py` | 统一解析 list/check/install/preset，校验路径/前置条件，执行脚本并验收 | 代码 + playbook | 域内主 orchestrator | verified |
+| `agent-runner.py` | 统一解析 list/check/install/preset，校验路径/前置条件，执行脚本并验收；在 sudo 前拦截非 `hpf` 账户未确认的个人 bootstrap | 代码 + playbook | 域内主 orchestrator | verified |
 | `agent-tools.json` | 维护 tool id、脚本路径、`check_cmd`、超时和 sudo/ssh 需求 | catalog 文件 | 域内唯一目录真相 | verified |
 | `presets/` | 把常见安装组合组织成 bundle 入口 | preset docs + scripts | 组合层，不是独立架构域 | documented |
 | `setup/` / `basic/` / `tools/` | 承载具体脚本实现 | 各脚本与 README | 实现层，由 runner 调度 | documented |
@@ -162,14 +162,14 @@ sequenceDiagram
 | 可变性来源 | Diagram ID | 模式 / 值 | Owner / 权威来源 | 架构影响 | 证据 |
 |---|---|---|---|---|---|
 | Ubuntu 版本差异 | `INSTALL-RUNTIME-CTX-CURRENT` | 20.04 / 22.04 / 24.04 | playbook / setup docs | 影响换源与部分工具安装路径 | verified |
-| GitHub 认证模式 | `INSTALL-RUNTIME-CTX-CURRENT` | `github-auth` 单工具默认 HTTPS；个人 `bootstrap` / `all-tools` 默认 SSH | README / setup docs / catalog | 影响 bootstrap 流程与 git protocol | verified |
+| GitHub 认证模式 | `INSTALL-RUNTIME-CTX-CURRENT` | `github-auth` 单工具默认 HTTPS；个人 `bootstrap` / `all-tools` 在 `hpf` 账户默认 SSH，非 `hpf` 账户需显式确认并提供 `HPF_GIT_EMAIL` | README / setup docs / catalog | 影响 bootstrap 流程与 git protocol | verified |
 | 环境变量 `HPF_GIT_NAME` / `HPF_GIT_EMAIL` | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | 可选输入 | `git-identity.sh` 文档 | 影响 Git 身份配置 | documented |
 
 ## 生命周期 / 并发 / 调度模型
 
 | 生命周期 / scheduler | Diagram ID | Owner | 顺序 / 并发规则 | 失败 / shutdown 行为 | 证据 |
 |---|---|---|---|---|---|
-| 单次 runner 执行 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | runner | 先校验，再执行脚本，最后验收 | 脚本失败直接返回；脚本成功但 check 失败返回验收失败 | playbook |
+| 单次 runner 执行 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | runner | 先校验个人 bootstrap 确认与 sudo/ssh 前置，再执行脚本，最后验收 | 脚本失败直接返回；脚本成功但 check 失败返回验收失败 | playbook |
 
 ## 跨边界契约
 
@@ -177,13 +177,14 @@ sequenceDiagram
 |---|---|---|---|---|---|
 | `tool id` / `script` / `check_cmd` 契约 | `INSTALL-RUNTIME-CTX-CURRENT` | agent ↔ runner ↔ catalog | `agent-tools.json` | 新工具必须补齐这些字段 | verified |
 | 固定仓库路径契约 | `INSTALL-RUNTIME-CTX-CURRENT` | 仓库 ↔ runner / scripts | README、playbook | 改路径前必须同步修改 runner/script 假设 | verified |
-| 个人 bootstrap SSH 契约 | `INSTALL-RUNTIME-CTX-CURRENT` | setup ↔ GitHub CLI ↔ GitHub | playbook、catalog、`bootstrap.sh` | 不要把 `bootstrap` 降级成纯 HTTPS；只在单工具 `github-auth` 路径保持 HTTPS 默认 | verified |
+| 个人 bootstrap SSH 契约 | `INSTALL-RUNTIME-CTX-CURRENT` | setup ↔ GitHub CLI ↔ GitHub | playbook、catalog、`bootstrap.sh` | 不要把 `bootstrap` 降级成纯 HTTPS；`hpf` 账户直接执行，非 `hpf` 账户需 agent 先问并设置确认变量与 `HPF_GIT_EMAIL` | verified |
 
 ## 不变量与约束
 
 | 不变量 / 约束 | Diagram ID | 范围 | 违反后果 | 证据 |
 |---|---|---|---|---|
 | `check_cmd` 是最终状态裁判 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | 所有安装路径 | 误判环境已就绪 | verified |
+| 非 `hpf` 账户不得静默执行个人 bootstrap | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `bootstrap` / `all-tools` | 在他人机器上上传 SSH key 或切换 GitHub protocol | verified |
 | preset 验收必须覆盖成员工具 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `minimal` / `dev-cli` / `dev-full` / `all-tools` | 抽查通过但实际工具缺失 | verified |
 | 不凭 README 猜工具目录 | `INSTALL-RUNTIME-CTX-CURRENT` | 安装编排 | 入口与状态漂移 | verified |
 
@@ -194,6 +195,7 @@ sequenceDiagram
 | 仓库路径不对 | `INSTALL-RUNTIME-CTX-CURRENT` | runner 校验失败 | 把仓库放回 `~/hpf_Linux_Config` | documented |
 | sudo 前置不满足 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `sudo -v` 失败 | 先解决权限 | documented |
 | `gh auth` 未完成 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `check_cmd` 失败 | 先跑 `github-auth` | verified |
+| 非 `hpf` 账户未确认个人 bootstrap | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `bootstrap.sh` 前置检查失败 | agent 先问用户，获准后传入 `HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes` 和 `HPF_GIT_EMAIL` | verified |
 | bootstrap SSH 未完成 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `preset-bootstrap` / `github-ssh` 的 `check_cmd` 失败 | 重新运行 `github-ssh` 或检查 `gh auth` scope / SSH key 上传 | verified |
 | dotfiles 链接缺失或指向旧路径 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `bashrc` / `configs` 的 `check_cmd` 失败 | 重新运行对应 tool，确认链接指向 `home/` 下权威文件 | verified |
 | 脚本成功但 check 失败 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | runner 返回验收失败 | 回到具体脚本与风险项排查 | documented |

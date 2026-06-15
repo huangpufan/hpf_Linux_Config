@@ -56,6 +56,7 @@
 - 用户要的是单工具还是预设组合
 - Git 身份（name / email）是否已知
 - 是否需要 GitHub 认证；`github-auth` 单工具默认走 `gh + HTTPS`，本仓库个人新机路径 `bootstrap` / `all-tools` 默认会切到 SSH
+- 当前账户是否是 `hpf`；如果是，`bootstrap` / `all-tools` 直接执行；如果不是，先问用户是否仍要执行个人 SSH bootstrap，并确认 Git 邮箱
 - 是否存在会影响脚本的前置条件，比如 Node、Cargo、Snap
 
 如果意图不明确，先问用户；如果只是执行路径不明确，不要自行发明流程，先回到 `AGENTS.md` / 本文档 / runner。
@@ -91,6 +92,21 @@ python3 install-script/agent-runner.py check all
 触发 `gh` 网页认证，补充常用 `gh` scope，上传 SSH public key，并把
 GitHub git protocol 切到 `ssh`。这样后续 `nvm`、release 下载、仓库 clone
 等 GitHub 访问会走个人默认的 SSH 路径。
+
+agent 执行前先用 `id -un` / `$USER` / `$HOME` 判断当前账户。检测到 `hpf`
+时直接执行；非 `hpf` 账户必须先问用户：
+
+- 是否就是仓库所有者或是否允许在这台机器执行个人 bootstrap；
+- 是否允许生成/上传 SSH key 并把 GitHub git protocol 切到 `ssh`；
+- Git `user.email` 应该是什么。
+
+非 `hpf` 账户获准后，执行时显式传入确认变量：
+
+```bash
+HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes \
+HPF_GIT_NAME="Your Name" HPF_GIT_EMAIL="you@example.com" \
+python3 install-script/agent-runner.py preset bootstrap
+```
 
 ```bash
 python3 install-script/agent-runner.py preset bootstrap

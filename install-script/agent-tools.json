@@ -7,7 +7,7 @@
         {
           "id": "preset-bootstrap",
           "name": "个人新机引导与 GitHub SSH",
-          "description": "安装个人新机前置配置：目录、bashrc、git/gh、GitHub 认证、SSH key 上传",
+          "description": "安装个人新机前置配置：目录、bashrc、git/gh、GitHub 认证、SSH key 上传；非 hpf 账户需显式确认并提供 HPF_GIT_EMAIL",
           "script": "presets/bootstrap.sh",
           "requires_sudo": true,
           "requires_ssh": false,
@@ -47,7 +47,7 @@
         {
           "id": "preset-all-tools",
           "name": "全量预设链",
-          "description": "运行 bootstrap + dev-full；不包含 nvim、OpenHarmony 或个人专项脚本",
+          "description": "运行 bootstrap + dev-full；非 hpf 账户需显式确认并提供 HPF_GIT_EMAIL；不包含 nvim、OpenHarmony 或个人专项脚本",
           "script": "presets/all-tools.sh",
           "requires_sudo": true,
           "requires_ssh": false,

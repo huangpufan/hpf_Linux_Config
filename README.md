@@ -41,6 +41,7 @@ python3 install-script/agent-runner.py install git-identity
 python3 install-script/agent-runner.py install github-auth
 
 # Personal-machine bootstrap also uploads an SSH key and switches GitHub to SSH
+# Run directly on the hpf account; on any other account confirm first and set HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes plus HPF_GIT_EMAIL
 python3 install-script/agent-runner.py preset bootstrap
 
 # Install your base toolset
@@ -95,6 +96,8 @@ python3 install-script/agent-runner.py preset all-tools
 
 Each install streams stdout/stderr to the terminal and writes a log to `~/.local/share/hpf-linux-config/logs/`.
 `all-tools` is the default `bootstrap + dev-full` preset chain; it does not include `nvim`, OpenHarmony, or personal-purpose scripts.
+On non-`hpf` accounts, `bootstrap` / `all-tools` require
+`HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes` and `HPF_GIT_EMAIL` so an agent cannot silently upload an SSH key on someone else's machine.
 
 ## Project Structure
 

@@ -19,6 +19,7 @@
 | 单项验收 | `python3 install-script/agent-runner.py check <tool>` | 验证 конкрет tool 状态 | playbook | 外部认证类工具可能受账户状态影响 |
 | Dotfiles 验收 | `python3 install-script/agent-runner.py check bashrc` / `python3 install-script/agent-runner.py check configs` | 验证 `.bash-*`、`.tmux.conf`、herdr 配置链接指向仓库 `home/` 权威文件 | catalog | 只能证明链接目标，不证明交互式 shell 已重新 source |
 | Preset 验收 | `python3 install-script/agent-runner.py check preset-minimal` / `python3 install-script/presets/check-preset.py dev-full` | 汇总 preset 成员工具状态 | catalog、helper script | 仍是当前主机状态检查，不会执行安装 |
+| 个人 bootstrap 前置保护 | 非 `hpf` 环境模拟 `python3 install-script/agent-runner.py preset bootstrap` | 确认 runner 在 sudo 前要求 `HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes` 和 `HPF_GIT_EMAIL` | runner | 只验证保护分支，不执行真实 bootstrap |
 | 全量盘点 | `python3 install-script/agent-runner.py check all` | 快速查看环境覆盖情况 | AGENTS | 输出多，需按失败项回溯 |
 | Neovim 深验 | `python3 install-script/agent-runner.py check nvim` / `install-script/nvim/nvim-verify.sh` | 覆盖 headless 启动、插件、provider 等 | playbook | 环境差异大 |
 

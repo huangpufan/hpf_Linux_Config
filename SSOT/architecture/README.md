@@ -8,7 +8,7 @@
 
 - **使命 / 承诺**：为 `~/hpf_Linux_Config` 提供可重复执行的开发环境配置仓库，并让 agent 能先探测、再执行、最后用 `check_cmd` 验证结果。
 - **主要受众 / 操作者**：仓库所有者本人，以及代为执行安装/检查任务的 coding agent。
-- **优化优先级**：确定性入口、可验证性、固定路径约束、脚本模块化、GitHub 认证默认走 `gh + HTTPS`。
+- **优化优先级**：确定性入口、可验证性、固定路径约束、脚本模块化、GitHub 认证边界清晰：`github-auth` 单工具默认 `gh + HTTPS`，个人 `bootstrap` / `all-tools` 在 `hpf` 账户默认 SSH。
 - **当前阶段优先级**：以 `install-script/agent-runner.py` 取代自由拼装脚本调用；把 `agent-tools.json` 作为单一 catalog。
 - **非目标**：不把仓库包装成通用跨平台安装器；不为 OpenHarmony、个人脚本、旧 no-use 目录提供默认初始化保证。
 - **成功标准**：agent 能依据 playbook 找到正确入口，执行 `list/check/install/preset`，并能用 `check_cmd` 区分成功、失败和验收失败。
@@ -21,7 +21,7 @@
 | 系统目的 | 把 Linux/WSL2 开发环境配置收束为可执行、可验证的仓库级安装系统。 | [运行模型](./views/operating-model.md) |
 | 运行哲学 | 先探测、再提问、后执行、最后验证；入口统一经 `agent-runner.py`。 | [运行模型](./views/operating-model.md) |
 | 主要 actor / caller | 用户、agent、`agent-runner.py`、shell 安装脚本、目标机器环境。 | [installation-runtime domain](./domains/installation-runtime/README.md) |
-| 不可妥协的设计力量 | 固定路径、单一工具目录、`check_cmd` 为唯一状态来源、GitHub 认证默认 HTTPS。 | [installation-runtime domain](./domains/installation-runtime/README.md) |
+| 不可妥协的设计力量 | 固定路径、单一工具目录、`check_cmd` 为唯一状态来源、GitHub 认证边界清晰。 | [installation-runtime domain](./domains/installation-runtime/README.md) |
 | 当前产品 / 运行优先级 | runner-first 安装流和可验证 catalog 已经取代旧 TUI/state 思路。 | [运行模型](./views/operating-model.md) |
 | 成功标准 | `list/check/install/preset` 可预测且结果可回读。 | [关键旅程](./views/critical-journeys.md) |
 

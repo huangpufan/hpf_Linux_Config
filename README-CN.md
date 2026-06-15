@@ -41,6 +41,7 @@ python3 install-script/agent-runner.py install git-identity
 python3 install-script/agent-runner.py install github-auth
 
 # 个人新机路径会额外生成/上传 SSH key，并切到 SSH
+# 当前账户是 hpf 时可直接执行；非 hpf 账户需先确认再设置 HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes 和 HPF_GIT_EMAIL
 python3 install-script/agent-runner.py preset bootstrap
 
 # 再安装基础工具集
@@ -95,6 +96,8 @@ python3 install-script/agent-runner.py preset all-tools
 
 所有安装执行都会把 stdout/stderr 实时输出到终端，并写入 `~/.local/share/hpf-linux-config/logs/`。
 `all-tools` 是 `bootstrap + dev-full` 默认预设链，不包含 `nvim`、OpenHarmony 或个人专项脚本。
+`bootstrap` / `all-tools` 会在非 `hpf` 账户上要求显式设置
+`HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes` 和 `HPF_GIT_EMAIL`，避免 agent 在他人机器上静默上传 SSH key。
 
 ## 项目结构
 

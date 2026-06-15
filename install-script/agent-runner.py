@@ -27,6 +27,7 @@ PRESET_TOOL_IDS = {
     "dev-full": "preset-dev-full",
     "all-tools": "preset-all-tools",
 }
+PERSONAL_BOOTSTRAP_TOOL_IDS = {"preset-bootstrap", "preset-all-tools"}
 
 
 @dataclass(frozen=True)
@@ -172,6 +173,48 @@ def ensure_ssh(spec: ToolSpec) -> int:
     return 3
 
 
+def is_bootstrap_owner() -> bool:
+    owner = os.environ.get("HPF_BOOTSTRAP_OWNER", "hpf")
+    current_user = os.environ.get("USER", "")
+
+    try:
+        login_user = subprocess.run(
+            ["id", "-un"],
+            cwd=str(INSTALL_ROOT),
+            text=True,
+            capture_output=True,
+            check=False,
+        ).stdout.strip()
+    except OSError:
+        login_user = ""
+
+    home_name = Path.home().name
+    return owner in {current_user, login_user, home_name}
+
+
+def ensure_personal_bootstrap_allowed(spec: ToolSpec) -> int:
+    if spec.tool_id not in PERSONAL_BOOTSTRAP_TOOL_IDS:
+        return 0
+    if is_bootstrap_owner():
+        return 0
+    if os.environ.get("HPF_BOOTSTRAP_CONFIRM_PERSONAL") == "yes":
+        if not os.environ.get("HPF_GIT_EMAIL", "").strip():
+            eprint("[runner] non-hpf personal bootstrap requires HPF_GIT_EMAIL")
+            return 4
+        return 0
+
+    eprint(
+        "[runner] {} is the personal hpf bootstrap path and uploads an SSH key".format(
+            spec.tool_id
+        )
+    )
+    eprint("[runner] ask the user before running it on a non-hpf account")
+    eprint(
+        "[runner] if approved, rerun with HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes and HPF_GIT_EMAIL"
+    )
+    return 4
+
+
 def format_flags(spec: ToolSpec) -> str:
     flags: List[str] = []
     if spec.requires_sudo:
@@ -314,6 +357,10 @@ def command_install(tool_id: str, dry_run: bool, tool_map: Dict[str, ToolSpec]) 
     if dry_run:
         print_dry_run(spec, log_path)
         return 0
+
+    personal_bootstrap_result = ensure_personal_bootstrap_allowed(spec)
+    if personal_bootstrap_result != 0:
+        return personal_bootstrap_result
 
     ssh_result = ensure_ssh(spec)
     if ssh_result != 0:

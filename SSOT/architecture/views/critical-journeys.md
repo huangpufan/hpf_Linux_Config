@@ -22,13 +22,13 @@
 |---|---|---|---|
 | 先探测环境，再决定执行项 | 全部安装旅程 | 环境前提不对时直接执行会放大破坏面 | playbook |
 | `check_cmd` 是最终验收信号 | 安装、check、preset | 避免误判“已安装” | `agent-tools.json`、playbook |
-| GitHub 默认认证走 HTTPS | bootstrap / github-auth | 减少 SSH 侧副作用 | README、setup docs |
+| GitHub 认证边界清晰 | bootstrap / all-tools / github-auth | 单工具 `github-auth` 默认 HTTPS；个人 bootstrap 在 `hpf` 账户默认 SSH，非 `hpf` 账户需确认 | README、setup docs |
 
 ## 旅程总览
 
 - **主要旅程**：bootstrap 新机器、执行 preset minimal/dev-full、单工具 install/check。
 - **次要旅程**：只查看 catalog、只配置 Git 身份、只切换 GitHub SSH。
-- **关键失败旅程**：仓库路径不对、`sudo -v` 失败、`gh auth` 未完成、`check_cmd` 失败。
+- **关键失败旅程**：仓库路径不对、非 `hpf` 账户未确认个人 bootstrap、`sudo -v` 失败、`gh auth` 未完成、`check_cmd` 失败。
 - **明确不在范围内的旅程**：服务部署、远程环境编排、OpenHarmony 默认初始化。
 
 ## 旅程图
@@ -69,7 +69,8 @@ sequenceDiagram
 |---|---|---|---|---|
 | 仓库路径错误 | runner 入口拒绝执行 | 移动/clone 到 `~/hpf_Linux_Config` 后重试 | 明确报错，而不是静默执行错误路径 | installation-runtime |
 | 需要 sudo 的任务无法通过 `sudo -v` | runner 在执行前失败 | 先解决 sudo 权限，再重试 | 失败与未执行要区分 | installation-runtime |
-| `gh auth` 未完成或 git protocol 不匹配 | `check_cmd` 失败 | 先跑 `github-auth`，必要时再 `github-ssh` | 验证命令必须体现认证状态 | installation-runtime |
+| 非 `hpf` 账户未确认个人 bootstrap | runner 或 `bootstrap.sh` 前置检查失败 | agent 先问用户是否允许生成/上传 SSH key，并确认 Git 邮箱；获准后带确认变量执行 | 失败发生在 sudo/SSH 副作用前 | installation-runtime |
+| `gh auth` 未完成或 git protocol 不匹配 | `check_cmd` 失败 | 单工具认证先跑 `github-auth`；个人 bootstrap 相关失败按 SSH 路径修复，必要时再 `github-ssh` | 验证命令必须体现认证状态 | installation-runtime |
 | 脚本退出 0 但环境仍未就绪 | runner 返回验收失败 | 回到具体 `check_cmd` 与脚本风险项排查 | 明确是“执行成功但验收失败” | testing |
 
 ## 验收标准

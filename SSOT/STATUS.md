@@ -40,7 +40,7 @@
 | setup 说明 | `install-script/setup/README.md` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/gotchas/README.md` | absorbed | none | 2026-06-03 |
 | tools 说明 | `install-script/tools/README.md` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/development/README.md` | absorbed | none | 2026-06-03 |
 | 工具目录清单 | `install-script/agent-tools.json` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/testing/README.md` | absorbed | none | 2026-06-15 |
-| runner 入口 | `install-script/agent-runner.py` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/testing/README.md` | absorbed | none | 2026-06-03 |
+| runner 入口 | `install-script/agent-runner.py` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/testing/README.md` | absorbed | none | 2026-06-15 |
 | Neovim 现代化研究 | `docs/nvim-plugin-modernization-research-2026-05-25.md` | absorb | `SSOT/tech-debt/README.md` | absorbed | none | 2026-06-03 |
 | Bootstrap 侦察报告 | `SSOT/decisions/0000-bootstrap-recon.md` | absorb | `SSOT/decisions/README.md` | absorbed | none | 2026-06-15 |
 
@@ -48,7 +48,7 @@
 
 | 文档 | 路径 | 角色 | 状态 | 权威关系 | 检查范围 | 最后检查 | 证据 | 建议动作 | 冲突/裁决项 |
 |---|---|---|---|---|---|---|---|---|---|
-| AGENTS.md | `AGENTS.md` | startup | covered | source-material | commands / directory-map / workflow / routing | 2026-06-15 | 与 `docs/agent-install-playbook.md`、`install-script/agent-runner.py`、`install-script/agent-tools.json` 一致；已区分 `github-auth` 单工具 HTTPS 与个人 `bootstrap` SSH 默认路径 | no-op | none |
+| AGENTS.md | `AGENTS.md` | startup | covered | source-material | commands / directory-map / workflow / routing | 2026-06-15 | 与 `docs/agent-install-playbook.md`、`install-script/agent-runner.py`、`install-script/agent-tools.json` 一致；已区分 `github-auth` 单工具 HTTPS、`hpf` 账户个人 `bootstrap` SSH 默认路径、非 `hpf` 账户执行前确认规则 | no-op | none |
 
 ## 停止审查闸门
 

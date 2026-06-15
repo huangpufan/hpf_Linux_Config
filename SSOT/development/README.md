@@ -19,7 +19,7 @@
 | 查看可执行目录 | `python3 install-script/agent-runner.py list` | 获取 tool/preset 真相 | 仓库位于 `~/hpf_Linux_Config` | playbook | 路径不对会直接失败 |
 | 检查单个工具 | `python3 install-script/agent-runner.py check <tool>` | 回读当前机器状态 | 目标工具在 catalog 中 | playbook | `check_cmd` 可能依赖外部认证 |
 | 执行单工具安装 | `python3 install-script/agent-runner.py install <tool>` | 跑具体安装脚本 | 可能需要 sudo / 环境变量 | playbook、catalog | 不能跳过 dry-run 思维 |
-| 执行预设 | `python3 install-script/agent-runner.py preset minimal` | 安装一组工具 | 可能需要 GitHub 认证、sudo | README、preset docs | preset 失败要回到单项排查 |
+| 执行预设 | `python3 install-script/agent-runner.py preset minimal` | 安装一组工具 | 可能需要 GitHub 认证、sudo；非 `hpf` 账户执行 `bootstrap` / `all-tools` 前需确认 | README、preset docs | preset 失败要回到单项排查 |
 
 ## 脚本 / 工具目录
 
@@ -46,7 +46,7 @@
 | 功能类型 | 需要触碰的权威位置 | 代表性示例 | 验证方式 | 风险 |
 |---|---|---|---|---|
 | 新增工具 | `agent-tools.json` + 对应脚本 + preset（如需要） | 新增一个 cargo/npm/apt 工具 | `list` + `check <tool>` | 忘记补 `check_cmd` |
-| 调整安装流程 | runner / preset / setup 脚本 | 修改 GitHub 认证或 bootstrap 顺序 | 跑对应 `preset` 和 `check` | 容易破坏默认 HTTPS 或 sudo 流 |
+| 调整安装流程 | runner / preset / setup 脚本 | 修改 GitHub 认证或 bootstrap 顺序 | 跑对应 `preset` 和 `check` | 容易破坏单工具 HTTPS、个人 bootstrap SSH 或非 `hpf` 账户确认流 |
 | 调整 preset 成员 | preset 脚本 + `presets/check-preset.py` + catalog | 给 `dev-cli` 增删一个工具 | helper 成员覆盖检查 + 对应 preset check | 安装步骤和验收清单漂移 |
 | Neovim 配置改动 | `nvim/` 与相关安装/验证脚本 | 插件或 provider 调整 | `check nvim` / `nvim-verify.sh` | 环境依赖多 |
 

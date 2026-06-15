@@ -12,12 +12,51 @@ HOSTNAME="${GITHUB_HOSTNAME:-github.com}"
 SSH_KEY_PATH="${SSH_KEY_PATH:-$HOME/.ssh/id_ed25519}"
 SSH_KEY_TITLE="${SSH_KEY_TITLE:-$(hostname)-${USER}-hpf-linux-config}"
 BROAD_GH_SCOPES="${BROAD_GH_SCOPES:-admin:public_key,admin:ssh_signing_key,workflow,admin:repo_hook,user}"
+BOOTSTRAP_OWNER="${HPF_BOOTSTRAP_OWNER:-hpf}"
+BOOTSTRAP_CONFIRMED="${HPF_BOOTSTRAP_CONFIRM_PERSONAL:-}"
+
+is_bootstrap_owner() {
+    local current_user home_name
+    current_user="$(id -un 2>/dev/null || printf '%s' "${USER:-}")"
+    home_name="$(basename "${HOME:-}")"
+
+    [ "${USER:-}" = "$BOOTSTRAP_OWNER" ] ||
+        [ "$current_user" = "$BOOTSTRAP_OWNER" ] ||
+        [ "$home_name" = "$BOOTSTRAP_OWNER" ]
+}
+
+assert_personal_bootstrap_allowed() {
+    local configured_email
+
+    if is_bootstrap_owner; then
+        log_info "Detected bootstrap owner '$BOOTSTRAP_OWNER'; continuing without extra confirmation"
+        return 0
+    fi
+
+    if [ "$BOOTSTRAP_CONFIRMED" != "yes" ]; then
+        log_err "bootstrap is the personal hpf machine path and uploads an SSH key to GitHub"
+        log_info "Agent must ask the user before running this on a non-hpf account"
+        log_info "If approved, rerun with HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes and HPF_GIT_NAME/HPF_GIT_EMAIL"
+        return 1
+    fi
+
+    configured_email="${HPF_GIT_EMAIL:-}"
+    if [ -z "$configured_email" ]; then
+        log_err "HPF_GIT_EMAIL is required on non-hpf accounts"
+        return 1
+    fi
+
+    log_warn "Running personal bootstrap on non-hpf account after explicit confirmation"
+}
 
 ensure_ssh_key() {
     local pubkey="${SSH_KEY_PATH}.pub"
     local comment
 
-    comment="$(git config --global user.email 2>/dev/null || true)"
+    comment="${HPF_GIT_EMAIL:-}"
+    if [ -z "$comment" ]; then
+        comment="$(git config --global user.email 2>/dev/null || true)"
+    fi
     if [ -z "$comment" ]; then
         comment="59730801@qq.com"
     fi
@@ -86,6 +125,8 @@ authenticate_github_for_ssh() {
 log_info "=========================================="
 log_info "  Bootstrapping Machine Prerequisites"
 log_info "=========================================="
+
+assert_personal_bootstrap_allowed
 
 bash "$REPO_ROOT/basic/folder-create.sh"
 bash "$REPO_ROOT/basic/bashrc-init.sh"

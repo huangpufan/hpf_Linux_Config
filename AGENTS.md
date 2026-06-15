@@ -25,6 +25,7 @@
 - runner 优先：优先用 `python3 install-script/agent-runner.py ...`，不要默认直接执行脚本
 - `github-auth` 单工具默认走 `gh + HTTPS`
 - `bootstrap` / `all-tools` 是本仓库所有者的个人新机路径，默认会生成/上传 SSH key，并把 GitHub git protocol 切到 `ssh`
+- 执行 `bootstrap` / `all-tools` 前先探测当前账户；如果是 `hpf`，直接执行；如果不是 `hpf`，必须先问用户是否仍要执行个人 SSH bootstrap，并确认 Git 邮箱，获准后用 `HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes` 和 `HPF_GIT_EMAIL` 执行
 - 支持 Ubuntu 20.04 / 22.04 / 24.04；其中 Ubuntu 24.04 的换源走 `ubuntu.sources`，不是旧的 `sources.list`
 - 所有修改完成后必须 `git add -A && git commit && git push`，不允许只改不推
 

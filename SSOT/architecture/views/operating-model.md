@@ -10,7 +10,7 @@
 
 这个仓库的核心不是“收集很多 shell 脚本”，而是把安装环境这件事变成 agent 可以可靠执行的系统。README 和 AGENTS 都在反复强调同一件事：先探测、再执行、最后验证，而且所有安装类任务默认先回到 `agent-runner.py` 和 `agent-tools.json`。
 
-因此，运行模型关注的是约束而不是功能列表。未来任何变更，只要削弱了固定路径、单一 catalog、统一 check 语义或 GitHub 认证默认路径，就会让整个仓库重新退回“脚本很多但难以稳定自动化”的状态。
+因此，运行模型关注的是约束而不是功能列表。未来任何变更，只要削弱了固定路径、单一 catalog、统一 check 语义或 GitHub 认证边界，就会让整个仓库重新退回“脚本很多但难以稳定自动化”的状态。
 
 ## 叙述 / 模型
 
@@ -21,7 +21,7 @@
 - **使命 / 承诺**：为 Linux / WSL2 开发环境初始化提供可重复、可验证的仓库级配置系统。
 - **主要受众 / 操作者**：仓库所有者、在同机执行维护的 agent。
 - **主要 actor / caller**：用户、agent、runner、工具脚本、目标 OS 环境。
-- **优化优先级**：确定性入口、安装后可验证、固定路径、模块化脚本、默认 `gh + HTTPS`。
+- **优化优先级**：确定性入口、安装后可验证、固定路径、模块化脚本、GitHub 认证边界清晰。
 - **非目标**：不追求成为完全通用的跨发行版安装框架；不把 OpenHarmony 或个人化脚本纳入默认 bootstrap。
 - **当前阶段优先级**：守住 runner-first 与 catalog-first 约束，并覆盖 Ubuntu 20.04/22.04/24.04。
 - **成功标准**：agent 能根据 playbook 找到正确入口；执行后可通过 `check_cmd` 判断状态。
@@ -33,7 +33,7 @@
 | runner 优先 | 统一入口才能保证自动化和日志/验收一致性。 | `AGENTS.md`、playbook、`agent-runner.py` | verified |
 | catalog 单一真相 | `tool id`、脚本路径、sudo/ssh 前置和 `check_cmd` 必须在一处维护。 | `agent-tools.json` | verified |
 | 先探测后执行 | 安装行为依赖系统版本、sudo 权限、认证状态和前置工具。 | playbook | documented |
-| GitHub 默认 HTTPS | 避免把 SSH 切换当成隐式副作用，减少初始化歧义。 | README、AGENTS、setup docs | verified |
+| GitHub 认证边界清晰 | `github-auth` 单工具默认 `gh + HTTPS`；个人 `bootstrap` / `all-tools` 在 `hpf` 账户默认 SSH，非 `hpf` 账户必须显式确认。 | README、AGENTS、setup docs | verified |
 
 ## 设计约束
 
@@ -62,7 +62,7 @@
 | 非目标或被拒绝的优化 | 为什么拒绝 | 替代做法 | 证据 / 决策 |
 |---|---|---|---|
 | 让 agent 直接在 `install-script/` 下自由挑脚本执行 | 看似更快，但会绕过统一入口和状态判断。 | 先用 runner，只有明确需要时才直调脚本。 | AGENTS、playbook |
-| 默认自动切 SSH | 对熟悉 GitHub 的人很方便，但会引入额外认证副作用。 | 默认 `github-auth`，明确要求时再 `github-ssh`。 | README、setup docs |
+| 在非 `hpf` 账户默认自动切 SSH | 会在非预期账户上生成/上传 SSH key 并切换 GitHub protocol。 | `hpf` 账户个人 bootstrap 直接走 SSH；非 `hpf` 账户由 agent 先问，获准后带确认变量执行。 | README、setup docs |
 
 ## 当前 / 目标 / 差距
 
