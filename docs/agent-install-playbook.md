@@ -55,7 +55,7 @@
 - 当前用户是否能执行 `sudo`
 - 用户要的是单工具还是预设组合
 - Git 身份（name / email）是否已知
-- 是否需要 GitHub 认证；默认走 `gh + HTTPS`，只有明确要求时才切换 SSH
+- 是否需要 GitHub 认证；`github-auth` 单工具默认走 `gh + HTTPS`，本仓库个人新机路径 `bootstrap` / `all-tools` 默认会切到 SSH
 - 是否存在会影响脚本的前置条件，比如 Node、Cargo、Snap
 
 如果意图不明确，先问用户；如果只是执行路径不明确，不要自行发明流程，先回到 `AGENTS.md` / 本文档 / runner。
@@ -86,10 +86,11 @@ python3 install-script/agent-runner.py check all
 
 ### 4. 新机器建议顺序
 
-默认先执行 bootstrap，再执行工具预设。bootstrap 会先创建目录与 bashrc
-配置，安装 git/gh，生成 SSH key，触发 `gh` 网页认证，补充常用 `gh`
-scope，上传 SSH public key，并把 GitHub git protocol 切到 `ssh`。
-这样后续 `nvm`、release 下载、仓库 clone 等 GitHub 访问不会默认走 HTTPS。
+默认先执行 bootstrap，再执行工具预设。这里的 `bootstrap` 是本仓库所有者的
+个人新机路径：它会先创建目录与 bashrc 配置，安装 git/gh，生成 SSH key，
+触发 `gh` 网页认证，补充常用 `gh` scope，上传 SSH public key，并把
+GitHub git protocol 切到 `ssh`。这样后续 `nvm`、release 下载、仓库 clone
+等 GitHub 访问会走个人默认的 SSH 路径。
 
 ```bash
 python3 install-script/agent-runner.py preset bootstrap
@@ -104,7 +105,8 @@ python3 install-script/agent-runner.py preset minimal
 python3 install-script/agent-runner.py preset all-tools
 ```
 
-`all-tools` 会先执行 `bootstrap`，再进入完整工具安装。
+`all-tools` 会先执行 `bootstrap`，再进入 `dev-full` 预设；它不是
+OpenHarmony、Neovim 或个人专项脚本的全仓库穷尽安装。
 
 ### 5. 先 dry-run，再执行
 

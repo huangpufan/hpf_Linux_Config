@@ -32,14 +32,14 @@
 
 | 源资料 | 路径/来源 | 分类 | 权威位置 | 吸收状态 | 冲突/裁决项 | 最后检查 |
 |---|---|---|---|---|---|---|
-| 根 README 中文版 | `README-CN.md` | absorb | `SSOT/identity/README.md`、`SSOT/architecture/views/operating-model.md`、`SSOT/development/README.md` | absorbed | none | 2026-06-03 |
-| 根 README 英文版 | `README.md` | link-only | `SSOT/STATUS.md` | linked | none | 2026-06-03 |
-| 安装 playbook | `docs/agent-install-playbook.md` | absorb | `SSOT/development/README.md`、`SSOT/testing/README.md`、`SSOT/gotchas/README.md` | absorbed | none | 2026-06-03 |
-| 仓库级 agent 规则 | `AGENTS.md` | absorb | `SSOT/architecture/views/operating-model.md`、`SSOT/development/README.md`、`SSOT/gotchas/README.md` | absorbed | none | 2026-06-03 |
-| 预设说明 | `install-script/presets/README.md` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/development/README.md` | absorbed | none | 2026-06-03 |
+| 根 README 中文版 | `README-CN.md` | absorb | `SSOT/identity/README.md`、`SSOT/architecture/views/operating-model.md`、`SSOT/development/README.md` | absorbed | none | 2026-06-15 |
+| 根 README 英文版 | `README.md` | link-only | `SSOT/STATUS.md` | linked | none | 2026-06-15 |
+| 安装 playbook | `docs/agent-install-playbook.md` | absorb | `SSOT/development/README.md`、`SSOT/testing/README.md`、`SSOT/gotchas/README.md` | absorbed | none | 2026-06-15 |
+| 仓库级 agent 规则 | `AGENTS.md` | absorb | `SSOT/architecture/views/operating-model.md`、`SSOT/development/README.md`、`SSOT/gotchas/README.md` | absorbed | none | 2026-06-15 |
+| 预设说明 | `install-script/presets/README.md` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/development/README.md` | absorbed | none | 2026-06-15 |
 | setup 说明 | `install-script/setup/README.md` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/gotchas/README.md` | absorbed | none | 2026-06-03 |
 | tools 说明 | `install-script/tools/README.md` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/development/README.md` | absorbed | none | 2026-06-03 |
-| 工具目录清单 | `install-script/agent-tools.json` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/testing/README.md` | absorbed | none | 2026-06-03 |
+| 工具目录清单 | `install-script/agent-tools.json` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/testing/README.md` | absorbed | none | 2026-06-15 |
 | runner 入口 | `install-script/agent-runner.py` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/testing/README.md` | absorbed | none | 2026-06-03 |
 | Neovim 现代化研究 | `docs/nvim-plugin-modernization-research-2026-05-25.md` | absorb | `SSOT/tech-debt/README.md` | absorbed | none | 2026-06-03 |
 | Bootstrap 侦察报告 | `SSOT/decisions/0000-bootstrap-recon.md` | absorb | `SSOT/decisions/README.md` | absorbed | none | 2026-06-15 |
@@ -48,7 +48,7 @@
 
 | 文档 | 路径 | 角色 | 状态 | 权威关系 | 检查范围 | 最后检查 | 证据 | 建议动作 | 冲突/裁决项 |
 |---|---|---|---|---|---|---|---|---|---|
-| AGENTS.md | `AGENTS.md` | startup | covered | source-material | commands / directory-map / workflow / routing | 2026-06-03 | 与 `docs/agent-install-playbook.md`、`install-script/agent-runner.py`、`install-script/agent-tools.json` 一致 | no-op | none |
+| AGENTS.md | `AGENTS.md` | startup | covered | source-material | commands / directory-map / workflow / routing | 2026-06-15 | 与 `docs/agent-install-playbook.md`、`install-script/agent-runner.py`、`install-script/agent-tools.json` 一致；已区分 `github-auth` 单工具 HTTPS 与个人 `bootstrap` SSH 默认路径 | no-op | none |
 
 ## 停止审查闸门
 

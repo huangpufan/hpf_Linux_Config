@@ -9,10 +9,10 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 . "$REPO_ROOT/lib/common.sh"
 
 TOOL_NAME="tealdeer"
-TOOL_CMD="tldr"
+TOOL_CMD="${CARGO_HOME:-$HOME/.cargo}/bin/tldr"
 
 is_installed() {
-    command -v "$TOOL_CMD" >/dev/null 2>&1
+    [ -x "$TOOL_CMD" ] && "$TOOL_CMD" --version >/dev/null 2>&1
 }
 
 do_install() {
@@ -22,8 +22,8 @@ do_install() {
     cargo install tealdeer
 
     # tealdeer 安装后默认也是 tldr 命令，缓存帮助页
-    if command -v tldr >/dev/null 2>&1; then
-        tldr --update 2>/dev/null || true
+    if [ -x "$TOOL_CMD" ]; then
+        "$TOOL_CMD" --update 2>/dev/null || true
     fi
 }
 

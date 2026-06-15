@@ -28,6 +28,7 @@
 | `install-script/agent-runner.py` | 统一入口与执行器 | other | 任何安装/检查任务 | AGENTS、playbook | 路径固定 | architecture |
 | `install-script/agent-tools.json` | 工具目录与 `check_cmd` 真相 | diagnostics | 新增/修改工具定义时 | AGENTS | 双写会漂移 | architecture |
 | `install-script/presets/*.sh` | 组合安装 | other | 跑 bundle 时 | preset docs | 仍应通过 runner 进入 | installation-runtime |
+| `install-script/presets/check-preset.py` | preset 成员验收汇总 | diagnostics | 修改 preset 成员或 `check_cmd` 后 | catalog、preset scripts | 成员清单与安装步骤必须同步 | testing |
 | `install-script/setup/*.sh` | 账号/系统配置 | other | 认证、换源、registry、Git 身份 | setup docs | 常涉及外部状态 | installation-runtime |
 | `install-script/tools/*/*.sh` | 单工具安装 | other | 补装某个工具 | tools README | 前置条件各异 | installation-runtime |
 | `install-script/nvim/nvim-verify.sh` | Neovim 专项验证 | diagnostics | 修改 Neovim 安装或配置后 | playbook | 依赖 headless 启动 | tech-debt |
@@ -46,6 +47,7 @@
 |---|---|---|---|---|
 | 新增工具 | `agent-tools.json` + 对应脚本 + preset（如需要） | 新增一个 cargo/npm/apt 工具 | `list` + `check <tool>` | 忘记补 `check_cmd` |
 | 调整安装流程 | runner / preset / setup 脚本 | 修改 GitHub 认证或 bootstrap 顺序 | 跑对应 `preset` 和 `check` | 容易破坏默认 HTTPS 或 sudo 流 |
+| 调整 preset 成员 | preset 脚本 + `presets/check-preset.py` + catalog | 给 `dev-cli` 增删一个工具 | helper 成员覆盖检查 + 对应 preset check | 安装步骤和验收清单漂移 |
 | Neovim 配置改动 | `nvim/` 与相关安装/验证脚本 | 插件或 provider 调整 | `check nvim` / `nvim-verify.sh` | 环境依赖多 |
 
 ## 开放缺口

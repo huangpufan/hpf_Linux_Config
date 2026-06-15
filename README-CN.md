@@ -12,9 +12,9 @@
 
 - **Agent Playbook** - 先探测、再提问、后执行、最后验证。
 - **Deterministic Runner** - 使用 Python 标准库提供统一的 `list`、`check`、`install`、`preset` 入口。
-- **GitHub 认证流程** - 默认 `gh + HTTPS`，只有明确需要时才切到 SSH。
+- **GitHub 认证流程** - `github-auth` 单工具默认 `gh + HTTPS`；个人新机 `bootstrap` 默认生成/上传 SSH key 并切到 SSH。
 - **模块化脚本** - 每个工具保留独立安装脚本，位于 `install-script/`。
-- **预设组合** - 提供 `minimal`、`dev-cli`、`dev-full`、`all-tools`。
+- **预设组合** - 提供 `minimal`、`dev-cli`、`dev-full`、`all-tools`，其中 `all-tools` 表示 `bootstrap + dev-full` 默认预设链。
 - **Neovim 配置** - 内置面向 C/C++ 开发的 Neovim 配置，并小范围使用 snacks.nvim 实用模块。
 
 ## 快速开始
@@ -37,8 +37,11 @@ HPF_GIT_NAME="你的名字" \
 HPF_GIT_EMAIL="you@example.com" \
 python3 install-script/agent-runner.py install git-identity
 
-# 先完成 GitHub CLI 认证，默认走 HTTPS
+# 先完成 GitHub CLI 认证，单工具默认走 HTTPS
 python3 install-script/agent-runner.py install github-auth
+
+# 个人新机路径会额外生成/上传 SSH key，并切到 SSH
+python3 install-script/agent-runner.py preset bootstrap
 
 # 再安装基础工具集
 python3 install-script/agent-runner.py preset minimal
@@ -72,7 +75,7 @@ HPF_GIT_NAME="你的名字" HPF_GIT_EMAIL="you@example.com" \
 python3 install-script/agent-runner.py install git-identity
 python3 install-script/agent-runner.py install github-auth
 
-# 如确实需要 SSH，再显式执行
+# 如只跑单工具认证且需要 SSH，再显式执行；preset bootstrap 会默认执行这一步
 python3 install-script/agent-runner.py install github-ssh
 
 # 验证单个工具或全量目录
@@ -91,6 +94,7 @@ python3 install-script/agent-runner.py preset all-tools
 ```
 
 所有安装执行都会把 stdout/stderr 实时输出到终端，并写入 `~/.local/share/hpf-linux-config/logs/`。
+`all-tools` 是 `bootstrap + dev-full` 默认预设链，不包含 `nvim`、OpenHarmony 或个人专项脚本。
 
 ## 项目结构
 

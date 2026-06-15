@@ -36,7 +36,7 @@
 - `runner` 仍然是安装任务默认入口。
 - `agent-tools.json` 中的 `tool id`、`script`、`check_cmd`、`requires_sudo`、`timeout` 保持为唯一 catalog。
 - 修改 preset 或工具脚本后，要能回到 `check` 路径验证，而不是只看脚本输出。
-- GitHub 认证仍默认 `gh + HTTPS`，只有明确需求时才切 SSH。
+- `github-auth` 单工具仍默认 `gh + HTTPS`；`bootstrap` / `all-tools` 是本仓库所有者的个人新机路径，默认会生成/上传 SSH key 并把 GitHub git protocol 切到 `ssh`。
 
 ## decomposition_basis
 
@@ -69,7 +69,7 @@
 |---|---|---|---|---|---|
 | Runtime flows | 一次安装/检查是怎么跑完的？ | runner 解析 catalog，执行脚本，再跑 `check_cmd`。 | [运行流](#运行流) | runner、catalog | 不要只看脚本 exit code。 |
 | State / resources | 谁拥有目录真相和验收语义？ | `agent-tools.json` 拥有目录真相，runner 拥有执行/验收语义。 | [状态、数据与资源](#状态数据与资源) | catalog、runner | 双写会漂移。 |
-| Contracts | 哪些边界不能破坏？ | 路径固定、catalog 单一、HTTPS 默认、24.04 换源规则。 | [跨边界契约](#跨边界契约) | AGENTS、playbook | 会直接影响真实机器环境。 |
+| Contracts | 哪些边界不能破坏？ | 路径固定、catalog 单一、单工具 HTTPS 与个人 bootstrap SSH 的边界、24.04 换源规则。 | [跨边界契约](#跨边界契约) | AGENTS、playbook | 会直接影响真实机器环境。 |
 | Failure / recovery | 常见失败如何检测和恢复？ | 看 runner 前置失败与 `check_cmd` 失败，再回到具体 setup/tool。 | [失败与恢复](#失败与恢复) | playbook | 失败类型要区分。 |
 
 ## 关键断言与证据
@@ -162,7 +162,7 @@ sequenceDiagram
 | 可变性来源 | Diagram ID | 模式 / 值 | Owner / 权威来源 | 架构影响 | 证据 |
 |---|---|---|---|---|---|
 | Ubuntu 版本差异 | `INSTALL-RUNTIME-CTX-CURRENT` | 20.04 / 22.04 / 24.04 | playbook / setup docs | 影响换源与部分工具安装路径 | verified |
-| GitHub 认证模式 | `INSTALL-RUNTIME-CTX-CURRENT` | HTTPS 默认，SSH 可选 | README / setup docs | 影响 bootstrap 流程与 git protocol | verified |
+| GitHub 认证模式 | `INSTALL-RUNTIME-CTX-CURRENT` | `github-auth` 单工具默认 HTTPS；个人 `bootstrap` / `all-tools` 默认 SSH | README / setup docs / catalog | 影响 bootstrap 流程与 git protocol | verified |
 | 环境变量 `HPF_GIT_NAME` / `HPF_GIT_EMAIL` | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | 可选输入 | `git-identity.sh` 文档 | 影响 Git 身份配置 | documented |
 
 ## 生命周期 / 并发 / 调度模型
@@ -177,12 +177,14 @@ sequenceDiagram
 |---|---|---|---|---|---|
 | `tool id` / `script` / `check_cmd` 契约 | `INSTALL-RUNTIME-CTX-CURRENT` | agent ↔ runner ↔ catalog | `agent-tools.json` | 新工具必须补齐这些字段 | verified |
 | 固定仓库路径契约 | `INSTALL-RUNTIME-CTX-CURRENT` | 仓库 ↔ runner / scripts | README、playbook | 改路径前必须同步修改 runner/script 假设 | verified |
+| 个人 bootstrap SSH 契约 | `INSTALL-RUNTIME-CTX-CURRENT` | setup ↔ GitHub CLI ↔ GitHub | playbook、catalog、`bootstrap.sh` | 不要把 `bootstrap` 降级成纯 HTTPS；只在单工具 `github-auth` 路径保持 HTTPS 默认 | verified |
 
 ## 不变量与约束
 
 | 不变量 / 约束 | Diagram ID | 范围 | 违反后果 | 证据 |
 |---|---|---|---|---|
 | `check_cmd` 是最终状态裁判 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | 所有安装路径 | 误判环境已就绪 | verified |
+| preset 验收必须覆盖成员工具 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `minimal` / `dev-cli` / `dev-full` / `all-tools` | 抽查通过但实际工具缺失 | verified |
 | 不凭 README 猜工具目录 | `INSTALL-RUNTIME-CTX-CURRENT` | 安装编排 | 入口与状态漂移 | verified |
 
 ## 失败与恢复
@@ -192,6 +194,7 @@ sequenceDiagram
 | 仓库路径不对 | `INSTALL-RUNTIME-CTX-CURRENT` | runner 校验失败 | 把仓库放回 `~/hpf_Linux_Config` | documented |
 | sudo 前置不满足 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `sudo -v` 失败 | 先解决权限 | documented |
 | `gh auth` 未完成 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `check_cmd` 失败 | 先跑 `github-auth` | verified |
+| bootstrap SSH 未完成 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `preset-bootstrap` / `github-ssh` 的 `check_cmd` 失败 | 重新运行 `github-ssh` 或检查 `gh auth` scope / SSH key 上传 | verified |
 | dotfiles 链接缺失或指向旧路径 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | `bashrc` / `configs` 的 `check_cmd` 失败 | 重新运行对应 tool，确认链接指向 `home/` 下权威文件 | verified |
 | 脚本成功但 check 失败 | `INSTALL-RUNTIME-FLOW-CHECK-CURRENT` | runner 返回验收失败 | 回到具体脚本与风险项排查 | documented |
 
@@ -201,6 +204,7 @@ sequenceDiagram
 |---|---|---|---|
 | runner 能列出完整 catalog | `python3 install-script/agent-runner.py list` | CLI 输出 | 修改 catalog 后 |
 | 安装状态以 `check_cmd` 判定 | `python3 install-script/agent-runner.py check <tool>` | playbook + 运行行为 | 修改脚本或工具后 |
+| preset 状态按成员工具汇总 | `python3 install-script/presets/check-preset.py <preset>` | catalog + helper script | 修改 preset 成员或 check 语义后 |
 | 主目录结构符合 domain 叙述 | `find install-script -maxdepth 2 -type d` | 目录树 | 结构性改动后 |
 
 ## 当前 / 目标 / 差距

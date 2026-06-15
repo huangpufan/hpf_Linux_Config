@@ -12,9 +12,9 @@
 
 - **Agent Playbook** - Probe first, ask on ambiguity, execute second, verify last.
 - **Deterministic Runner** - Standard-library Python entrypoint for `list`, `check`, `install`, and `preset`.
-- **GitHub Auth Flow** - Default `gh + HTTPS`; optional SSH bootstrap only when explicitly needed.
+- **GitHub Auth Flow** - The `github-auth` tool defaults to `gh + HTTPS`; the personal-machine `bootstrap` preset generates/uploads an SSH key and switches GitHub to SSH.
 - **Modular Scripts** - Each tool keeps its own install script under `install-script/`.
-- **Preset Bundles** - `minimal`, `dev-cli`, `dev-full`, and `all-tools`.
+- **Preset Bundles** - `minimal`, `dev-cli`, `dev-full`, and `all-tools`, where `all-tools` means the default `bootstrap + dev-full` preset chain.
 - **Neovim Config** - Included config for C/C++ development with LSP support and scoped snacks.nvim utility modules.
 
 ## Quick Start
@@ -37,8 +37,11 @@ HPF_GIT_NAME="Your Name" \
 HPF_GIT_EMAIL="you@example.com" \
 python3 install-script/agent-runner.py install git-identity
 
-# Authenticate GitHub with HTTPS first
+# Authenticate GitHub with HTTPS first for the standalone auth tool
 python3 install-script/agent-runner.py install github-auth
+
+# Personal-machine bootstrap also uploads an SSH key and switches GitHub to SSH
+python3 install-script/agent-runner.py preset bootstrap
 
 # Install your base toolset
 python3 install-script/agent-runner.py preset minimal
@@ -72,7 +75,7 @@ HPF_GIT_NAME="Your Name" HPF_GIT_EMAIL="you@example.com" \
 python3 install-script/agent-runner.py install git-identity
 python3 install-script/agent-runner.py install github-auth
 
-# Optional: switch GitHub git protocol to SSH and upload a key via gh
+# Optional after standalone auth; preset bootstrap does this by default
 python3 install-script/agent-runner.py install github-ssh
 
 # Verify one tool or the whole catalog
@@ -91,6 +94,7 @@ python3 install-script/agent-runner.py preset all-tools
 ```
 
 Each install streams stdout/stderr to the terminal and writes a log to `~/.local/share/hpf-linux-config/logs/`.
+`all-tools` is the default `bootstrap + dev-full` preset chain; it does not include `nvim`, OpenHarmony, or personal-purpose scripts.
 
 ## Project Structure
 

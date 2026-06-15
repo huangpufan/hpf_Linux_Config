@@ -12,7 +12,7 @@
 | `minimal.sh` | 最小工具集：基础命令行工具 |
 | `dev-cli.sh` | 命令行开发环境：现代 CLI 工具 |
 | `dev-full.sh` | 完整开发环境：包含编译器和调试工具 |
-| `all-tools.sh` | 所有工具：安装全部可用工具 |
+| `all-tools.sh` | 全量预设链：执行 `bootstrap + dev-full`，不包含 Neovim、OpenHarmony 或个人专项脚本 |
 
 ## 使用方式
 
@@ -23,6 +23,9 @@ python3 install-script/agent-runner.py preset minimal --dry-run
 python3 install-script/agent-runner.py preset minimal
 python3 install-script/agent-runner.py preset dev-full
 ```
+
+preset 的验收由 `install-script/presets/check-preset.py` 汇总对应成员工具的
+`check_cmd`。只抽查少数命令不足以代表 preset 就绪。
 
 直接脚本：
 

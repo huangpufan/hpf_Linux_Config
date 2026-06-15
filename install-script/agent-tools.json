@@ -6,12 +6,12 @@
       "tools": [
         {
           "id": "preset-bootstrap",
-          "name": "环境引导与 GitHub SSH",
-          "description": "安装前置配置：目录、bashrc、git/gh、GitHub 认证、SSH key 上传",
+          "name": "个人新机引导与 GitHub SSH",
+          "description": "安装个人新机前置配置：目录、bashrc、git/gh、GitHub 认证、SSH key 上传",
           "script": "presets/bootstrap.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "test -d ~/workspace && grep -q 'Bashrc Already Set' ~/.bashrc && command -v gh && gh auth status --hostname github.com >/dev/null 2>&1 && test -f ~/.ssh/id_ed25519.pub && gh config get git_protocol --host github.com 2>/dev/null | grep -qx ssh",
+          "check_cmd": "python3 presets/check-preset.py bootstrap",
           "timeout": 3600
         },
         {
@@ -21,7 +21,7 @@
           "script": "presets/minimal.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "command -v gh && command -v fzf && command -v zoxide",
+          "check_cmd": "python3 presets/check-preset.py minimal",
           "timeout": 3600
         },
         {
@@ -31,7 +31,7 @@
           "script": "presets/dev-cli.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "command -v lazygit && command -v eza",
+          "check_cmd": "python3 presets/check-preset.py dev-cli",
           "timeout": 3600
         },
         {
@@ -41,17 +41,17 @@
           "script": "presets/dev-full.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "command -v yazi && pipx list 2>/dev/null | grep -q gdbgui",
+          "check_cmd": "python3 presets/check-preset.py dev-full",
           "timeout": 3600
         },
         {
           "id": "preset-all-tools",
-          "name": "全部工具",
-          "description": "运行当前仓库维护的全部预设工具脚本",
+          "name": "全量预设链",
+          "description": "运行 bootstrap + dev-full；不包含 nvim、OpenHarmony 或个人专项脚本",
           "script": "presets/all-tools.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "command -v bandwhich && command -v yazi",
+          "check_cmd": "python3 presets/check-preset.py all-tools",
           "timeout": 3600
         }
       ]
@@ -77,7 +77,7 @@
           "script": "basic/folder-create.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "test -d ~/workspace || test -d ~/project",
+          "check_cmd": "test -d ~/project && test -d ~/install && test -d ~/download && test -d ~/picture && test -d ~/bin && test -d ~/workspace && test -d ~/.config && test -d ~/.config/nvim",
           "timeout": 1800
         },
         {
@@ -137,7 +137,7 @@
           "script": "setup/cargo-registry.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "test -f ~/.cargo/config.toml || test -L ~/.cargo/config.toml",
+          "check_cmd": "test -f ~/.cargo/config.toml && grep -q 'rsproxy.cn' ~/.cargo/config.toml",
           "timeout": 1800
         },
         {
@@ -253,7 +253,7 @@
           "script": "tools/apt/yq.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-          "check_cmd": "command -v yq",
+          "check_cmd": "command -v yq >/dev/null 2>&1 && yq --version 2>/dev/null | grep -Eiq 'mikefarah|version v?[4-9]'",
           "timeout": 1800
         },
         {
@@ -359,7 +359,7 @@
           "script": "tools/curl/nvm.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "test -d ~/.nvm",
+          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\" && command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1 && [ \"$(nvm version default 2>/dev/null)\" != \"N/A\" ]",
           "timeout": 1800
         },
         {
@@ -505,7 +505,7 @@
           "script": "tools/cargo/tealdeer.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "command -v tldr",
+          "check_cmd": "test -x \"${CARGO_HOME:-$HOME/.cargo}/bin/tldr\" && \"${CARGO_HOME:-$HOME/.cargo}/bin/tldr\" --version >/dev/null 2>&1",
           "timeout": 1800
         }
       ]

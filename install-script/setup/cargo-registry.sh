@@ -12,32 +12,45 @@ configure_registry() {
     local config_file="$config_dir/config.toml"
     local old_config="$config_dir/config"
     local repo_config="$REPO_ROOT/home/.cargo/config.toml"
-    
+
     # 加载 cargo 环境
     if [ -f "$HOME/.cargo/env" ]; then
         # shellcheck source=/dev/null
         . "$HOME/.cargo/env"
     fi
-    
-    if ! command -v cargo >/dev/null 2>&1; then
-        log_warn "cargo is not installed, skipping registry configuration"
-        return 0
+
+    if [ ! -f "$repo_config" ]; then
+        log_err "repo cargo config not found: $repo_config"
+        return 1
     fi
-    
+
+    mkdir -p "$config_dir"
+
     # 移除旧的 config 链接（已弃用）
     if [ -L "$old_config" ]; then
         rm -f "$old_config"
         log_info "Removed deprecated config symlink"
     fi
-    
-    # 如果配置文件不存在且仓库配置存在，创建符号链接
-    if [ ! -L "$config_file" ] && [ ! -e "$config_file" ] && [ -e "$repo_config" ]; then
-        mkdir -p "$config_dir"
+
+    if [ -L "$config_file" ] && [ "$(readlink "$config_file")" = "$repo_config" ]; then
+        log_info "Cargo config.toml already linked to repo config"
+        return 0
+    fi
+
+    if [ ! -e "$config_file" ]; then
         ln -s "$repo_config" "$config_file"
         log_info "Cargo config.toml linked to repo config"
-    else
-        log_info "Cargo config already exists"
+        return 0
     fi
+
+    if grep -q "rsproxy.cn" "$config_file"; then
+        log_info "Cargo config already contains rsproxy.cn registry"
+        return 0
+    fi
+
+    log_err "Cargo config exists but does not contain the repo registry: $config_file"
+    log_err "Move it aside or add rsproxy.cn manually before rerunning this tool"
+    return 1
 }
 
 main() {
@@ -45,4 +58,3 @@ main() {
 }
 
 main "$@"
-

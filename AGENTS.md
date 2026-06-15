@@ -23,7 +23,8 @@
 
 - 仓库路径固定为 `~/hpf_Linux_Config`
 - runner 优先：优先用 `python3 install-script/agent-runner.py ...`，不要默认直接执行脚本
-- GitHub 认证默认走 `gh + HTTPS`，只有明确要求时才切到 SSH
+- `github-auth` 单工具默认走 `gh + HTTPS`
+- `bootstrap` / `all-tools` 是本仓库所有者的个人新机路径，默认会生成/上传 SSH key，并把 GitHub git protocol 切到 `ssh`
 - 支持 Ubuntu 20.04 / 22.04 / 24.04；其中 Ubuntu 24.04 的换源走 `ubuntu.sources`，不是旧的 `sources.list`
 - 所有修改完成后必须 `git add -A && git commit && git push`，不允许只改不推
 
