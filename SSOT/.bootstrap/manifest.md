@@ -7,14 +7,14 @@
 | bootstrap_status | `phase-3-reviewing` |
 | documentation_language | `中文` |
 | tracked_commit | `0d39135b3d036c66753ba39bb4510a21d6f67bb8` |
-| tracked_skill_version | `2.16` |
+| tracked_skill_version | `2.17` |
 | coordinator | `main-agent` |
 
 ## 区域分配 / 进度
 
 | 区域 | owner | 状态 | 产出 |
 |---|---|---|---|
-| recon | main-agent | done | `SSOT/.bootstrap/recon.md` |
+| recon | main-agent | done | `SSOT/decisions/0000-bootstrap-recon.md` |
 | architecture root/views | main-agent | done | `SSOT/architecture/README.md`, `views/*` |
 | installation-runtime domain | main-agent | done | `SSOT/architecture/domains/installation-runtime/README.md` |
 | development/testing/identity/glossary | main-agent | done | corresponding READMEs |

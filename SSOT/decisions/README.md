@@ -6,4 +6,4 @@
 
 | 决策 | 路径 | 状态 | 摘要 |
 |---|---|---|---|
-| Bootstrap 基线决策 | [0000-bootstrap-recon.md](./0000-bootstrap-recon.md) | active | 记录本次 bootstrap 对文档语言、架构拆分和主运行边界的判断。 |
+| Bootstrap 侦察归档 | [0000-bootstrap-recon.md](./0000-bootstrap-recon.md) | archived | 考古条目，记录初次 bootstrap 的决策上下文、文档语言探测、架构拆分候选和源资料盘点。 |

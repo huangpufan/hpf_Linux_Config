@@ -1,4 +1,11 @@
-# 侦察报告
+---
+id: DEC-0000
+type: bootstrap-archaeology
+status: archived
+archived_at: 2026-06-15
+---
+
+# Bootstrap 侦察报告
 
 ## 文档语言探测
 

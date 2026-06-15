@@ -6,11 +6,11 @@
 |---|---|
 | tracked_commit | `e81dc052503817ded1e73fd5001df3a3ce1852e9` |
 | tracked_session | `review-2026-06-12` |
-| tracked_skill_version | `2.16` |
+| tracked_skill_version | `2.17` |
 | documentation_language | `中文` |
 | documentation_language_evidence | `README-CN.md`、`docs/agent-install-playbook.md`、`AGENTS.md` 为中文主叙述；`README.md` 与 `nvim/README.md` 提供英文镜像，因此锁定 SSOT 正文为中文。 |
 | coverage_result | `updated` |
-| last_stop_review | `2026-06-12 审视优化：补充 LICENSE、将 .sisyphus/ 与 .codex/ 移入 .gitignore、清理 stow 迁移遗留脚本、更新 ARCHITECTURE.md 过时引用、清理 makefile 残留、同步 STATUS.md。` |
+| last_stop_review | `2026-06-15 protocol-upgrade：独立复审确认 v2.17 split SSOT skill bundle 安装表面、protocol owner、开放裁决项标题和 bootstrap recon 归档均无剩余必修项；CONSUMPTION WARN 另行处理。` |
 
 ## 区域状态
 
@@ -42,6 +42,7 @@
 | 工具目录清单 | `install-script/agent-tools.json` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/testing/README.md` | absorbed | none | 2026-06-03 |
 | runner 入口 | `install-script/agent-runner.py` | absorb | `SSOT/architecture/domains/installation-runtime/README.md`、`SSOT/testing/README.md` | absorbed | none | 2026-06-03 |
 | Neovim 现代化研究 | `docs/nvim-plugin-modernization-research-2026-05-25.md` | absorb | `SSOT/tech-debt/README.md` | absorbed | none | 2026-06-03 |
+| Bootstrap 侦察报告 | `SSOT/decisions/0000-bootstrap-recon.md` | absorb | `SSOT/decisions/README.md` | absorbed | none | 2026-06-15 |
 
 ## 核心参考文档审查
 
@@ -55,6 +56,7 @@
 |---|---|---|---|---|---|---|
 | documentation_language | `documentation_language` | `bootstrap-reviewer` | 2026-06-03 | `no-more-required-changes` | 对比 `README-CN.md`、`docs/agent-install-playbook.md`、`AGENTS.md` 的中文主体与 `README.md` 的镜像角色 | none |
 | architecture/domain-installation-runtime | `covered` | `self-reviewed` | 2026-06-03 | `no-more-required-changes` | 已检查 domain 边界、runner/tool catalog/source docs 一致性；未做代码逐函数穷尽审查 | 仍需全局 reviewer 决定 bootstrap 收敛 |
+| protocol-upgrade | `tracked_skill_version` | `Raman` | 2026-06-15 | `no-more-required-changes` | 已审查 v2.16→v2.17 影响清单、`.codex/skills` 五个正式 skill + shim、`ssot-preflight` protocol owner、`SSOT/STATUS.md` 开放裁决项标题、`SSOT/decisions/README.md` 和 `SSOT/decisions/0000-bootstrap-recon.md`；`ssot-lint` PASS=8 / WARN=1 / FAIL=0 | none |
 
 ## 开放裁决项
 
