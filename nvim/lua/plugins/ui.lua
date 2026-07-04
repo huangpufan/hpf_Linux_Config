@@ -23,7 +23,7 @@ return {
 
   -- File tree
   {
-    "kyazdani42/nvim-tree.lua",
+    "nvim-tree/nvim-tree.lua",
     cmd = { "NvimTreeToggle", "NvimTreeFindFile", "NvimTreeOpen" },
     config = function()
       require("nvim-tree").setup({
@@ -142,65 +142,6 @@ return {
     end,
   },
 
-  -- Wilder (command line completion)
-  {
-    "gelguy/wilder.nvim",
-    event = "CmdlineEnter",
-    dependencies = { "romgrk/fzy-lua-native" },
-    config = function()
-      local wilder = require("wilder")
-      wilder.setup({ modes = { ":" } })
-      wilder.set_option("use_python_remote_plugin", 0)
-      wilder.set_option("pipeline", {
-        wilder.branch(
-          {
-            wilder.check(function()
-              return vim.fn.getcmdtype() == ":"
-            end),
-            function(ctx, x)
-              return wilder.cmdline.parse(x).cmd == "Man" and true or false
-            end,
-          },
-          wilder.cmdline_pipeline({
-            fuzzy = 1,
-            fuzzy_filter = wilder.lua_fzy_filter(),
-          }),
-          wilder.vim_search_pipeline()
-        ),
-      })
-      wilder.set_option(
-        "renderer",
-        wilder.renderer_mux({
-          [":"] = wilder.popupmenu_renderer({
-            highlighter = wilder.lua_fzy_highlighter(),
-            left = { " ", wilder.popupmenu_devicons() },
-            right = { " ", wilder.popupmenu_scrollbar() },
-          }),
-          ["/"] = wilder.wildmenu_renderer({
-            highlighter = wilder.lua_fzy_highlighter(),
-          }),
-        })
-      )
-    end,
-  },
-
-  -- Breadcrumb navigation
-  {
-    "SmiteshP/nvim-navic",
-    event = "VeryLazy",
-    config = function()
-      require("nvim-navic").setup()
-    end,
-  },
-  {
-    "utilyre/barbecue.nvim",
-    event = "VeryLazy",
-    dependencies = { "SmiteshP/nvim-navic" },
-    config = function()
-      require("barbecue").setup()
-    end,
-  },
-
   -- Incline (floating filename)
   {
     "b0o/incline.nvim",
@@ -260,39 +201,6 @@ return {
         filetypes = { "alpha", "dashboard", "help", "lazy", "mason", "NvimTree" },
       },
     },
-  },
-
-  -- Mini indentscope
-  {
-    "echasnovski/mini.indentscope",
-    event = "VeryLazy",
-    version = false,
-    opts = {
-      symbol = "│",
-      options = { try_as_border = true },
-      draw = {
-        delay = 100,
-      },
-    },
-    init = function()
-      -- Disable on special filetypes
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "alpha", "dashboard", "help", "lazy", "mason", "NvimTree", "Trouble" },
-        callback = function()
-          vim.b.miniindentscope_disable = true
-        end,
-      })
-      -- Also check current buffer (for alpha which loads before this plugin)
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "VeryLazy",
-        callback = function()
-          local ft = vim.bo.filetype
-          if ft == "alpha" or ft == "dashboard" then
-            vim.b.miniindentscope_disable = true
-          end
-        end,
-      })
-    end,
   },
 
   -- Todo comments

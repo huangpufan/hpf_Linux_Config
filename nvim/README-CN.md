@@ -42,7 +42,6 @@ nvim/
 │
 ├── after/
 │   └── plugin/               # 后加载脚本
-│       ├── wilder.vim        # Wilder 配置
 │       └── utils.vim         # 工具函数
 │
 └── snippets/                 # 自定义代码片段
@@ -71,6 +70,7 @@ nvim/
 ### 导航与搜索
 - 🔍 Telescope 模糊查找
 - 🌳 nvim-tree 文件浏览器
+- 🧭 Aerial 代码大纲与 Incline 浮动文件名上下文
 - ⚡ Flash.nvim 快速跳转
 - 📌 书签支持
 
@@ -81,11 +81,13 @@ nvim/
 - 🚀 Lazygit 集成 (g=)
 
 ### 编辑器增强
-- 🎯 智能缩进
+- 🎯 使用 indent-blankline.nvim 提供缩进视觉层
 - 💬 快速注释
 - 🔄 会话持久化
 - 📐 多光标编辑
-- 🧹 使用 snacks.nvim 进行不破坏窗口布局的 buffer 删除与隐藏 buffer 清理
+- 🧹 使用 snacks.nvim 进行不破坏窗口布局的 buffer 删除、单词引用与隐藏 buffer 清理
+- 🖥️ 通过 toggleterm.nvim 提供浮动与分屏终端
+- 📝 通过 render-markdown.nvim 提供 Markdown 内渲染，并保留 markdown-preview.nvim 作为可选浏览器预览
 
 ## ⌨️ 快捷键
 
@@ -185,8 +187,10 @@ sudo apt install python3-pynvim
 npm install -g neovim
 ```
 
-### Markdown 预览
-如果 Markdown 预览无法工作：
+### Markdown
+render-markdown.nvim 是主要的 Neovim buffer 内 Markdown 阅读路径。markdown-preview.nvim 继续作为需要浏览器预览时的可选路径。
+
+如果浏览器预览无法工作：
 ```bash
 cd ~/.local/share/nvim/lazy/markdown-preview.nvim/app/ && npm install
 ```

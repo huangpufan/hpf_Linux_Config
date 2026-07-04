@@ -60,14 +60,6 @@ autocmd("FileType", {
   end,
 })
 
--- Floaterm: Enter key behavior
-autocmd("FileType", {
-  pattern = "floaterm",
-  callback = function()
-    vim.keymap.set("v", "<Enter>", ":normal! i<Enter><CR>", { buffer = true })
-  end,
-})
-
 --------------------------------------------------------------------------------
 -- Clipboard (OSC52 for remote)
 --------------------------------------------------------------------------------

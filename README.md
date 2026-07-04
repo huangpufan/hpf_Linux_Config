@@ -127,7 +127,7 @@ hpf_Linux_Config/
 │   ├── setup/
 │   ├── basic/
 │   └── lib/
-├── nvim/                          # linked manually: make link-nvim
+├── nvim/                          # installed/linked through agent-runner.py install nvim
 └── makefile
 ```
 
@@ -146,6 +146,8 @@ bash install-script/presets/all-tools.sh
 ## Managing Runtime Configs with GNU Stow
 
 Runtime configurations (shell aliases, tmux, git, herdr, etc.) live under `home/` and are deployed to `$HOME` with [GNU Stow](https://www.gnu.org/software/stow/).
+
+`home/.cargo/config.toml` intentionally keeps the rsproxy sparse registry as this personal repo's default for domestic networks. Outside mainland China or on a corporate network, remove the `[source.crates-io] replace-with` setting or override it locally.
 
 ### Deploy
 
@@ -177,7 +179,18 @@ Stow automatically creates symlinks for any new files under `home/` and skips ex
 
 ## Neovim Configuration
 
-Neovim is managed separately (not through stow) because it lives at the repo root for historical reasons.
+Neovim is managed separately (not through stow) because it lives at the repo root for historical reasons. The standard installation path is the runner:
+
+```bash
+cd ~/hpf_Linux_Config
+python3 install-script/agent-runner.py install nvim --dry-run
+python3 install-script/agent-runner.py install nvim
+python3 install-script/agent-runner.py check nvim
+```
+
+`make link-nvim` is only a legacy/manual fallback for relinking an already installed configuration; it does not install Neovim, providers, or plugins.
+
+The current Neovim path keeps Telescope, nvim-tree, Aerial, Incline, and toggleterm. Markdown uses render-markdown.nvim for in-buffer rendering and markdown-preview.nvim as optional browser preview.
 
 ## Requirements
 

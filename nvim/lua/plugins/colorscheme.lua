@@ -18,7 +18,6 @@ return {
         flash = true,
         gitsigns = true,
         headlines = true,
-        illuminate = true,
         leap = true,
         lsp_trouble = true,
         mason = true,
@@ -33,7 +32,6 @@ return {
             information = { "undercurl" },
           },
         },
-        navic = { enabled = true, custom_bg = "lualine" },
       })
       vim.cmd.colorscheme("catppuccin")
     end,

@@ -91,7 +91,7 @@ check_health() {
         fail "checkhealth command failed"
     fi
     local health_grep="$TMPDIR/checkhealth-grep.txt"
-    if grep -nE '(ERROR|WARNING|FAIL|not installed|outdated)' "$health_file" >"$health_grep" 2>/dev/null; then
+    if grep -nE '(ERROR|WARNING|FAIL|not installed|outdated)' "$health_file" | grep -vE 'WARNING Nvim [0-9.]+ is available \(current: [0-9.]+\)' >"$health_grep" 2>/dev/null; then
         cat "$health_grep" >&2
         fail "checkhealth reported problems"
     fi

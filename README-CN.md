@@ -127,7 +127,7 @@ hpf_Linux_Config/
 │   ├── setup/
 │   ├── basic/
 │   └── lib/
-├── nvim/                          # 手动链接：make link-nvim
+├── nvim/                          # 通过 agent-runner.py install nvim 安装/链接
 └── makefile
 ```
 
@@ -146,6 +146,8 @@ bash install-script/presets/all-tools.sh
 ## 使用 GNU Stow 管理运行时配置
 
 运行时配置（shell 别名、tmux、cargo、herdr 等）统一放在 `home/` 目录下，通过 [GNU Stow](https://www.gnu.org/software/stow/) 部署到 `$HOME`。
+
+`home/.cargo/config.toml` 有意保留 rsproxy sparse registry，作为本个人配置仓库面向国内网络的默认值。非国内网络或公司网络可删除 `[source.crates-io] replace-with` 设置，或用本机 local override 覆盖。
 
 ### 部署
 
@@ -177,13 +179,18 @@ Stow 会自动为 `home/` 下的新文件创建符号链接，已有文件会跳
 
 ## Neovim 配置
 
-Neovim 单独管理（不走 stow），因为它位于仓库根目录。链接方式：
+Neovim 单独管理（不走 stow），因为它位于仓库根目录。标准安装路径是 runner：
 
 ```bash
-make link-nvim
+cd ~/hpf_Linux_Config
+python3 install-script/agent-runner.py install nvim --dry-run
+python3 install-script/agent-runner.py install nvim
+python3 install-script/agent-runner.py check nvim
 ```
 
-Neovim 配置仍保留 Telescope、nvim-tree、alpha 和终端插件的现有主路径，仅使用 snacks.nvim 处理大文件、快速文件显示、buffer 删除、单词引用和 Lazygit。
+`make link-nvim` 只作为已安装环境上的 legacy/manual relink fallback；它不会安装 Neovim、provider 或插件。
+
+Neovim 当前主路径保留 Telescope、nvim-tree、Aerial、Incline 与 toggleterm；Markdown 使用 render-markdown.nvim 作为内渲染路径，markdown-preview.nvim 作为可选浏览器预览。
 
 ## 环境要求
 

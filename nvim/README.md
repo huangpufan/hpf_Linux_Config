@@ -42,7 +42,6 @@ nvim/
 │
 ├── after/
 │   └── plugin/               # After-load scripts
-│       ├── wilder.vim        # Wilder config
 │       └── utils.vim         # Utility functions
 │
 └── snippets/                 # Custom snippets
@@ -71,6 +70,7 @@ nvim/
 ### Navigation & Search
 - 🔍 Fuzzy finding with Telescope
 - 🌳 File explorer with nvim-tree
+- 🧭 Code outline with Aerial and floating filename context with Incline
 - ⚡ Quick jump with Flash.nvim
 - 📌 Bookmarks support
 
@@ -81,11 +81,13 @@ nvim/
 - 🚀 Lazygit integration (g=)
 
 ### Editor Enhancements
-- 🎯 Smart indentation
+- 🎯 Smart indentation with indent-blankline.nvim
 - 💬 Easy commenting
 - 🔄 Session persistence
 - 📐 Multi-cursor editing
-- 🧹 Layout-safe buffer deletion and hidden buffer cleanup with snacks.nvim
+- 🧹 Layout-safe buffer deletion, word references, and hidden buffer cleanup with snacks.nvim
+- 🖥️ Floating and split terminals through toggleterm.nvim
+- 📝 Markdown rendering with render-markdown.nvim and optional browser preview through markdown-preview.nvim
 
 ## ⌨️ Key Bindings
 
@@ -187,8 +189,10 @@ If `:checkhealth` reports a missing Node provider:
 npm install -g neovim
 ```
 
-### Markdown Preview
-If markdown preview doesn't work:
+### Markdown
+render-markdown.nvim provides the main in-buffer Markdown reading path. markdown-preview.nvim remains available for browser preview when needed.
+
+If browser preview doesn't work:
 ```bash
 cd ~/.local/share/nvim/lazy/markdown-preview.nvim/app/ && npm install
 ```

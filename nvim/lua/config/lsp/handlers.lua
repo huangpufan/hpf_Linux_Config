@@ -28,16 +28,8 @@ local function lsp_keymaps(bufnr)
   end, opts)
 end
 
-M.on_attach = function(client, bufnr)
+M.on_attach = function(_, bufnr)
   lsp_keymaps(bufnr)
-
-  -- Attach navic for breadcrumbs
-  if client.server_capabilities.documentSymbolProvider then
-    local ok, navic = pcall(require, "nvim-navic")
-    if ok then
-      navic.attach(client, bufnr)
-    end
-  end
 end
 
 M.capabilities = function()

@@ -133,7 +133,6 @@ function M.setup(wk)
       end,
       desc = "Search theme",
     },
-    { "<space>tm", "<cmd>TableModeToggle<cr>", desc = "Markdown table edit mode" },
     { "<space>ts", "<cmd>set spell!<cr>", desc = "Spell check" },
     { "<space>tw", "<cmd>set wrap!<cr>", desc = "Wrap line" },
     { "<space>tt", "<cmd>set nocursorline<cr><cmd>TransparentToggle<cr>", desc = "Make background transparent" },

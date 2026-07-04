@@ -189,8 +189,7 @@ nvim --headless '+checkhealth' '+w! /tmp/hpf-nvim-checkhealth.txt' '+qa'
 - `checkhealth` 中 `lazy-rocks/hererocks` 的 `luarocks` 提示在当前配置没有插件依赖
   `luarocks` 时可以忽略；真正需要拦截的是 headless 启动报错、`lazy.nvim`
   缺失、插件同步失败。
-- `install-script/nvim/readme.md` 中的 `CopilotAuto` 是后续人工认证/启用提示，不属于
-  自动安装验收项；如果要启用 Copilot，需要用户在 Neovim 内完成对应账号授权。
+- Neovim 配置说明位于 `nvim/README-CN.md` / `nvim/README.md`；如需启用 Copilot 等账号型插件，应在 Neovim 内人工完成对应授权，不属于自动安装验收项。
 
 ## Runner 约定
 

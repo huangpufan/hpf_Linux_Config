@@ -1,7 +1,10 @@
+# Personal default for domestic networks in this dotfiles repo.
+# If you are outside mainland China or on a corporate network, remove the
+# `replace-with` line below or override this file locally to use crates.io.
 [source.crates-io]
 replace-with = 'rsproxy-sparse'
 
-# 稀疏索引，要求 cargo >= 1.68
+# Sparse registry; requires cargo >= 1.68.
 [source.rsproxy-sparse]
 registry = "sparse+https://rsproxy.cn/index/"
 

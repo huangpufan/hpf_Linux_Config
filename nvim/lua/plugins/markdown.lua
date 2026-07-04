@@ -3,7 +3,18 @@
 --]]
 
 return {
-  -- Markdown preview
+  -- Markdown preview in Neovim buffers
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    ft = { "markdown" },
+    opts = {},
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons",
+    },
+  },
+
+  -- Browser preview for documents that need it
   {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
@@ -13,21 +24,6 @@ return {
     end,
     init = function()
       vim.g.mkdp_auto_close = 0
-    end,
-  },
-
-  -- Markdown TOC
-  {
-    "mzlogin/vim-markdown-toc",
-    ft = "markdown",
-  },
-
-  -- Table mode
-  {
-    "dhruvasagar/vim-table-mode",
-    ft = "markdown",
-    init = function()
-      vim.g.table_mode_corner = "|"
     end,
   },
 }
