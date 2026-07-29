@@ -38,7 +38,7 @@ local function select_terminal()
   local terminals = require("toggleterm.terminal").get_all()
 
   if #terminals == 0 then
-    vim.cmd("TermNew direction=float")
+    vim.cmd "TermNew direction=float"
     return
   end
 
@@ -55,11 +55,11 @@ local function select_terminal()
 end
 
 local function cycle_terminal(step)
-  local terminal = require("toggleterm.terminal")
+  local terminal = require "toggleterm.terminal"
   local terminals = terminal.get_all()
 
   if #terminals == 0 then
-    vim.cmd("TermNew direction=float")
+    vim.cmd "TermNew direction=float"
     return
   end
 
@@ -81,6 +81,52 @@ local function cycle_terminal(step)
   local target = terminals[target_index]
 
   open_terminal(target)
+end
+
+local function find_edit_window()
+  local current_win = vim.api.nvim_get_current_win()
+
+  local function is_edit_window(win)
+    if not vim.api.nvim_win_is_valid(win) or vim.api.nvim_win_get_config(win).relative ~= "" then
+      return false
+    end
+
+    local buf = vim.api.nvim_win_get_buf(win)
+    return vim.bo[buf].filetype ~= "NvimTree" and vim.bo[buf].buftype ~= "terminal"
+  end
+
+  if is_edit_window(current_win) then
+    return current_win
+  end
+
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if is_edit_window(win) then
+      return win
+    end
+  end
+end
+
+local function toggle_vertical_terminal()
+  local edit_win = find_edit_window()
+  if not edit_win then
+    vim.notify("No edit window available for the vertical terminal", vim.log.levels.WARN)
+    return
+  end
+
+  local ok, tree_api = pcall(require, "nvim-tree.api")
+  local tree_was_visible = ok and tree_api.tree.is_visible()
+
+  vim.api.nvim_set_current_win(edit_win)
+  local width = math.floor(vim.api.nvim_win_get_width(edit_win) * 0.5)
+  vim.cmd(string.format("ToggleTerm size=%d direction=vertical", width))
+
+  if tree_was_visible and not tree_api.tree.is_visible() then
+    local active_win = vim.api.nvim_get_current_win()
+    tree_api.tree.open()
+    if vim.api.nvim_win_is_valid(active_win) then
+      vim.api.nvim_set_current_win(active_win)
+    end
+  end
 end
 
 return {
@@ -155,7 +201,7 @@ return {
       require("toggleterm").setup(opts)
 
       -- Custom toggle function with nvim-tree support
-      vim.cmd([[
+      vim.cmd [[
         function! ToggleTermWithNvimTree()
           NvimTreeClose
           let height = float2nr(winheight(0) * 0.32)
@@ -164,15 +210,10 @@ return {
           let term_win_id = win_getid(winnr('#'))
           call win_gotoid(term_win_id)
         endfunction
-      ]])
+      ]]
 
       vim.keymap.set("n", "-", ":call ToggleTermWithNvimTree()<CR>", { desc = "Toggle horizontal terminal" })
-      vim.keymap.set(
-        "n",
-        "=",
-        ":let width=float2nr(winwidth(0) * 0.5) | execute 'ToggleTerm size=' . width . ' direction=vertical'<CR>",
-        { desc = "Toggle vertical terminal" }
-      )
+      vim.keymap.set("n", "=", toggle_vertical_terminal, { desc = "Toggle vertical terminal" })
     end,
   },
 }
