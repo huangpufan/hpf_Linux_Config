@@ -8,6 +8,12 @@ return {
     "akinsho/toggleterm.nvim",
     cmd = { "ToggleTerm", "TermExec" },
     keys = {
+      {
+        "<C-p>",
+        "<cmd>ToggleTerm direction=float<cr>",
+        mode = { "n", "t" },
+        desc = "Toggle floating terminal",
+      },
       { "-", desc = "Toggle horizontal terminal" },
       { "=", desc = "Toggle vertical terminal" },
     },
