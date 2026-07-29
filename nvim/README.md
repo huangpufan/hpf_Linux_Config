@@ -110,6 +110,18 @@ nvim/
 | `<C-h>/<C-l>` | Switch windows |
 | `\` / `\|` | Horizontal/Vertical split |
 
+### Terminal
+| Key | Action |
+|-----|--------|
+| `<C-p>` | Show/hide the floating terminal |
+| `<C-q>` | Create a terminal in the current layout; default to floating when no terminal is visible |
+| `<C-Left>/<C-Right>` | Switch terminals while preserving the current layout |
+| `<C-Up>` | Select a terminal while preserving the current layout |
+| `-` / `=` | Show a horizontal/vertical terminal |
+| `<C-d>` | Leave terminal input mode and return to Normal mode |
+
+All terminals share one terminal pool. Floating, horizontal, and vertical windows are presentation modes: switching terminals preserves the current layout, and changing layout preserves the terminal session.
+
 ### Search (Telescope)
 | Key | Action |
 |-----|--------|
