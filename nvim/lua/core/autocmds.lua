@@ -60,23 +60,6 @@ autocmd("FileType", {
   end,
 })
 
---------------------------------------------------------------------------------
--- Clipboard (OSC52 for remote)
---------------------------------------------------------------------------------
-
-autocmd("TextYankPost", {
-  pattern = "*",
-  callback = function()
-    local event = vim.v.event
-    if event.operator == "y" and event.regname == "+" then
-      vim.cmd("OSCYankRegister +")
-    elseif event.operator == "d" and event.regname == "+" then
-      vim.cmd("OSCYankRegister +")
-    end
-  end,
-})
-
---------------------------------------------------------------------------------
 -- Highlights
 --------------------------------------------------------------------------------
 

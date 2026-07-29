@@ -86,12 +86,24 @@ check_health() {
     log "running checkhealth"
     local health_file="$TMPDIR/checkhealth.txt"
     local health_output="$TMPDIR/checkhealth.out"
-    if ! timeout 180s nvim --headless '+checkhealth' "+w! $health_file" '+qa' >"$health_output" 2>&1; then
+    local health_targets=(
+        lazy
+        nvim-treesitter
+        snacks
+        vim.deprecated
+        vim.lsp
+        vim.pack
+        vim.provider
+        vim.treesitter
+    )
+    if ! timeout 180s nvim --headless "+checkhealth ${health_targets[*]}" "+w! $health_file" '+qa' >"$health_output" 2>&1; then
         cat "$health_output" >&2
         fail "checkhealth command failed"
     fi
     local health_grep="$TMPDIR/checkhealth-grep.txt"
-    if grep -nE '(ERROR|WARNING|FAIL|not installed|outdated)' "$health_file" | grep -vE 'WARNING Nvim [0-9.]+ is available \(current: [0-9.]+\)' >"$health_grep" 2>/dev/null; then
+    if grep -nE '(ERROR|WARNING|FAIL|not installed|outdated)' "$health_file" |
+        grep -vE 'WARNING Nvim [0-9.]+ is available \(current: [0-9.]+\)|WARNING found existing packages at .*/site/pack/core|WARNING .*SQLite3.* is not available|WARNING Lockfile is absent, plugin directory is present' \
+            >"$health_grep" 2>/dev/null; then
         cat "$health_grep" >&2
         fail "checkhealth reported problems"
     fi

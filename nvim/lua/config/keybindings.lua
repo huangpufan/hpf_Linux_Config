@@ -52,7 +52,6 @@ function M.setup(wk)
     { "<space>fc", "<cmd>Telescope grep_string<cr>", desc = "Search word under cursor" },
     { "<space>fv", "<cmd>Telescope help_tags<cr>", desc = "Search vim manual" },
     { "<space>fj", "<cmd>Telescope jumplist<cr>", desc = "Search jumplist" },
-    { "<space>fe", "<cmd>Telescope emoji<cr>", desc = "Search emoji" },
     { "<space>fs", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Search symbols in project" },
     {
       "<space>fg",

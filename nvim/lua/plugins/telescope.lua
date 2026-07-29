@@ -10,7 +10,6 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope-fzf-native.nvim",
-      "xiyaowong/telescope-emoji.nvim",
     },
     config = function()
       local telescope = require("telescope")
@@ -77,7 +76,6 @@ return {
 
       -- Load extensions
       pcall(telescope.load_extension, "fzf")
-      pcall(telescope.load_extension, "emoji")
       pcall(telescope.load_extension, "bookmarks")
     end,
   },
@@ -89,12 +87,6 @@ return {
     cond = function()
       return vim.fn.executable("make") == 1
     end,
-  },
-
-  -- Emoji picker
-  {
-    "xiyaowong/telescope-emoji.nvim",
-    cmd = "Telescope",
   },
 
 }

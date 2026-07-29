@@ -8,8 +8,8 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      "williamboman/mason.nvim",
-      "williamboman/mason-lspconfig.nvim",
+      "mason-org/mason.nvim",
+      "mason-org/mason-lspconfig.nvim",
       "Saghen/blink.cmp",
     },
     config = function()
@@ -20,7 +20,7 @@ return {
 
   -- Mason (LSP/DAP/linter installer)
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
     opts = {
       ensure_installed = {
@@ -52,7 +52,7 @@ return {
 
   -- Mason-lspconfig bridge
   {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     lazy = true,
   },
 

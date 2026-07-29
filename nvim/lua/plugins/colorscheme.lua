@@ -39,7 +39,7 @@ return {
 
   -- Transparent background
   {
-    "xiyaowong/nvim-transparent",
+    "xiyaowong/transparent.nvim",
     lazy = true,
     cmd = "TransparentToggle",
   },

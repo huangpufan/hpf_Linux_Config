@@ -1,7 +1,7 @@
 # Neovim 插件现代化调研与进度记录
 
 调研日期：2026-05-25
-进度更新：2026-07-05
+进度更新：2026-07-29
 
 本文件现在作为历史调研与进度记录保存，不再作为待办清单或安装入口。当前 Neovim 配置事实以 `nvim/lua/plugins/`、`nvim/lazy-lock.json`、`nvim/README-CN.md` 和 `nvim/README.md` 为准。
 
@@ -43,13 +43,22 @@
 - 已引入 `render-markdown.nvim`，暂时保留 `markdown-preview.nvim` 避免同时改动浏览器预览安装/验证路径。
 - 已将旧仓库名 `kyazdani42/nvim-web-devicons` 与 `kyazdani42/nvim-tree.lua` 改为 canonical `nvim-tree/nvim-web-devicons` 与 `nvim-tree/nvim-tree.lua`。
 
+### 2026-07-29 原生能力替换与受控更新
+
+- 已用 Neovim 原生 `gc` / `gcc` 注释操作替代 `Comment.nvim`。
+- 已用 Neovim 原生 `gx`（通过 `vim.ui.open()`）替代 `open-browser.vim`。
+- 已移除 `vim-oscyank` 及额外的 `TextYankPost` 转发；`+` 寄存器继续使用 Neovim 内建 clipboard provider，远程终端可自动回退到 OSC 52。
+- 已移除归档的 `telescope-emoji.nvim` 及 `<Space>fe` 入口。
+- 已受控刷新 LSP、Treesitter、Blink、Mason、Fidget 与 nvim-lint；有上游变化的锁定点已经更新，并把 Mason、Spectre、Ouroboros、transparent.nvim 声明切换到当前规范仓库名。
+- 已由 Snacks 接管 `vim.ui.input` 与 `vim.ui.select`；显式安装 handler，确保无 UI 的健康检查与自动化启动也使用同一实现。
+
 ## 仍保留的设计选择
 
 - Telescope、nvim-tree、Aerial、Incline 都保留。它们共同构成当前搜索、文件树、代码大纲与轻量文件上下文模型。
 - `markdown-preview.nvim` 继续保留，作为需要浏览器预览时的路径；内渲染日常阅读优先用 `render-markdown.nvim`。
 - `indent-blankline.nvim` 保留为唯一缩进视觉层，暂不切到 `snacks.indent` / `snacks.scope`。
 - `toggleterm.nvim` 保留为终端主路径，暂不切到 `snacks.terminal`。
-- `dressing.nvim`、`alpha-nvim`、`nvim-tree.lua`、Telescope 等仍在使用；是否进一步替换为 snacks 模块或其他插件应另开任务评估。
+- `alpha-nvim`、`nvim-tree.lua`、Telescope 等仍在使用；是否进一步替换为 snacks 模块或其他插件应另开任务评估。
 
 ## 历史风险记录
 
@@ -67,7 +76,7 @@
 
 这些不是当前待办，只是未来可评估项：
 
-- 继续评估 Telescope、nvim-tree、alpha、dressing、notify 是否需要由 snacks 模块或其他现代插件替代。
+- 继续评估 Telescope、nvim-tree、alpha、notify 是否需要由 snacks 模块或其他现代插件替代。
 - 评估是否增加统一 diagnostics UI，例如 `trouble.nvim`。
 - 评估是否用 `grug-far.nvim` 替换或补强 `nvim-spectre`。
 - 评估 snippets 是否继续使用 LuaSnip，或迁移到 Neovim 内置 snippet / mini.snippets。

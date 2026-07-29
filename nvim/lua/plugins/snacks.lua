@@ -31,6 +31,11 @@ return {
     config = function(_, opts)
       require("snacks").setup(opts)
 
+      -- Headless sessions do not emit UIEnter, so install the UI handlers now
+      -- instead of leaving health checks and automation on the defaults.
+      Snacks.input.enable()
+      Snacks.picker.setup()
+
       -- Keep :checkhealth focused on the intentionally enabled snacks modules.
       local health_modules = {
         bigfile = true,

@@ -12,13 +12,6 @@ return {
     end,
   },
 
-  -- Comment
-  {
-    "numToStr/Comment.nvim",
-    event = "VeryLazy",
-    opts = {},
-  },
-
   -- Better repeat
   {
     "tpope/vim-repeat",
@@ -45,7 +38,7 @@ return {
 
   -- Spectre (search and replace)
   {
-    "windwp/nvim-spectre",
+    "nvim-pack/nvim-spectre",
     cmd = "Spectre",
   },
 
@@ -108,12 +101,6 @@ return {
     config = function()
       require("tabout").setup()
     end,
-  },
-
-  -- OSC yank (copy to system clipboard in remote)
-  {
-    "ojroques/vim-oscyank",
-    event = "VeryLazy",
   },
 
   -- Bookmarks
@@ -231,17 +218,6 @@ return {
     opts = {},
   },
 
-  -- Open browser
-  {
-    "tyru/open-browser.vim",
-    keys = { "gx" },
-    init = function()
-      vim.g.netrw_nogx = 1
-      vim.keymap.set("n", "gx", "<Plug>(openbrowser-smart-search)")
-      vim.keymap.set("v", "gx", "<Plug>(openbrowser-smart-search)")
-    end,
-  },
-
   -- Goto preview
   {
     "rmagatti/goto-preview",
@@ -255,7 +231,7 @@ return {
 
   -- Ouroboros (switch between h/c files)
   {
-    "jakemason/ouroboros",
+    "jakemason/ouroboros.nvim",
     cmd = "Ouroboros",
     dependencies = "nvim-lua/plenary.nvim",
     config = function()

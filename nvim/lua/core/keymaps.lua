@@ -11,6 +11,34 @@ local function with_desc(desc)
   return vim.tbl_extend("force", opts, { desc = desc })
 end
 
+local function url_encode(text)
+  return (text:gsub("[^%w%-._~]", function(char)
+    return string.format("%%%02X", string.byte(char))
+  end))
+end
+
+local function is_openable(target)
+  if target:match("^[%a][%w+.-]*:") or target:match("^[/~]") or target:match("^%.?%./") then
+    return true
+  end
+  local path = vim.fn.expand(target)
+  return vim.fn.filereadable(path) == 1 or vim.fn.isdirectory(path) == 1
+end
+
+local function open_or_search(target)
+  target = vim.trim(target)
+  if target == "" then
+    return
+  end
+  if not is_openable(target) then
+    target = "https://google.com/search?q=" .. url_encode(target)
+  end
+  local _, err = vim.ui.open(target)
+  if err then
+    vim.notify(err, vim.log.levels.ERROR)
+  end
+end
+
 --------------------------------------------------------------------------------
 -- Window splits
 --------------------------------------------------------------------------------
@@ -79,6 +107,16 @@ map("v", "<BS>", '"_d', with_desc("Delete selection"))
 -- Reload config
 map("n", "<F5>", ":source $MYVIMRC<CR>", with_desc("Reload config"))
 map("i", "<F5>", "<C-O>:source $MYVIMRC<CR>", with_desc("Reload config"))
+
+-- Open URLs/files with Neovim, or search plain text like open-browser.vim did.
+map("n", "gx", function()
+  local target = require("vim.ui")._get_urls()[1] or vim.fn.expand("<cword>")
+  open_or_search(is_openable(target) and target or vim.fn.expand("<cword>"))
+end, with_desc("Open URL/file or search word"))
+map("x", "gx", function()
+  local lines = vim.fn.getregion(vim.fn.getpos("."), vim.fn.getpos("v"), { type = vim.fn.mode() })
+  open_or_search(table.concat(vim.iter(lines):map(vim.trim):totable(), " "))
+end, with_desc("Open URL/file or search selection"))
 
 --------------------------------------------------------------------------------
 -- Shift selection
