@@ -217,6 +217,37 @@ check_lsp_matrix() {
     pass "LSP attach matrix"
 }
 
+check_replacement_capabilities() {
+    log "checking capabilities provided by consolidated plugins"
+
+    local workdir="$TMPDIR/replacements"
+    mkdir -p "$workdir"
+    git -C "$workdir" init -q
+    git -C "$workdir" config user.name "Nvim Verify"
+    git -C "$workdir" config user.email "nvim-verify@example.invalid"
+    printf 'first line\nsecond line\n' >"$workdir/blame.txt"
+    git -C "$workdir" add blame.txt
+    git -C "$workdir" commit -qm "initial blame fixture"
+    printf 'updated line\nsecond line\n' >"$workdir/blame.txt"
+    git -C "$workdir" add blame.txt
+    git -C "$workdir" commit -qm "verify blame replacement"
+
+    timeout 30s nvim --headless "$workdir/blame.txt" \
+        "+lua assert(vim.wait(10000, function() return vim.b.gitsigns_head ~= nil end, 100), 'gitsigns did not attach on direct file open'); vim.cmd('Gitsigns toggle_current_line_blame'); assert(vim.wait(10000, function() return vim.b.gitsigns_blame_line_dict ~= nil end, 50), 'current line blame did not appear'); local blame=vim.b.gitsigns_blame_line_dict; assert(blame.author == 'Nvim Verify', 'unexpected blame author'); assert(blame.summary == 'verify blame replacement', 'unexpected blame summary')" \
+        '+qa'
+
+    printf 'local result = string.format("value: %%s", "ok")\n' >"$workdir/signature.lua"
+    timeout 45s nvim --headless "$workdir/signature.lua" \
+        "+lua vim.api.nvim_win_set_cursor(0, { 1, 29 }); assert(vim.wait(20000, function() return #vim.lsp.get_clients({ bufnr = 0, name = 'lua_ls' }) > 0 end, 100), 'lua_ls did not attach'); local params=vim.lsp.util.make_position_params(0, 'utf-16'); local responses=vim.lsp.buf_request_sync(0, 'textDocument/signatureHelp', params, 10000); local found=false; for _, response in pairs(responses or {}) do if response.result and response.result.signatures and #response.result.signatures > 0 then found=true end end; assert(found, 'signatureHelp returned no signatures')" \
+        '+qa'
+
+    timeout 30s nvim --headless \
+        "+lua require('lazy').load({ plugins = { 'LuaSnip' }, wait = true }); local ls=require('luasnip'); vim.bo.filetype='c'; vim.cmd('doautocmd FileType c'); vim.wait(1000); local custom=false; for _, snippet in ipairs(ls.get_snippets('c')) do if snippet.trigger == 'lpr' then custom=true end end; vim.bo.filetype='lua'; vim.cmd('doautocmd FileType lua'); vim.wait(1000); local public=false; for _, snippet in ipairs(ls.get_snippets('lua')) do if snippet.trigger == 'lfu' then public=true end end; assert(custom, 'custom lpr snippet missing'); assert(public, 'friendly lfu snippet missing')" \
+        '+qa'
+
+    pass "Git blame, LSP signature help, and snippets"
+}
+
 check_format_lint_matrix() {
     log "checking formatter and linter matrix"
     local workdir="$TMPDIR/format-lint"
@@ -320,7 +351,6 @@ check_plugin_cache_clean() {
     log "checking plugin cache directories that previously generated dirty files"
     local plugins=(
         markdown-preview.nvim
-        lsp_signature.nvim
         nvim-treesitter
     )
     local plugin dir status
@@ -340,6 +370,7 @@ main() {
     check_plugin_loads
     check_plugin_commands
     check_lsp_matrix
+    check_replacement_capabilities
     check_format_lint_matrix
     check_treesitter_matrix
     check_plugin_cache_clean

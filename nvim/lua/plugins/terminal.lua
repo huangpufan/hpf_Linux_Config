@@ -175,10 +175,4 @@ return {
       )
     end,
   },
-
-  -- Nvim-unception (nested nvim support)
-  {
-    "samjwill/nvim-unception",
-    lazy = true,
-  },
 }

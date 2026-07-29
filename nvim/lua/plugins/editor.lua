@@ -30,12 +30,6 @@ return {
     end,
   },
 
-  -- Neoclip (clipboard history)
-  {
-    "AckslD/nvim-neoclip.lua",
-    event = "VeryLazy",
-  },
-
   -- Spectre (search and replace)
   {
     "nvim-pack/nvim-spectre",

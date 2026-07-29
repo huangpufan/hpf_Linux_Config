@@ -9,7 +9,6 @@ return {
   -- Dependencies
   { "nvim-lua/plenary.nvim" },
   { "nvim-tree/nvim-web-devicons" },
-  { "kkharji/sqlite.lua" },
 
   -- Import plugin modules
   { import = "plugins.snacks" },

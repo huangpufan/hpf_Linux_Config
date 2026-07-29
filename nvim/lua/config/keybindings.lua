@@ -31,6 +31,11 @@ function M.setup(wk)
     },
     { "gw", "<cmd>Telescope diagnostics<cr>", desc = "Diagnostics" },
 
+    -- Git
+    { "<space>g", group = "Git" },
+    { "<space>gb", "<cmd>Gitsigns blame_line --full<cr>", desc = "Blame current line" },
+    { "<space>gB", "<cmd>Gitsigns toggle_current_line_blame<cr>", desc = "Toggle line blame" },
+
     -- Misc
     { "<space>a", group = "Misc" },
     { "<space>ad", "<cmd>call TrimWhitespace()<cr>", desc = "Remove trailing space" },

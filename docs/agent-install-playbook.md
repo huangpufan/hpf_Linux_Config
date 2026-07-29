@@ -179,7 +179,8 @@ nvim --headless '+checkhealth' '+w! /tmp/hpf-nvim-checkhealth.txt' '+qa'
 
 其中 `python3 install-script/agent-runner.py check nvim` 会调用
 `install-script/nvim/nvim-verify.sh`，覆盖启动、`checkhealth`、插件加载、
-插件命令入口、LSP attach、Treesitter parser 以及已知易脏插件缓存目录。
+插件命令入口、LSP attach、Git blame、LSP 签名提示、自定义与公共 snippets、
+Treesitter parser 以及已知易脏插件缓存目录。
 
 注意事项：
 

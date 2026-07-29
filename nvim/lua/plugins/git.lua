@@ -6,7 +6,7 @@ return {
   -- Git signs
   {
     "lewis6991/gitsigns.nvim",
-    event = "VeryLazy",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       require("gitsigns").setup({
         signcolumn = true,
@@ -19,25 +19,6 @@ return {
   {
     "tpope/vim-fugitive",
     cmd = "Git",
-  },
-
-  -- Git messenger
-  {
-    "rhysd/git-messenger.vim",
-    cmd = "GitMessenger",
-    init = function()
-      vim.g.git_messenger_always_into_popup = true
-      vim.g.git_messenger_no_default_mappings = 1
-    end,
-  },
-
-  -- Git blame
-  {
-    "f-person/git-blame.nvim",
-    cmd = "GitBlameToggle",
-    init = function()
-      vim.g.gitblame_delay = 0
-    end,
   },
 
   -- Diffview
@@ -55,4 +36,3 @@ return {
     end,
   },
 }
-
