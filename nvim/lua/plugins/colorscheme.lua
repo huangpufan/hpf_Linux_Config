@@ -55,17 +55,19 @@ return {
 
   -- Color highlighter
   {
-    "norcalli/nvim-colorizer.lua",
+    "catgoose/nvim-colorizer.lua",
     event = "VeryLazy",
-    config = function()
-      require("colorizer").setup({
+    opts = {
+      filetypes = {
         "css",
         "javascript",
         "vim",
         "lua",
-        html = { mode = "foreground" },
-      })
-    end,
+        html = {
+          display = { mode = "foreground" },
+        },
+      },
+    },
   },
 
   -- Colorful window separator

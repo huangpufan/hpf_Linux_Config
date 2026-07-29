@@ -87,6 +87,40 @@ return {
   {
     "VidocqH/lsp-lens.nvim",
     event = "VeryLazy",
+    init = function()
+      local function support_legacy_method_call(client)
+        if client._lsp_lens_supports_method_compat then
+          return
+        end
+
+        local client_class = getmetatable(client)
+        local supports_method = client_class and client_class.supports_method
+        if not supports_method then
+          return
+        end
+
+        client.supports_method = function(first, ...)
+          if first == client then
+            return supports_method(client, ...)
+          end
+          return supports_method(client, first, ...)
+        end
+        client._lsp_lens_supports_method_compat = true
+      end
+
+      for _, client in ipairs(vim.lsp.get_clients()) do
+        support_legacy_method_call(client)
+      end
+
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(event)
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+          if client then
+            support_legacy_method_call(client)
+          end
+        end,
+      })
+    end,
     config = function()
       local SymbolKind = vim.lsp.protocol.SymbolKind
       require("lsp-lens").setup({
