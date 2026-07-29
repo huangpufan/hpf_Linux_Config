@@ -116,14 +116,11 @@ function M.setup(wk)
 
     -- Search
     { "<space>s", group = "Search" },
-    {
-      "<space>sP",
-      "<cmd>lua require('spectre').open_visual({select_word=true})<cr>",
-      desc = "Search cursor word by spectre",
-    },
-    { "<space>sp", "<cmd>lua require('spectre').open()<cr>", desc = "Search string by spectre" },
     { "<space>sb", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Search in current buffer" },
     { "<space>sg", "<cmd>Telescope git_status<cr>", desc = "Search git status" },
+
+    -- Multiple cursors
+    { "<space>x", group = "Multiple cursors" },
 
     -- Toggle/Theme
     { "<space>t", group = "Toggle/Theme" },
@@ -149,11 +146,6 @@ function M.setup(wk)
     { "mn", "<cmd>lua require'bookmarks.list'.show_desc()<cr>", desc = "Show bookmark note" },
   }, { mode = "n" })
 
-  -- Visual mode keybindings
-  wk.add({
-    { "<space>s", group = "Search" },
-    { "<space>sp", "<cmd>lua require('spectre').open_visual()<cr>", desc = "Search" },
-  }, { mode = "v" })
 end
 
 return M

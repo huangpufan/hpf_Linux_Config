@@ -18,22 +18,157 @@ return {
     event = "VeryLazy",
   },
 
-  -- Visual multi cursor
+  -- Multiple cursors
   {
-    "mg979/vim-visual-multi",
-    event = "VeryLazy",
-    init = function()
-      vim.g.VM_maps = {
-        ["Find Under"] = "gb",
-        ["Find Subword Under"] = "gB",
-      }
+    "jake-stewart/multicursor.nvim",
+    branch = "1.0",
+    keys = {
+      {
+        "gb",
+        function()
+          require("multicursor-nvim").matchAddCursor(1)
+        end,
+        mode = { "n", "x" },
+        desc = "Add cursor at next match",
+      },
+      {
+        "gB",
+        function()
+          require("multicursor-nvim").matchAddCursor(-1)
+        end,
+        mode = { "n", "x" },
+        desc = "Add cursor at previous match",
+      },
+      {
+        "<space>xj",
+        function()
+          require("multicursor-nvim").lineAddCursor(1)
+        end,
+        mode = { "n", "x" },
+        desc = "Add cursor below",
+      },
+      {
+        "<space>xk",
+        function()
+          require("multicursor-nvim").lineAddCursor(-1)
+        end,
+        mode = { "n", "x" },
+        desc = "Add cursor above",
+      },
+      {
+        "<space>xa",
+        function()
+          require("multicursor-nvim").matchAllAddCursors()
+        end,
+        mode = { "n", "x" },
+        desc = "Add cursors at all matches",
+      },
+      {
+        "<space>x=",
+        function()
+          require("multicursor-nvim").alignCursors()
+        end,
+        desc = "Align cursor columns",
+      },
+      {
+        "<space>xs",
+        function()
+          require("multicursor-nvim").splitCursors()
+        end,
+        mode = "x",
+        desc = "Split selections by regex",
+      },
+      {
+        "<space>xt",
+        function()
+          require("multicursor-nvim").transposeCursors(1)
+        end,
+        mode = "x",
+        desc = "Transpose cursor selections",
+      },
+      {
+        "<space>xr",
+        function()
+          require("multicursor-nvim").restoreCursors()
+        end,
+        desc = "Restore cleared cursors",
+      },
+    },
+    config = function()
+      local mc = require("multicursor-nvim")
+      mc.setup()
+
+      mc.addKeymapLayer(function(layer_set)
+        layer_set("n", "<esc>", function()
+          if mc.cursorsEnabled() then
+            mc.clearCursors()
+          else
+            mc.enableCursors()
+          end
+        end)
+      end)
     end,
   },
 
-  -- Spectre (search and replace)
+  -- Grug-far (search and replace)
   {
-    "nvim-pack/nvim-spectre",
-    cmd = "Spectre",
+    "MagicDuck/grug-far.nvim",
+    cmd = { "GrugFar", "GrugFarWithin" },
+    opts = {},
+    keys = {
+      {
+        "<space>sp",
+        function()
+          require("grug-far").open()
+        end,
+        desc = "Search and replace",
+      },
+      {
+        "<space>sP",
+        function()
+          require("grug-far").open({
+            prefills = { search = vim.fn.expand("<cword>") },
+          })
+        end,
+        desc = "Search and replace cursor word",
+      },
+      {
+        "<space>sp",
+        function()
+          require("grug-far").open()
+        end,
+        mode = "x",
+        desc = "Search and replace selection",
+      },
+    },
+  },
+
+  -- Editable quickfix and location lists
+  {
+    "stevearc/quicker.nvim",
+    ft = "qf",
+    opts = {
+      edit = {
+        enabled = true,
+        autosave = "unmodified",
+      },
+      keys = {
+        {
+          ">",
+          function()
+            require("quicker").expand({ before = 2, after = 2, add_to_existing = true })
+          end,
+          desc = "Expand quickfix context",
+        },
+        {
+          "<",
+          function()
+            require("quicker").collapse()
+          end,
+          desc = "Collapse quickfix context",
+        },
+      },
+    },
   },
 
   -- Vim matchup
