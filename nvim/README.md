@@ -164,7 +164,8 @@ nvim --headless '+qa'
 nvim --headless '+checkhealth' '+w! /tmp/hpf-nvim-checkhealth.txt' '+qa'
 ```
 
-Install LSP servers from inside Neovim as needed:
+After the first normal Neovim startup, Mason automatically installs every configured LSP server.
+You can also manually trigger the full installation:
 
 ```vim
 :MasonInstallAll

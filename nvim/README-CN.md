@@ -163,7 +163,8 @@ nvim --headless '+qa'
 nvim --headless '+checkhealth' '+w! /tmp/hpf-nvim-checkhealth.txt' '+qa'
 ```
 
-LSP 服务器可在 Neovim 内按需安装：
+首次正常启动 Neovim 后，Mason 会自动安装配置中声明的全部 LSP 服务器。
+也可以手动重新触发完整安装：
 
 ```vim
 :MasonInstallAll

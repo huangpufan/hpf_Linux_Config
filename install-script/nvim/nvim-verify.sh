@@ -68,6 +68,7 @@ check_external_tools() {
         bash-language-server
         vscode-json-language-server
         marksman
+        typescript-language-server
         shellcheck
         shfmt
         stylua
@@ -207,6 +208,7 @@ check_lsp_matrix() {
     printf '#!/usr/bin/env bash\necho hello\n' >"$workdir/test.sh"
     printf '{"ok": true}\n' >"$workdir/test.json"
     printf '# Title\n\ntext\n' >"$workdir/test.md"
+    printf 'const message: string = "hello"\n' >"$workdir/test.ts"
 
     verify_lsp "$workdir/test.lua" '{"lua_ls"}'
     verify_lsp "$workdir/test.c" '{"clangd"}'
@@ -214,7 +216,39 @@ check_lsp_matrix() {
     verify_lsp "$workdir/test.sh" '{"bashls"}'
     verify_lsp "$workdir/test.json" '{"jsonls"}'
     verify_lsp "$workdir/test.md" '{"marksman"}'
+    verify_lsp "$workdir/test.ts" '{"ts_ls"}'
     pass "LSP attach matrix"
+}
+
+check_lsp_auto_install_contract() {
+    log "checking automatic LSP installation contract"
+    local script="$TMPDIR/lsp-auto-install.lua"
+    cat >"$script" <<'LUA'
+require("lazy").load({ plugins = { "mason-lspconfig.nvim" } })
+
+local expected = vim.deepcopy(require("config.lsp.servers").names)
+local settings = require("mason-lspconfig.settings").current
+local actual = vim.deepcopy(settings.ensure_installed)
+local automatic_enable = vim.deepcopy(settings.automatic_enable)
+table.sort(expected)
+table.sort(actual)
+table.sort(automatic_enable)
+
+if not vim.deep_equal(expected, actual) then
+  error("automatic LSP install list differs from configured servers")
+end
+
+if not vim.deep_equal(expected, automatic_enable) then
+  error("automatic LSP enable list differs from configured servers")
+end
+
+if vim.fn.exists(":MasonInstallAll") ~= 2 then
+  error("MasonInstallAll command is unavailable")
+end
+LUA
+
+    timeout 60s nvim --headless "+luafile $script" '+qa'
+    pass "automatic LSP installation contract"
 }
 
 check_replacement_capabilities() {
@@ -370,6 +404,7 @@ main() {
     check_plugin_loads
     check_plugin_commands
     check_lsp_matrix
+    check_lsp_auto_install_contract
     check_replacement_capabilities
     check_format_lint_matrix
     check_treesitter_matrix

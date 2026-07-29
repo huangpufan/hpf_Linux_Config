@@ -24,7 +24,7 @@ sudo apt -y install clangd lua5.4 shfmt pandoc python3-restructuredtext-lint pyt
 sudo apt -y install python3-pynvim || true
 
 if command -v npm >/dev/null 2>&1; then
-    npm install -g neovim pyright bash-language-server@5.4.3 vscode-langservers-extracted prettier@3.8.3 || true
+    npm install -g neovim pyright bash-language-server@5.4.3 vscode-langservers-extracted prettier@3.8.3 typescript@6.0.3 typescript-language-server@5.3.0 || true
 fi
 
 install_lua_language_server() {

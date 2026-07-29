@@ -2,10 +2,17 @@
   LSP server configurations
 --]]
 
-local handlers = require("config.lsp.handlers")
+local M = {}
 
-local on_attach = handlers.on_attach
-local capabilities = handlers.capabilities()
+M.names = {
+  "lua_ls",
+  "clangd",
+  "pyright",
+  "bashls",
+  "jsonls",
+  "marksman",
+  "ts_ls",
+}
 
 local function exepath(command)
   local path = vim.fn.exepath(command)
@@ -27,83 +34,100 @@ local function command_dir(command)
   return path ~= "" and vim.fn.fnamemodify(path, ":h") or nil
 end
 
-local bashls_path = table.concat(compact({
-  command_dir("bash-language-server"),
-  vim.fn.expand("~/.local/bin"),
-  "/usr/local/bin",
-  "/usr/bin",
-  "/bin",
-}), ":")
+local bashls_path = table.concat(
+  compact {
+    command_dir "bash-language-server",
+    vim.fn.expand "~/.local/bin",
+    "/usr/local/bin",
+    "/usr/bin",
+    "/bin",
+  },
+  ":"
+)
 
-local function server_config(config)
-  return vim.tbl_deep_extend("force", {
-    on_attach = on_attach,
-    capabilities = capabilities,
-  }, config or {})
-end
+function M.setup()
+  local handlers = require "config.lsp.handlers"
+  local on_attach = handlers.on_attach
+  local capabilities = handlers.capabilities()
 
-local servers = {
-  lua_ls = server_config({
-    settings = {
-      Lua = {
-        diagnostics = {
-          globals = { "vim" },
-        },
-        workspace = {
-          library = {
-            [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-            [vim.fn.stdpath("config") .. "/lua"] = true,
+  local function server_config(config)
+    return vim.tbl_deep_extend("force", {
+      on_attach = on_attach,
+      capabilities = capabilities,
+    }, config or {})
+  end
+
+  local servers = {
+    lua_ls = server_config {
+      settings = {
+        Lua = {
+          diagnostics = {
+            globals = { "vim" },
+          },
+          workspace = {
+            library = {
+              [vim.fn.expand "$VIMRUNTIME/lua"] = true,
+              [vim.fn.stdpath "config" .. "/lua"] = true,
+            },
+          },
+          telemetry = {
+            enable = false,
           },
         },
-        telemetry = {
-          enable = false,
+      },
+    },
+
+    clangd = server_config {
+      cmd = {
+        "clangd",
+        "--background-index",
+        "--clang-tidy",
+        "--header-insertion=iwyu",
+        "--completion-style=detailed",
+        "--function-arg-placeholders",
+        "--fallback-style=llvm",
+      },
+      init_options = {
+        usePlaceholders = true,
+        completeUnimported = true,
+        clangdFileStatus = true,
+      },
+    },
+
+    pyright = server_config {
+      settings = {
+        python = {
+          analysis = {
+            typeCheckingMode = "off",
+          },
         },
       },
     },
-  }),
 
-  clangd = server_config({
-    cmd = {
-      "clangd",
-      "--background-index",
-      "--clang-tidy",
-      "--header-insertion=iwyu",
-      "--completion-style=detailed",
-      "--function-arg-placeholders",
-      "--fallback-style=llvm",
-    },
-    init_options = {
-      usePlaceholders = true,
-      completeUnimported = true,
-      clangdFileStatus = true,
-    },
-  }),
-
-  pyright = server_config({
-    settings = {
-      python = {
-        analysis = {
-          typeCheckingMode = "off",
-        },
+    bashls = server_config {
+      cmd = { exepath "bash-language-server", "start" },
+      cmd_env = {
+        BASH_IDE_LOG_LEVEL = "error",
+        PATH = bashls_path,
       },
     },
-  }),
+    jsonls = server_config(),
+    marksman = server_config(),
+    ts_ls = server_config(),
+  }
 
-  bashls = server_config({
-    cmd = { exepath("bash-language-server"), "start" },
-    cmd_env = {
-      BASH_IDE_LOG_LEVEL = "error",
-      PATH = bashls_path,
-    },
-  }),
-  jsonls = server_config(),
-  marksman = server_config(),
-}
+  for _, name in ipairs(M.names) do
+    assert(servers[name], "missing LSP configuration for " .. name)
+  end
+  for name in pairs(servers) do
+    assert(vim.list_contains(M.names, name), "LSP is not included in automatic installation: " .. name)
+  end
 
-local server_names = {}
-for name, config in pairs(servers) do
-  vim.lsp.config(name, config)
-  table.insert(server_names, name)
+  for name, config in pairs(servers) do
+    vim.lsp.config(name, config)
+  end
+
+  vim.lsp.enable(M.names)
 end
 
-vim.lsp.enable(server_names)
+return M

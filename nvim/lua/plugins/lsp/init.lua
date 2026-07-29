@@ -8,29 +8,19 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
-      "mason-org/mason.nvim",
-      "mason-org/mason-lspconfig.nvim",
       "Saghen/blink.cmp",
     },
     config = function()
       require("config.lsp.handlers").setup()
-      require("config.lsp.servers")
+      require("config.lsp.servers").setup()
     end,
   },
 
   -- Mason (LSP/DAP/linter installer)
   {
     "mason-org/mason.nvim",
-    cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUpdate" },
+    cmd = { "Mason", "MasonInstall", "MasonUpdate" },
     opts = {
-      ensure_installed = {
-        "lua-language-server",
-        "clangd",
-        "pyright",
-        "bash-language-server",
-        "json-lsp",
-        "marksman",
-      },
       ui = {
         icons = {
           package_pending = " ",
@@ -40,20 +30,26 @@ return {
       },
       max_concurrent_installers = 10,
     },
-    config = function(_, opts)
-      require("mason").setup(opts)
-      vim.api.nvim_create_user_command("MasonInstallAll", function()
-        if opts.ensure_installed and #opts.ensure_installed > 0 then
-          vim.cmd("MasonInstall " .. table.concat(opts.ensure_installed, " "))
-        end
-      end, {})
-    end,
   },
 
   -- Mason-lspconfig bridge
   {
     "mason-org/mason-lspconfig.nvim",
-    lazy = true,
+    event = "VeryLazy",
+    dependencies = {
+      "mason-org/mason.nvim",
+      "neovim/nvim-lspconfig",
+    },
+    opts = {
+      ensure_installed = require("config.lsp.servers").names,
+      automatic_enable = require("config.lsp.servers").names,
+    },
+    config = function(_, opts)
+      require("mason-lspconfig").setup(opts)
+      vim.api.nvim_create_user_command("MasonInstallAll", function()
+        vim.cmd("LspInstall " .. table.concat(opts.ensure_installed, " "))
+      end, {})
+    end,
   },
 
   -- Fidget (LSP progress)
@@ -64,5 +60,4 @@ return {
       require("fidget").setup()
     end,
   },
-
 }
