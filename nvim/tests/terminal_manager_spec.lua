@@ -98,5 +98,10 @@ assert(
 )
 assert(vim.wo[fourth.window].winbar:find("Terminal 3 / 3", 1, true), "visible count should refresh after exit")
 
+manager.toggle "float"
+fourth = focused_terminal()
+assert_equal(fourth.direction, "float", "split terminal should move to a float without changing sessions")
+assert_equal(vim.wo[fourth.window].winbar, "", "float terminal should not retain the split title")
+
 print "terminal_manager_spec: ok"
 vim.cmd "qa!"

@@ -143,6 +143,7 @@ function M.sync_labels()
 
     if is_open(term) then
       if term:is_float() then
+        vim.wo[term.window].winbar = ""
         vim.api.nvim_win_set_config(term.window, {
           title = label,
           title_pos = "center",

@@ -52,5 +52,10 @@ second = focused_terminal()
 assert_equal(second.direction, "horizontal", "Ctrl-Right should preserve the horizontal split")
 assert(vim.wo[second.window].winbar:find("Terminal 2 / 2", 1, true), "next terminal should display the selected count")
 
+feed "<C-p>"
+second = focused_terminal()
+assert_equal(second.direction, "float", "Ctrl-P should move the current terminal to a float")
+assert_equal(vim.wo[second.window].winbar, "", "floating terminal should show only its border title")
+
 print "terminal_keymaps_spec: ok"
 vim.cmd "qa!"
