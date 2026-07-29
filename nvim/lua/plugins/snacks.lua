@@ -13,6 +13,11 @@ return {
       bufdelete = { enabled = true },
       words = { enabled = true },
       lazygit = { enabled = true },
+      input = { enabled = true },
+      picker = {
+        enabled = true,
+        ui_select = true,
+      },
     },
     keys = {
       {
@@ -33,6 +38,8 @@ return {
         bufdelete = true,
         words = true,
         lazygit = true,
+        input = true,
+        picker = true,
       }
       for _, plugin in ipairs(Snacks.meta.get()) do
         if not health_modules[plugin.name] then

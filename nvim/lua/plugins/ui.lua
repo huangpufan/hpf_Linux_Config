@@ -211,10 +211,4 @@ return {
     opts = {},
   },
 
-  -- Dressing (better UI)
-  {
-    "stevearc/dressing.nvim",
-    event = "VeryLazy",
-    opts = {},
-  },
 }

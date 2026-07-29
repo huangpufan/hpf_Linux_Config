@@ -210,7 +210,7 @@ return {
     cmd = "IncRename",
     config = function()
       require("inc_rename").setup({
-        input_buffer_type = "dressing",
+        input_buffer_type = "snacks",
       })
     end,
   },
