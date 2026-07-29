@@ -2,17 +2,74 @@
   Terminal plugins
 --]]
 
+local function cycle_terminal(step)
+  local terminal = require("toggleterm.terminal")
+  local terminals = terminal.get_all()
+
+  if #terminals == 0 then
+    vim.cmd("TermNew direction=float")
+    return
+  end
+
+  local current_id = terminal.get_focused_id()
+  if not current_id then
+    local last_focused = terminal.get_last_focused()
+    current_id = last_focused and last_focused.id or nil
+  end
+
+  local current_index = 1
+  for index, term in ipairs(terminals) do
+    if term.id == current_id then
+      current_index = index
+      break
+    end
+  end
+
+  local target_index = ((current_index - 1 + step) % #terminals) + 1
+  local current = terminals[current_index]
+  local target = terminals[target_index]
+
+  if current ~= target and current:is_open() then
+    current:close()
+  end
+  if not target:is_open() then
+    target:open(nil, "float")
+  end
+end
+
 return {
   -- Toggleterm
   {
     "akinsho/toggleterm.nvim",
-    cmd = { "ToggleTerm", "TermExec" },
+    cmd = { "ToggleTerm", "TermExec", "TermNew", "TermSelect" },
     keys = {
       {
         "<C-p>",
         "<cmd>ToggleTerm direction=float<cr>",
         mode = { "n", "t" },
         desc = "Toggle floating terminal",
+      },
+      {
+        "<C-q>",
+        "<cmd>TermNew direction=float<cr>",
+        mode = { "n", "t" },
+        desc = "New floating terminal",
+      },
+      {
+        "<C-left>",
+        function()
+          cycle_terminal(-1)
+        end,
+        mode = { "n", "t" },
+        desc = "Previous floating terminal",
+      },
+      {
+        "<C-right>",
+        function()
+          cycle_terminal(1)
+        end,
+        mode = { "n", "t" },
+        desc = "Next floating terminal",
       },
       { "-", desc = "Toggle horizontal terminal" },
       { "=", desc = "Toggle vertical terminal" },
