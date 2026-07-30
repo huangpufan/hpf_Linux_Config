@@ -2,12 +2,20 @@ local M = {}
 
 local state = {
   active = false,
+  content_generation = 0,
   generation = 0,
-  scroll_pending = false,
+  scroll_intent = nil,
   session_id = nil,
   setup_done = false,
+  sync_generation = 0,
+  z_prefix_at = nil,
   warned_fallback = false,
 }
+
+local CONTENT_DEBOUNCE_MS = 100
+local SCROLL_INTENT_TTL_MS = 250
+local SYNC_SCROLL_WINDOW_MS = 120
+local Z_PREFIX_TTL_MS = 500
 
 local function default_windows_path(path)
   local output = vim.fn.system { "wslpath", "-w", path }
@@ -18,7 +26,39 @@ local function default_windows_path(path)
 end
 
 local defaults = {
+  buffer_filetype = function(bufnr)
+    return vim.bo[bufnr].filetype
+  end,
+  clear_plugin_refresh = function(bufnr)
+    local ok, autocmds = pcall(vim.api.nvim_get_autocmds, {
+      group = "MKDP_REFRESH_INIT" .. bufnr,
+    })
+    if not ok then
+      return 0
+    end
+
+    local refresh_events = {}
+    for _, autocmd in ipairs(autocmds) do
+      if autocmd.buffer == bufnr and autocmd.command and autocmd.command:find("mkdp#rpc#preview_refresh", 1, true) then
+        refresh_events[autocmd.event] = true
+      end
+    end
+
+    local removed = 0
+    for event in pairs(refresh_events) do
+      local cleared = pcall(vim.api.nvim_clear_autocmds, {
+        buffer = bufnr,
+        event = event,
+        group = "MKDP_REFRESH_INIT" .. bufnr,
+      })
+      if cleared then
+        removed = removed + 1
+      end
+    end
+    return removed
+  end,
   command = vim.cmd,
+  current_buffer = vim.api.nvim_get_current_buf,
   defer = vim.defer_fn,
   executable = function(command)
     return vim.fn.executable(command) == 1
@@ -28,6 +68,12 @@ local defaults = {
   end,
   getenv = function(name)
     return vim.env[name]
+  end,
+  mode = function()
+    return vim.api.nvim_get_mode().mode
+  end,
+  now = function()
+    return vim.uv.hrtime() / 1000000
   end,
   notify = vim.notify,
   open_url = function(url)
@@ -45,6 +91,12 @@ local defaults = {
     return vim.fn["mkdp#rpc#preview_refresh"]()
   end,
   schedule = vim.schedule,
+  set_sync_scroll = function(enabled)
+    local options = vim.deepcopy(vim.g.mkdp_preview_options or {})
+    options.disable_sync_scroll = enabled and 0 or 1
+    options.sync_scroll_type = "relative"
+    vim.g.mkdp_preview_options = options
+  end,
   stop_preview = function()
     return vim.fn["mkdp#util#stop_preview"]()
   end,
@@ -56,6 +108,24 @@ local defaults = {
 
 local deps = defaults
 
+local direct_scroll_keys = {
+  ["<C-B>"] = true,
+  ["<C-D>"] = true,
+  ["<C-E>"] = true,
+  ["<C-F>"] = true,
+  ["<C-U>"] = true,
+  ["<C-Y>"] = true,
+}
+
+local universal_scroll_keys = {
+  ["<PageDown>"] = true,
+  ["<PageUp>"] = true,
+  ["<ScrollWheelDown>"] = true,
+  ["<ScrollWheelUp>"] = true,
+  ["<kPageDown>"] = true,
+  ["<kPageUp>"] = true,
+}
+
 local function config_path(relative)
   return vim.fs.joinpath(vim.fn.stdpath "config", relative)
 end
@@ -65,6 +135,34 @@ local function is_wsl2()
     return true
   end
   return deps.read_osrelease():lower():find("microsoft", 1, true) ~= nil
+end
+
+local function is_markdown_buffer(bufnr)
+  local ok, filetype = pcall(deps.buffer_filetype, bufnr)
+  return ok and filetype == "markdown"
+end
+
+local function is_current_markdown_buffer(bufnr)
+  bufnr = bufnr or deps.current_buffer()
+  return bufnr == deps.current_buffer() and is_markdown_buffer(bufnr)
+end
+
+local function disable_sync_scroll()
+  state.sync_generation = state.sync_generation + 1
+  deps.set_sync_scroll(false)
+end
+
+local function clear_scroll_intent()
+  state.scroll_intent = nil
+  state.z_prefix_at = nil
+end
+
+local function schedule_plugin_refresh_cleanup(bufnr)
+  deps.schedule(function()
+    if state.active and is_markdown_buffer(bufnr) then
+      deps.clear_plugin_refresh(bufnr)
+    end
+  end)
 end
 
 local function layout_command(action, url, session_id)
@@ -153,6 +251,8 @@ local function close_layout(options)
 end
 
 function M.open_browser(url)
+  schedule_plugin_refresh_cleanup(deps.current_buffer())
+
   local session_id = state.session_id or deps.getenv "WT_SESSION"
   local command = layout_command("open", url, session_id)
   if not command then
@@ -194,18 +294,136 @@ function M.open_browser(url)
   return true
 end
 
-function M.refresh_on_scroll()
-  if not state.active or state.scroll_pending or deps.filetype() ~= "markdown" then
+local function mark_scroll_intent(now)
+  state.scroll_intent = {
+    expires_at = now + SCROLL_INTENT_TTL_MS,
+  }
+end
+
+function M._on_key(_, typed)
+  if not state.active then
+    return
+  end
+  if not is_current_markdown_buffer() then
+    clear_scroll_intent()
+    return
+  end
+  if typed == nil or typed == "" then
     return
   end
 
-  state.scroll_pending = true
+  local key = vim.fn.keytrans(typed)
+  local now = deps.now()
+  local mode = deps.mode()
+  local normal_mode = mode:sub(1, 1) == "n"
+
+  if key == "zz" or key == "zt" or key == "zb" then
+    clear_scroll_intent()
+    if normal_mode then
+      mark_scroll_intent(now)
+    end
+    return
+  end
+
+  if universal_scroll_keys[key] or (normal_mode and direct_scroll_keys[key]) then
+    clear_scroll_intent()
+    mark_scroll_intent(now)
+    return
+  end
+
+  if normal_mode and key == "z" then
+    state.scroll_intent = nil
+    if state.z_prefix_at and now - state.z_prefix_at <= Z_PREFIX_TTL_MS then
+      mark_scroll_intent(now)
+      state.z_prefix_at = nil
+    else
+      state.z_prefix_at = now
+    end
+    return
+  end
+
+  if
+    normal_mode
+    and (key == "t" or key == "b")
+    and state.z_prefix_at
+    and now - state.z_prefix_at <= Z_PREFIX_TTL_MS
+  then
+    state.z_prefix_at = nil
+    mark_scroll_intent(now)
+    return
+  end
+
+  clear_scroll_intent()
+end
+
+function M.refresh_on_scroll()
+  if not state.active or not is_current_markdown_buffer() then
+    clear_scroll_intent()
+    return
+  end
+
+  local intent = state.scroll_intent
+  clear_scroll_intent()
+  if not intent or intent.expires_at < deps.now() then
+    return
+  end
+
+  state.sync_generation = state.sync_generation + 1
+  local sync_generation = state.sync_generation
+  deps.set_sync_scroll(true)
+  pcall(deps.refresh)
   deps.defer(function()
-    state.scroll_pending = false
-    if state.active and deps.filetype() == "markdown" then
+    if state.sync_generation == sync_generation then
+      deps.set_sync_scroll(false)
+    end
+  end, SYNC_SCROLL_WINDOW_MS)
+end
+
+function M.refresh_content(args)
+  local bufnr = args and args.buf or deps.current_buffer()
+  if not state.active or not is_current_markdown_buffer(bufnr) then
+    return
+  end
+
+  clear_scroll_intent()
+  disable_sync_scroll()
+  state.content_generation = state.content_generation + 1
+  local content_generation = state.content_generation
+  local reading_generation = state.generation
+
+  deps.defer(function()
+    if
+      state.active
+      and state.generation == reading_generation
+      and state.content_generation == content_generation
+      and is_current_markdown_buffer(bufnr)
+    then
+      disable_sync_scroll()
       pcall(deps.refresh)
     end
-  end, 80)
+  end, CONTENT_DEBOUNCE_MS)
+end
+
+function M.cleanup_plugin_refresh(bufnr)
+  bufnr = bufnr or deps.current_buffer()
+  if not is_markdown_buffer(bufnr) then
+    return 0
+  end
+  return deps.clear_plugin_refresh(bufnr)
+end
+
+function M.on_buffer_enter(args)
+  local bufnr = args and args.buf or deps.current_buffer()
+  if not state.active then
+    return
+  end
+
+  clear_scroll_intent()
+  disable_sync_scroll()
+  if not is_markdown_buffer(bufnr) then
+    return
+  end
+  schedule_plugin_refresh_cleanup(bufnr)
 end
 
 function M.close(options)
@@ -216,7 +434,9 @@ function M.close(options)
 
   state.active = false
   state.generation = state.generation + 1
-  state.scroll_pending = false
+  state.content_generation = state.content_generation + 1
+  clear_scroll_intent()
+  disable_sync_scroll()
   pcall(deps.stop_preview)
   close_layout { wait = options.wait, notify = options.notify }
   state.session_id = nil
@@ -236,6 +456,8 @@ function M.toggle()
   state.generation = state.generation + 1
   state.session_id = deps.getenv "WT_SESSION"
   state.warned_fallback = false
+  clear_scroll_intent()
+  disable_sync_scroll()
 
   local ok, err = pcall(deps.command, "MarkdownPreview")
   if not ok then
@@ -244,6 +466,7 @@ function M.toggle()
     deps.notify("无法启动 Markdown 预览：" .. tostring(err), vim.log.levels.ERROR)
     return false
   end
+  schedule_plugin_refresh_cleanup(deps.current_buffer())
   return true
 end
 
@@ -265,9 +488,17 @@ function M.setup()
   })
 
   local group = vim.api.nvim_create_augroup("MarkdownReadingMode", { clear = true })
+  vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "BufWritePost" }, {
+    group = group,
+    callback = M.refresh_content,
+  })
   vim.api.nvim_create_autocmd("WinScrolled", {
     group = group,
     callback = M.refresh_on_scroll,
+  })
+  vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
+    group = group,
+    callback = M.on_buffer_enter,
   })
   vim.api.nvim_create_autocmd("VimLeavePre", {
     group = group,
@@ -275,6 +506,9 @@ function M.setup()
       M.close { wait = true, notify = false }
     end,
   })
+
+  local namespace = vim.api.nvim_create_namespace "MarkdownReadingModeScrollIntent"
+  vim.on_key(M._on_key, namespace)
 end
 
 function M._set_dependencies(overrides)
@@ -283,9 +517,12 @@ end
 
 function M._reset_for_test()
   state.active = false
+  state.content_generation = 0
   state.generation = 0
-  state.scroll_pending = false
+  state.scroll_intent = nil
   state.session_id = nil
+  state.sync_generation = 0
+  state.z_prefix_at = nil
   state.warned_fallback = false
   deps = defaults
 end

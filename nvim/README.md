@@ -146,7 +146,7 @@ All terminals share one terminal pool. Floating, horizontal, and vertical window
 
 From a Markdown buffer, `<Space>md` starts the existing markdown-preview.nvim service. Under WSL2 in Windows Terminal, the preview starts rendering first; once its window is ready, the terminal and the Windows system default browser are placed together on the left 55% and right 45% of the current monitor. This avoids leaving the desktop in a half-finished layout while a cold browser starts. Switching to another Markdown buffer reuses the same preview window.
 
-Editing, cursor movement, and Neovim viewport scrolling refresh the page and synchronize the browser position. Synchronization is one-way: Neovim controls the web preview, but scrolling the web page does not move Neovim.
+Editing Markdown updates the page in real time while preserving the browser's current position. Ordinary cursor movement, including `j/k`, mouse selection, and search jumps, does not control the page. Browser position follows only explicit scrolling with `Ctrl-D/U`, `Ctrl-E/Y`, `Ctrl-F/B`, `PageUp/PageDown`, the mouse wheel, or `zz/zt/zb`. Synchronization is one-way: Neovim controls the web preview, but scrolling the web page does not move Neovim.
 
 Press `<Space>md` again, or exit Neovim, to close the dedicated preview window and restore the terminal's previous position and maximized state. Outside WSL2, outside Windows Terminal, or when PowerShell layout control fails, the preview still opens in the normal browser without rearranging windows.
 

@@ -146,7 +146,7 @@ nvim/
 
 在 Markdown buffer 中按 `<Space>md` 会启动现有的 markdown-preview.nvim 预览服务。在 Windows Terminal 的 WSL2 环境中，会先让预览页开始渲染；窗口就绪后，再把终端和 Windows 系统默认浏览器近乎同时放到当前显示器左侧 55% 与右侧 45%。这样冷启动浏览器时，桌面不会长时间停在只摆好一边的半成品状态。切换到其他 Markdown buffer 会复用同一个预览窗口。
 
-编辑、移动光标和滚动 Neovim 视口都会刷新网页并同步浏览位置。同步方向只有 Neovim → 网页；在网页中滚动不会反向移动 Neovim。
+编辑 Markdown 时，网页内容会实时更新，但保持当前浏览位置。普通光标移动（包括 `j/k`、鼠标点选和搜索跳转）不会控制网页；只有主动滚屏操作才会同步浏览位置：`Ctrl-D/U`、`Ctrl-E/Y`、`Ctrl-F/B`、`PageUp/PageDown`、鼠标滚轮及 `zz/zt/zb`。同步方向只有 Neovim → 网页；在网页中滚动不会反向移动 Neovim。
 
 再次按 `<Space>md` 或退出 Neovim，会关闭专用预览窗口，并恢复终端原来的位置和最大化状态。如果不在 WSL2、不是 Windows Terminal，或 PowerShell 摆窗失败，Markdown 预览仍会用普通浏览器打开，只是不调整窗口布局。
 

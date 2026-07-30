@@ -27,6 +27,7 @@ return {
       vim.g.mkdp_auto_close = 0
       vim.g.mkdp_combine_preview = 1
       vim.g.mkdp_combine_preview_auto_refresh = 1
+      vim.g.mkdp_refresh_slow = 1
       vim.g.mkdp_page_title = "Markdown Reading - ${name}"
       vim.g.mkdp_markdown_css = vim.fs.joinpath(vim.fn.stdpath "config", "assets", "markdown-reading.css")
       vim.g.mkdp_preview_options = {
@@ -34,7 +35,7 @@ return {
         katex = {},
         uml = {},
         maid = {},
-        disable_sync_scroll = 0,
+        disable_sync_scroll = 1,
         sync_scroll_type = "relative",
         hide_yaml_meta = 1,
         sequence_diagrams = {},
