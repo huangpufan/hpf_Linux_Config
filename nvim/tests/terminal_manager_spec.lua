@@ -15,6 +15,11 @@ require("lazy").load { plugins = { "toggleterm.nvim" } }
 
 local manager = require "config.terminal_manager"
 local terminal = require "toggleterm.terminal"
+local toggleterm_config = require "toggleterm.config"
+
+assert_equal(toggleterm_config.get "auto_scroll", false, "terminal output should not force scrollback to the bottom")
+assert_equal(toggleterm_config.get "persist_mode", false, "reopened terminals should not restore terminal normal mode")
+assert_equal(toggleterm_config.get "start_in_insert", true, "opened terminals should accept input immediately")
 
 manager.new_terminal()
 local first = focused_terminal()
@@ -30,6 +35,37 @@ assert_equal(second.display_name, "Terminal 2 / 2", "second terminal label")
 assert(
   vim.inspect(vim.api.nvim_win_get_config(second.window).title):find("Terminal 2 / 2", 1, true),
   "float terminal should show its count"
+)
+
+assert(
+  vim.wait(1000, function()
+    local content = table.concat(vim.api.nvim_buf_get_lines(second.bufnr, 0, -1, false), "\n")
+    return content:find("$ ", 1, true) ~= nil
+  end),
+  "terminal shell should be ready before the scrollback check"
+)
+second:send "seq 1 80"
+assert(
+  vim.wait(1000, function()
+    return vim.api.nvim_buf_line_count(second.bufnr) >= 80
+  end),
+  "terminal should produce enough output for scrollback"
+)
+vim.cmd "stopinsert"
+vim.api.nvim_win_set_cursor(second.window, { 2, 0 })
+local scrollback_line = vim.api.nvim_win_get_cursor(second.window)[1]
+local previous_line_count = vim.api.nvim_buf_line_count(second.bufnr)
+vim.fn.chansend(second.job_id, "printf 'scrollback-new-output\\n'\r")
+assert(
+  vim.wait(1000, function()
+    return vim.api.nvim_buf_line_count(second.bufnr) > previous_line_count
+  end),
+  "terminal should receive new output while viewing scrollback"
+)
+assert_equal(
+  vim.api.nvim_win_get_cursor(second.window)[1],
+  scrollback_line,
+  "new terminal output should preserve the user's scrollback position"
 )
 
 manager.cycle(-1)

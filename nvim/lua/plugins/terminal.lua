@@ -66,6 +66,9 @@ return {
       on_exit = terminal_manager.on_exit,
       shading_factor = 2,
       direction = "float",
+      auto_scroll = false,
+      persist_mode = false,
+      start_in_insert = true,
       float_opts = { border = "rounded", title_pos = "center" },
     },
     config = function(_, opts)
