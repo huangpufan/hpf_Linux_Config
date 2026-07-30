@@ -197,19 +197,20 @@ LUA
     pass "plugin command matrix"
 }
 
-check_terminal_behavior() {
-    log "checking terminal focus, navigation, and scrollback behavior"
+check_targeted_behavior() {
+    log "checking terminal and Markdown reading-mode behavior"
     local test_file
     for test_file in \
         "$NVIM_CONFIG/tests/terminal_manager_spec.lua" \
-        "$NVIM_CONFIG/tests/terminal_keymaps_spec.lua"; do
+        "$NVIM_CONFIG/tests/terminal_keymaps_spec.lua" \
+        "$NVIM_CONFIG/tests/markdown_preview_spec.lua"; do
         local output="$TMPDIR/$(basename "$test_file").out"
         if ! timeout 60s nvim --headless "+luafile $test_file" >"$output" 2>&1; then
             cat "$output" >&2
-            fail "terminal behavior check failed: $(basename "$test_file")"
+            fail "targeted behavior check failed: $(basename "$test_file")"
         fi
     done
-    pass "terminal focus, navigation, and scrollback behavior"
+    pass "terminal and Markdown reading-mode behavior"
 }
 
 check_lsp_matrix() {
@@ -418,7 +419,7 @@ main() {
     check_health
     check_plugin_loads
     check_plugin_commands
-    check_terminal_behavior
+    check_targeted_behavior
     check_lsp_matrix
     check_lsp_auto_install_contract
     check_replacement_capabilities

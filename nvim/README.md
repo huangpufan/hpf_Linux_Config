@@ -19,6 +19,7 @@ nvim/
 │   │
 │   ├── config/               # Non-plugin configurations
 │   │   ├── keybindings.lua   # Which-key bindings
+│   │   ├── markdown_preview.lua # Markdown reading-mode controller
 │   │   └── lsp/              # LSP utility modules
 │   │       ├── handlers.lua  # LSP handlers
 │   │       └── servers.lua   # Server configs
@@ -39,6 +40,13 @@ nvim/
 │       ├── tools.lua         # Misc tools
 │       └── lsp/              # LSP plugin specs
 │           └── init.lua      # LSP plugins
+│
+├── assets/
+│   └── markdown-reading.css  # Browser reading styles
+├── scripts/
+│   └── markdown-reading-mode.ps1 # Windows Terminal/browser layout helper
+├── tests/
+│   └── markdown_preview_spec.lua # Reading-mode behavior checks
 │
 ├── after/
 │   └── plugin/               # After-load scripts
@@ -130,6 +138,18 @@ All terminals share one terminal pool. Floating, horizontal, and vertical window
 | `<Space>fb` | Find buffers |
 | `<Space>fc` | Search word under cursor |
 
+### Markdown Reading
+
+| Key | Action |
+|-----|--------|
+| `<Space>md` | Open or close Markdown reading mode |
+
+From a Markdown buffer, `<Space>md` starts the existing markdown-preview.nvim service. Under WSL2 in Windows Terminal, the preview starts rendering first; once its window is ready, the terminal and the Windows system default browser are placed together on the left 55% and right 45% of the current monitor. This avoids leaving the desktop in a half-finished layout while a cold browser starts. Switching to another Markdown buffer reuses the same preview window.
+
+Editing, cursor movement, and Neovim viewport scrolling refresh the page and synchronize the browser position. Synchronization is one-way: Neovim controls the web preview, but scrolling the web page does not move Neovim.
+
+Press `<Space>md` again, or exit Neovim, to close the dedicated preview window and restore the terminal's previous position and maximized state. Outside WSL2, outside Windows Terminal, or when PowerShell layout control fails, the preview still opens in the normal browser without rearranging windows.
+
 ### LSP
 | Key | Action |
 |-----|--------|
@@ -203,7 +223,7 @@ npm install -g neovim
 ```
 
 ### Markdown
-render-markdown.nvim provides the main in-buffer Markdown reading path. markdown-preview.nvim remains available for browser preview when needed.
+render-markdown.nvim provides the main in-buffer Markdown reading path. `<Space>md` provides a wider two-column browser reading mode through markdown-preview.nvim when needed. The browser view uses 17px body text, 1.75 line height, a 900px prose width, and wider space for tables, code blocks, lists, and quotations.
 
 If browser preview doesn't work:
 ```bash

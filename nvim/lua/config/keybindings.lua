@@ -79,7 +79,13 @@ function M.setup(wk)
     },
 
     -- Markdown
-    { "<space>md", "<cmd>MarkdownPreview<cr>", desc = "Markdown preview" },
+    {
+      "<space>md",
+      function()
+        require("config.markdown_preview").toggle()
+      end,
+      desc = "Markdown reading mode",
+    },
     { "<space>mp", "<cmd>PasteImage<cr>", desc = "Paste image in md" },
 
     -- Outline

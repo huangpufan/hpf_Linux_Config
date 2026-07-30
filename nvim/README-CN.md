@@ -19,6 +19,7 @@ nvim/
 │   │
 │   ├── config/               # 非插件配置模块
 │   │   ├── keybindings.lua   # Which-key 快捷键绑定
+│   │   ├── markdown_preview.lua # Markdown 阅读模式控制器
 │   │   └── lsp/              # LSP 工具模块
 │   │       ├── handlers.lua  # LSP 处理器
 │   │       └── servers.lua   # 服务器配置
@@ -39,6 +40,13 @@ nvim/
 │       ├── tools.lua         # 其他工具
 │       └── lsp/              # LSP 插件规格
 │           └── init.lua      # LSP 插件
+│
+├── assets/
+│   └── markdown-reading.css  # 浏览器阅读样式
+├── scripts/
+│   └── markdown-reading-mode.ps1 # Windows Terminal/浏览器摆窗脚本
+├── tests/
+│   └── markdown_preview_spec.lua # 阅读模式行为检查
 │
 ├── after/
 │   └── plugin/               # 后加载脚本
@@ -130,6 +138,18 @@ nvim/
 | `<Space>fb` | 查找 buffer |
 | `<Space>fc` | 搜索光标下的词 |
 
+### Markdown 阅读
+
+| 快捷键 | 功能 |
+|--------|------|
+| `<Space>md` | 开启或关闭 Markdown 阅读模式 |
+
+在 Markdown buffer 中按 `<Space>md` 会启动现有的 markdown-preview.nvim 预览服务。在 Windows Terminal 的 WSL2 环境中，会先让预览页开始渲染；窗口就绪后，再把终端和 Windows 系统默认浏览器近乎同时放到当前显示器左侧 55% 与右侧 45%。这样冷启动浏览器时，桌面不会长时间停在只摆好一边的半成品状态。切换到其他 Markdown buffer 会复用同一个预览窗口。
+
+编辑、移动光标和滚动 Neovim 视口都会刷新网页并同步浏览位置。同步方向只有 Neovim → 网页；在网页中滚动不会反向移动 Neovim。
+
+再次按 `<Space>md` 或退出 Neovim，会关闭专用预览窗口，并恢复终端原来的位置和最大化状态。如果不在 WSL2、不是 Windows Terminal，或 PowerShell 摆窗失败，Markdown 预览仍会用普通浏览器打开，只是不调整窗口布局。
+
 ### LSP
 | 快捷键 | 功能 |
 |--------|------|
@@ -201,7 +221,7 @@ npm install -g neovim
 ```
 
 ### Markdown
-render-markdown.nvim 是主要的 Neovim buffer 内 Markdown 阅读路径。markdown-preview.nvim 继续作为需要浏览器预览时的可选路径。
+render-markdown.nvim 是主要的 Neovim buffer 内 Markdown 阅读路径。需要更宽松的双栏浏览器阅读体验时，使用 `<Space>md` 调用 markdown-preview.nvim。网页正文默认使用 17px 字号、1.75 行高和 900px 正文宽度，并为表格、代码块、列表和引用保留更宽的可读空间。
 
 如果浏览器预览无法工作：
 ```bash
