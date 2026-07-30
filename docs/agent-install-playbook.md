@@ -152,10 +152,11 @@ python3 install-script/agent-runner.py preset minimal
 
 `nvim` 不能只用 `command -v nvim` 判断是否安装完整。这个工具至少包含四层状态：
 
-1. Neovim 二进制：当前脚本固定安装到 `~/.local/nvim-<version>/`，并通过
-   `~/.local/bin/nvim` 暴露命令。
+1. Neovim 二进制：每次安装先构建独立 release，验收成功后通过 `current`
+   原子切换；`~/.local/bin/nvim` 是稳定 launcher。
 2. 配置链接：`~/.config/nvim` 必须指向 `~/hpf_Linux_Config/nvim`。
-3. 插件目录：`lazy.nvim` 和插件必须落到 `~/.local/share/nvim/lazy/`。
+3. 插件目录：`lazy.nvim`、Mason、parser、provider 和运行数据必须落到当前
+   release 自己的 XDG 目录。
 4. 启动验收：`nvim --headless '+qa'` 必须无错误退出。
 
 标准安装方式仍然走 runner：
@@ -173,9 +174,19 @@ install-script/nvim/nvim-verify.sh
 which -a nvim
 nvim --version
 test -L ~/.config/nvim && readlink ~/.config/nvim
-find ~/.local/share/nvim/lazy -maxdepth 1 -mindepth 1 -type d | wc -l
+readlink ~/.local/share/hpf-linux-config/nvim/current
+find "$(readlink -f ~/.local/share/hpf-linux-config/nvim/current)/xdg/data/nvim/lazy" -maxdepth 1 -mindepth 1 -type d | wc -l
 nvim --headless '+checkhealth' '+w! /tmp/hpf-nvim-checkhealth.txt' '+qa'
 ```
+
+release 布局如下：
+
+- `~/.local/share/hpf-linux-config/nvim/releases/<release-id>/`：binary、插件、Mason、parser、provider、state/cache 与 manifest。
+- `current` / `previous`：当前与上一份 release；切换只在 candidate 完整验收后发生。
+- `persistent/`：sessions、bookmarks、undo、shada、grug-far history 和 blink frecency，跨 release 复用。
+
+激活前如仍有用户 Neovim 进程使用当前 binary，安装会拒绝切换。首次迁移只复制现有数据，
+不会删除旧环境；非 symlink 的 `~/.config/nvim` 会直接报错。
 
 其中 `python3 install-script/agent-runner.py check nvim` 会调用
 `install-script/nvim/nvim-verify.sh`，覆盖启动、`checkhealth`、插件加载、

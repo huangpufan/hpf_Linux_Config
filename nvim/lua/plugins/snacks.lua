@@ -19,15 +19,7 @@ return {
         ui_select = true,
       },
     },
-    keys = {
-      {
-        "g=",
-        function()
-          Snacks.lazygit()
-        end,
-        desc = "Open Lazygit",
-      },
-    },
+    keys = require("config.actions").lazy_keys "snacks",
     config = function(_, opts)
       require("snacks").setup(opts)
 

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+RELEASE_ROOT="${HPF_NVIM_RELEASE_ROOT:-$HOME/.local/share/hpf-linux-config/nvim}"
+CURRENT_LINK="$RELEASE_ROOT/current"
+
+if [ ! -L "$CURRENT_LINK" ]; then
+    printf 'nvim launcher: active release link is missing: %s\n' "$CURRENT_LINK" >&2
+    exit 1
+fi
+
+RELEASE_DIR="$(readlink -f "$CURRENT_LINK")"
+if [ ! -x "$RELEASE_DIR/nvim/bin/nvim" ]; then
+    printf 'nvim launcher: active release binary is missing: %s\n' "$RELEASE_DIR/nvim/bin/nvim" >&2
+    exit 1
+fi
+
+export XDG_DATA_HOME="$RELEASE_DIR/xdg/data"
+export XDG_STATE_HOME="$RELEASE_DIR/xdg/state"
+export XDG_CACHE_HOME="$RELEASE_DIR/xdg/cache"
+export XDG_CONFIG_HOME="$RELEASE_DIR/xdg/config"
+export HPF_NVIM_RELEASE_DIR="$RELEASE_DIR"
+
+exec "$RELEASE_DIR/nvim/bin/nvim" "$@"

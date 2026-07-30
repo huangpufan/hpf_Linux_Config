@@ -14,7 +14,7 @@ return {
     "CRAG666/code_runner.nvim",
     cmd = "RunCode",
     config = function()
-      require("code_runner").setup({
+      require("code_runner").setup {
         filetype = {
           c = "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
           cpp = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
@@ -22,7 +22,7 @@ return {
           python = "python3 -u $fileName",
           sh = "bash $fileName",
         },
-      })
+      }
     end,
   },
 
@@ -39,7 +39,6 @@ return {
   {
     "kawre/leetcode.nvim",
     cmd = "Leet",
-    build = ":TSUpdate html",
     dependencies = {
       "nvim-telescope/telescope.nvim",
       "nvim-lua/plenary.nvim",
@@ -60,5 +59,4 @@ return {
       },
     },
   },
-
 }

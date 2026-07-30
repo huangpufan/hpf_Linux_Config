@@ -4,16 +4,6 @@
 
 local M = {}
 
-M.names = {
-  "lua_ls",
-  "clangd",
-  "pyright",
-  "bashls",
-  "jsonls",
-  "marksman",
-  "ts_ls",
-}
-
 local function exepath(command)
   local path = vim.fn.exepath(command)
   return path ~= "" and path or command
@@ -45,20 +35,9 @@ local bashls_path = table.concat(
   ":"
 )
 
-function M.setup()
-  local handlers = require "config.lsp.handlers"
-  local on_attach = handlers.on_attach
-  local capabilities = handlers.capabilities()
-
-  local function server_config(config)
-    return vim.tbl_deep_extend("force", {
-      on_attach = on_attach,
-      capabilities = capabilities,
-    }, config or {})
-  end
-
-  local servers = {
-    lua_ls = server_config {
+function M.overrides()
+  return {
+    lua_ls = {
       settings = {
         Lua = {
           diagnostics = {
@@ -77,7 +56,7 @@ function M.setup()
       },
     },
 
-    clangd = server_config {
+    clangd = {
       cmd = {
         "clangd",
         "--background-index",
@@ -94,7 +73,7 @@ function M.setup()
       },
     },
 
-    pyright = server_config {
+    pyright = {
       settings = {
         python = {
           analysis = {
@@ -104,30 +83,34 @@ function M.setup()
       },
     },
 
-    bashls = server_config {
+    bashls = {
       cmd = { exepath "bash-language-server", "start" },
       cmd_env = {
         BASH_IDE_LOG_LEVEL = "error",
         PATH = bashls_path,
       },
     },
-    jsonls = server_config(),
-    marksman = server_config(),
-    ts_ls = server_config(),
+  }
+end
+
+function M.setup()
+  local handlers = require "config.lsp.handlers"
+  local languages = require "config.languages"
+  local runtime = languages.runtime()
+  local servers = languages.lsp_configs {
+    on_attach = handlers.on_attach,
+    capabilities = handlers.capabilities(),
   }
 
-  for _, name in ipairs(M.names) do
+  for _, name in ipairs(runtime.lsp_names) do
     assert(servers[name], "missing LSP configuration for " .. name)
-  end
-  for name in pairs(servers) do
-    assert(vim.list_contains(M.names, name), "LSP is not included in automatic installation: " .. name)
   end
 
   for name, config in pairs(servers) do
     vim.lsp.config(name, config)
   end
 
-  vim.lsp.enable(M.names)
+  vim.lsp.enable(runtime.lsp_names)
 end
 
 return M

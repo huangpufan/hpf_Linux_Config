@@ -30,6 +30,14 @@ require_command() {
     command -v "$cmd" >/dev/null 2>&1 || fail "missing command: $cmd"
 }
 
+run_lua_file() {
+    local timeout_seconds="$1"
+    local script="$2"
+    timeout "$timeout_seconds" nvim --headless \
+        "+lua local ok,err=xpcall(function() dofile([[$script]]) end, debug.traceback); if not ok then io.stderr:write(err .. '\n'); vim.cmd('cquit 1') end" \
+        '+qa'
+}
+
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 if [ -d "$HOME/.nvm/versions/node" ]; then
     for node_bin in "$HOME"/.nvm/versions/node/*/bin; do
@@ -48,39 +56,52 @@ check_basic_state() {
         *) fail "expected NVIM v0.12.2, got: $version" ;;
     esac
 
-    [ -L "$HOME/.config/nvim" ] || fail "$HOME/.config/nvim is not a symlink"
-    [ "$(readlink -f "$HOME/.config/nvim")" = "$(readlink -f "$NVIM_CONFIG")" ] ||
-        fail "$HOME/.config/nvim does not point to $NVIM_CONFIG"
-    [ -d "$HOME/.local/share/nvim/lazy/lazy.nvim" ] ||
-        fail "lazy.nvim is not installed under ~/.local/share/nvim/lazy"
+    local config_link="$HOME/.config/nvim"
+    if [ -n "${HPF_NVIM_RELEASE_DIR:-}" ]; then
+        config_link="${XDG_CONFIG_HOME:?}/nvim"
+    fi
+    [ -L "$config_link" ] || fail "$config_link is not a symlink"
+    [ "$(readlink -f "$config_link")" = "$(readlink -f "$NVIM_CONFIG")" ] ||
+        fail "$config_link does not point to $NVIM_CONFIG"
+    local data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
+    [ -d "$data_home/nvim/lazy/lazy.nvim" ] ||
+        fail "lazy.nvim is not installed under $data_home/nvim/lazy"
 
-    timeout 120s nvim --headless "$NVIM_CONFIG/init.lua" '+qa' >/dev/null
+    if [ -n "${HPF_NVIM_RELEASE_DIR:-}" ]; then
+        [ "$(readlink -f "$data_home")" = "$(readlink -f "$HPF_NVIM_RELEASE_DIR/xdg/data")" ] ||
+            fail "candidate data path does not belong to $HPF_NVIM_RELEASE_DIR"
+        [ "$(readlink -f "${XDG_STATE_HOME:-}")" = "$(readlink -f "$HPF_NVIM_RELEASE_DIR/xdg/state")" ] ||
+            fail "candidate state path does not belong to $HPF_NVIM_RELEASE_DIR"
+        [ "$(readlink -f "${XDG_CACHE_HOME:-}")" = "$(readlink -f "$HPF_NVIM_RELEASE_DIR/xdg/cache")" ] ||
+            fail "candidate cache path does not belong to $HPF_NVIM_RELEASE_DIR"
+    fi
+
+    local startup_output="$TMPDIR/startup.out"
+    if ! timeout 120s nvim --headless "$NVIM_CONFIG/init.lua" \
+        "+lua if vim.v.errmsg ~= '' then io.stderr:write(vim.v.errmsg .. '\\n'); vim.cmd('cquit 1') end" \
+        '+qa' >"$startup_output" 2>&1; then
+        cat "$startup_output" >&2
+        fail "startup reported an error"
+    fi
+    if grep -qE 'Error (detected while processing|in command line)|Failed to run `config`' "$startup_output"; then
+        cat "$startup_output" >&2
+        fail "startup printed an error"
+    fi
     pass "binary, config link, and startup"
 }
 
 check_external_tools() {
     log "checking external tools used by Nvim plugins"
-    local commands=(
-        tree-sitter
-        lua-language-server
-        clangd
-        pyright-langserver
-        bash-language-server
-        vscode-json-language-server
-        marksman
-        typescript-language-server
-        shellcheck
-        shfmt
-        stylua
-        prettier
-        rst-lint
-        pandoc
-    )
-    local cmd
-    for cmd in "${commands[@]}"; do
-        require_command "$cmd"
-    done
+    python3 "$SCRIPT_DIR/language_catalog.py" verify --include-mason
     pass "external tools"
+}
+
+check_catalogs() {
+    log "checking language and action catalogs"
+    python3 "$SCRIPT_DIR/language_catalog.py" validate
+    python3 -m unittest discover -s "$SCRIPT_DIR/tests" -p 'test_language_catalog.py'
+    timeout 60s nvim --headless '+lua assert(require("config.languages").validate())' '+lua assert(require("config.actions").validate())' '+qa'
+    pass "language and action catalogs"
 }
 
 check_health() {
@@ -201,10 +222,12 @@ check_targeted_behavior() {
     log "checking terminal and Markdown reading-mode behavior"
     local test_file
     for test_file in \
+        "$NVIM_CONFIG/tests/actions_spec.lua" \
         "$NVIM_CONFIG/tests/terminal_manager_spec.lua" \
         "$NVIM_CONFIG/tests/terminal_keymaps_spec.lua" \
         "$NVIM_CONFIG/tests/markdown_preview_spec.lua"; do
-        local output="$TMPDIR/$(basename "$test_file").out"
+        local output
+        output="$TMPDIR/$(basename "$test_file").out"
         if ! timeout 60s nvim --headless "+luafile $test_file" >"$output" 2>&1; then
             cat "$output" >&2
             fail "targeted behavior check failed: $(basename "$test_file")"
@@ -218,21 +241,9 @@ check_lsp_matrix() {
     local workdir="$TMPDIR/lsp"
     mkdir -p "$workdir"
     git -C "$workdir" init -q
-    printf 'local x = vim.version()\n' >"$workdir/test.lua"
-    printf '#include <stdio.h>\nint main(void) { return 0; }\n' >"$workdir/test.c"
-    printf 'print("hello")\n' >"$workdir/test.py"
-    printf '#!/usr/bin/env bash\necho hello\n' >"$workdir/test.sh"
-    printf '{"ok": true}\n' >"$workdir/test.json"
-    printf '# Title\n\ntext\n' >"$workdir/test.md"
-    printf 'const message: string = "hello"\n' >"$workdir/test.ts"
-
-    verify_lsp "$workdir/test.lua" '{"lua_ls"}'
-    verify_lsp "$workdir/test.c" '{"clangd"}'
-    verify_lsp "$workdir/test.py" '{"pyright"}'
-    verify_lsp "$workdir/test.sh" '{"bashls"}'
-    verify_lsp "$workdir/test.json" '{"jsonls"}'
-    verify_lsp "$workdir/test.md" '{"marksman"}'
-    verify_lsp "$workdir/test.ts" '{"ts_ls"}'
+    local script="$TMPDIR/fixture-lsp.lua"
+    sed "s|@WORKDIR@|$workdir|g" "$NVIM_CONFIG/scripts/verify_lsp_fixtures.lua" >"$script"
+    run_lua_file 240 "$script"
     pass "LSP attach matrix"
 }
 
@@ -242,7 +253,9 @@ check_lsp_auto_install_contract() {
     cat >"$script" <<'LUA'
 require("lazy").load({ plugins = { "mason-lspconfig.nvim" } })
 
-local expected = vim.deepcopy(require("config.lsp.servers").names)
+local runtime = require("config.languages").runtime()
+local configured = vim.deepcopy(runtime.lsp_names)
+local expected = vim.deepcopy(configured)
 local settings = require("mason-lspconfig.settings").current
 local actual = vim.deepcopy(settings.ensure_installed)
 local automatic_enable = vim.deepcopy(settings.automatic_enable)
@@ -258,12 +271,21 @@ if not vim.deep_equal(expected, automatic_enable) then
   error("automatic LSP enable list differs from configured servers")
 end
 
-if vim.fn.exists(":MasonInstallAll") ~= 2 then
-  error("MasonInstallAll command is unavailable")
+    if vim.fn.exists(":MasonInstallAll") ~= 2 then
+      error("MasonInstallAll command is unavailable")
+    end
+
+local mapping = require("mason-lspconfig.mappings").get_mason_map().lspconfig_to_package
+local actual_packages = {}
+for _, name in ipairs(configured) do
+  actual_packages[#actual_packages + 1] = mapping[name]
+end
+if not vim.deep_equal(runtime.mason_packages, actual_packages) then
+  error("catalog Mason package projection differs from mason-lspconfig")
 end
 LUA
 
-    timeout 60s nvim --headless "+luafile $script" '+qa'
+    run_lua_file 60 "$script"
     pass "automatic LSP installation contract"
 }
 
@@ -300,60 +322,18 @@ check_replacement_capabilities() {
 
 check_format_lint_matrix() {
     log "checking formatter and linter matrix"
-    local workdir="$TMPDIR/format-lint"
-    mkdir -p "$workdir"
-
-    printf 'local  x={1,2}\n' >"$workdir/test.lua"
-    timeout 30s nvim --headless "$workdir/test.lua" \
-        '+lua require("conform").format({ async = false, timeout_ms = 10000, lsp_format = "never" })' \
-        '+write' '+qa'
-    grep -q 'local x = { 1, 2 }' "$workdir/test.lua" ||
-        fail "conform stylua smoke test did not format Lua"
-
-    printf '%s\n' "#!/usr/bin/env bash" "echo \$UNQUOTED" >"$workdir/test.sh"
-    timeout 30s nvim --headless "$workdir/test.sh" \
-        "+lua local lint=require('lint'); lint.try_lint('shellcheck'); local ok=vim.wait(10000, function() return #vim.diagnostic.get(0) > 0 end, 100); if not ok then print('LINT_FAIL\tshellcheck'); vim.cmd('cquit 1') end" \
-        '+qa'
-
-    printf 'Title\n=====\n\nBad `link\n' >"$workdir/test.rst"
-    timeout 30s nvim --headless "$workdir/test.rst" \
-        "+lua local lint=require('lint'); lint.try_lint('rst_lint'); local ok=vim.wait(10000, function() return #vim.diagnostic.get(0) > 0 end, 100); if not ok then print('LINT_FAIL\trst_lint'); vim.cmd('cquit 1') end" \
-        '+qa'
+    local script="$TMPDIR/fixture-format-lint.lua"
+    sed "s|@WORKDIR@|$TMPDIR/catalog-fixtures|g" "$NVIM_CONFIG/scripts/verify_language_fixtures.lua" >"$script"
+    run_lua_file 120 "$script"
 
     pass "formatter and linter matrix"
-}
-
-verify_lsp() {
-    local file="$1"
-    local expected_lua="$2"
-    timeout 45s nvim --headless "$file" \
-        "+lua local expected=$expected_lua; local ok=vim.wait(20000, function() local seen={} for _,client in ipairs(vim.lsp.get_clients({bufnr=0})) do seen[client.name]=true end for _,name in ipairs(expected) do if not seen[name] then return false end end return true end, 100); if not ok then local names={} for _,client in ipairs(vim.lsp.get_clients({bufnr=0})) do names[#names+1]=client.name end table.sort(names); print('LSP_FAIL\t' .. vim.bo.filetype .. '\t' .. table.concat(names, ',')); vim.cmd('cquit 1') end" \
-        '+qa'
 }
 
 check_treesitter_matrix() {
     log "checking Treesitter parser matrix"
     local required_script="$TMPDIR/treesitter-required.lua"
     cat >"$required_script" <<'LUA'
-local required = {
-  "bash",
-  "c",
-  "cpp",
-  "css",
-  "html",
-  "javascript",
-  "json",
-  "just",
-  "lua",
-  "markdown",
-  "markdown_inline",
-  "python",
-  "regex",
-  "typescript",
-  "vim",
-  "vimdoc",
-  "yaml",
-}
+local required = require("config.languages").runtime().parsers
 local installed = {}
 for _, parser in ipairs(require("nvim-treesitter").get_installed("parsers")) do
   installed[parser] = true
@@ -372,28 +352,9 @@ LUA
         fail "Treesitter parser install matrix failed"
     fi
 
-    local workdir="$TMPDIR/treesitter"
-    mkdir -p "$workdir"
-    printf 'local x = 1\n' >"$workdir/test.lua"
-    printf '#include <stdio.h>\nint main(void){return 0;}\n' >"$workdir/test.c"
-    printf 'int main(){return 0;}\n' >"$workdir/test.cpp"
-    printf 'print("hi")\n' >"$workdir/test.py"
-    printf '#!/usr/bin/env bash\necho hi\n' >"$workdir/test.sh"
-    printf '{"ok":true}\n' >"$workdir/test.json"
-    printf 'ok: true\n' >"$workdir/test.yaml"
-    printf '# T\n\ntext\n' >"$workdir/test.md"
-    printf 'let x = 1;\n' >"$workdir/test.js"
-    printf 'const x: number = 1;\n' >"$workdir/test.ts"
-    printf '<html><body></body></html>\n' >"$workdir/test.html"
-    printf 'body { color: red; }\n' >"$workdir/test.css"
-    printf 'default:\n\techo hi\n' >"$workdir/justfile"
-
-    local file
-    for file in "$workdir"/*; do
-        timeout 20s nvim --headless "$file" \
-            '+lua local ok, err = pcall(vim.treesitter.start); if not ok then print("TS_START_FAIL\t" .. vim.bo.filetype .. "\t" .. tostring(err)); vim.cmd("cquit 1") end' \
-            '+qa'
-    done
+    local script="$TMPDIR/fixture-parsers.lua"
+    sed "s|@WORKDIR@|$TMPDIR/catalog-parser-fixtures|g" "$NVIM_CONFIG/scripts/verify_parser_fixtures.lua" >"$script"
+    run_lua_file 120 "$script"
     pass "Treesitter parser matrix"
 }
 
@@ -405,7 +366,7 @@ check_plugin_cache_clean() {
     )
     local plugin dir status
     for plugin in "${plugins[@]}"; do
-        dir="$HOME/.local/share/nvim/lazy/$plugin"
+        dir="${XDG_DATA_HOME:-$HOME/.local/share}/nvim/lazy/$plugin"
         [ -d "$dir/.git" ] || fail "missing plugin git directory: $plugin"
         status="$(git -C "$dir" status --short)"
         [ -z "$status" ] || fail "$plugin has dirty cache state: $status"
@@ -415,6 +376,7 @@ check_plugin_cache_clean() {
 
 main() {
     check_basic_state
+    check_catalogs
     check_external_tools
     check_health
     check_plugin_loads

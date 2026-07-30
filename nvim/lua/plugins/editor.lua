@@ -22,80 +22,9 @@ return {
   {
     "jake-stewart/multicursor.nvim",
     branch = "1.0",
-    keys = {
-      {
-        "gb",
-        function()
-          require("multicursor-nvim").matchAddCursor(1)
-        end,
-        mode = { "n", "x" },
-        desc = "Add cursor at next match",
-      },
-      {
-        "gB",
-        function()
-          require("multicursor-nvim").matchAddCursor(-1)
-        end,
-        mode = { "n", "x" },
-        desc = "Add cursor at previous match",
-      },
-      {
-        "<space>xj",
-        function()
-          require("multicursor-nvim").lineAddCursor(1)
-        end,
-        mode = { "n", "x" },
-        desc = "Add cursor below",
-      },
-      {
-        "<space>xk",
-        function()
-          require("multicursor-nvim").lineAddCursor(-1)
-        end,
-        mode = { "n", "x" },
-        desc = "Add cursor above",
-      },
-      {
-        "<space>xa",
-        function()
-          require("multicursor-nvim").matchAllAddCursors()
-        end,
-        mode = { "n", "x" },
-        desc = "Add cursors at all matches",
-      },
-      {
-        "<space>x=",
-        function()
-          require("multicursor-nvim").alignCursors()
-        end,
-        desc = "Align cursor columns",
-      },
-      {
-        "<space>xs",
-        function()
-          require("multicursor-nvim").splitCursors()
-        end,
-        mode = "x",
-        desc = "Split selections by regex",
-      },
-      {
-        "<space>xt",
-        function()
-          require("multicursor-nvim").transposeCursors(1)
-        end,
-        mode = "x",
-        desc = "Transpose cursor selections",
-      },
-      {
-        "<space>xr",
-        function()
-          require("multicursor-nvim").restoreCursors()
-        end,
-        desc = "Restore cleared cursors",
-      },
-    },
+    keys = require("config.actions").lazy_keys "multicursor",
     config = function()
-      local mc = require("multicursor-nvim")
+      local mc = require "multicursor-nvim"
       mc.setup()
 
       mc.addKeymapLayer(function(layer_set)
@@ -115,32 +44,7 @@ return {
     "MagicDuck/grug-far.nvim",
     cmd = { "GrugFar", "GrugFarWithin" },
     opts = {},
-    keys = {
-      {
-        "<space>sp",
-        function()
-          require("grug-far").open()
-        end,
-        desc = "Search and replace",
-      },
-      {
-        "<space>sP",
-        function()
-          require("grug-far").open({
-            prefills = { search = vim.fn.expand("<cword>") },
-          })
-        end,
-        desc = "Search and replace cursor word",
-      },
-      {
-        "<space>sp",
-        function()
-          require("grug-far").open()
-        end,
-        mode = "x",
-        desc = "Search and replace selection",
-      },
-    },
+    keys = require("config.actions").lazy_keys "grug_far",
   },
 
   -- Editable quickfix and location lists
@@ -156,7 +60,7 @@ return {
         {
           ">",
           function()
-            require("quicker").expand({ before = 2, after = 2, add_to_existing = true })
+            require("quicker").expand { before = 2, after = 2, add_to_existing = true }
           end,
           desc = "Expand quickfix context",
         },
@@ -186,35 +90,13 @@ return {
         after = { 0, 2 },
       },
     },
-    keys = {
-      {
-        "s",
-        mode = { "n", "x", "o" },
-        function()
-          require("flash").jump()
-        end,
-        desc = "Flash",
-      },
-      {
-        "S",
-        mode = { "n", "x", "o" },
-        function()
-          require("flash").treesitter()
-        end,
-        desc = "Flash Treesitter",
-      },
-    },
+    keys = require("config.actions").lazy_keys "flash",
   },
 
   -- Spider (subword motion)
   {
     "chrisgrieser/nvim-spider",
-    event = "VeryLazy",
-    config = function()
-      vim.keymap.set({ "n", "o", "x" }, "w", "<cmd>lua require('spider').motion('w')<CR>", { desc = "Spider-w" })
-      vim.keymap.set({ "n", "o", "x" }, "e", "<cmd>lua require('spider').motion('e')<CR>", { desc = "Spider-e" })
-      vim.keymap.set({ "n", "o", "x" }, "b", "<cmd>lua require('spider').motion('b')<CR>", { desc = "Spider-b" })
-    end,
+    keys = require("config.actions").lazy_keys "spider",
   },
 
   -- Better escape (jk to escape)
@@ -238,11 +120,11 @@ return {
     branch = "main",
     cmd = { "BookmarkToggle", "BookmarkAnnotate", "BookmarkShowAll" },
     config = function()
-      local bookmarks = require("bookmarks")
-      bookmarks.setup({
+      local bookmarks = require "bookmarks"
+      bookmarks.setup {
         mappings_enabled = false,
         virt_pattern = { "*.lua", "*.md", "*.c", "*.h", "*.sh" },
-      })
+      }
 
       vim.api.nvim_create_user_command("BookmarkToggle", function()
         bookmarks.add_bookmarks(false)
@@ -261,12 +143,12 @@ return {
     "olimorris/persisted.nvim",
     event = "VeryLazy",
     config = function()
-      require("persisted").setup({
+      require("persisted").setup {
         autoload = true,
         before_save = function()
-          vim.cmd("NvimTreeClose")
+          vim.cmd "NvimTreeClose"
         end,
-      })
+      }
     end,
   },
 
@@ -283,7 +165,7 @@ return {
     "m-demare/hlargs.nvim",
     event = "VeryLazy",
     config = function()
-      require("hlargs").setup({
+      require("hlargs").setup {
         color = "#FF7F7F",
         highlight = {},
         excluded_filetypes = {},
@@ -316,7 +198,7 @@ return {
             slow_parse = 5000,
           },
         },
-      })
+      }
     end,
   },
 
@@ -325,9 +207,9 @@ return {
     "smjonas/inc-rename.nvim",
     cmd = "IncRename",
     config = function()
-      require("inc_rename").setup({
+      require("inc_rename").setup {
         input_buffer_type = "snacks",
-      })
+      }
     end,
   },
 
@@ -350,11 +232,11 @@ return {
   -- Goto preview
   {
     "rmagatti/goto-preview",
-    keys = { "gp", "gP" },
+    keys = require("config.actions").lazy_keys "goto_preview",
     config = function()
-      require("goto-preview").setup({
-        default_mappings = true,
-      })
+      require("goto-preview").setup {
+        default_mappings = false,
+      }
     end,
   },
 
@@ -364,8 +246,8 @@ return {
     cmd = "Ouroboros",
     dependencies = "nvim-lua/plenary.nvim",
     config = function()
-      local ouroboros = require("ouroboros")
-      ouroboros.setup({})
+      local ouroboros = require "ouroboros"
+      ouroboros.setup {}
       vim.api.nvim_create_user_command("Ouroboros", function()
         ouroboros.switch()
       end, {})

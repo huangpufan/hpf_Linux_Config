@@ -180,11 +180,12 @@ python3 install-script/agent-runner.py check nvim
 
 The install script handles:
 
-- Neovim dependencies and provider dependencies
-- The pinned Neovim build under `~/.local/nvim-<version>/`
-- The `~/.local/bin/nvim` symlink
+- External tools from `languages.json` and provider dependencies
+- An isolated candidate under `~/.local/share/hpf-linux-config/nvim/releases/`
+- A stable `~/.local/bin/nvim` launcher for the active `current` release
 - The `~/.config/nvim` link to `~/hpf_Linux_Config/nvim`
-- `lazy.nvim` plugin sync and a headless startup smoke check
+- Candidate-local plugins, Mason LSPs, parsers, and full verification before activation
+- `previous` retention, automatic rollback after a failed activation smoke, and persistent user data
 
 Manual post-install checks:
 
@@ -192,11 +193,15 @@ Manual post-install checks:
 which -a nvim
 nvim --version
 test -L ~/.config/nvim && readlink ~/.config/nvim
+readlink ~/.local/share/hpf-linux-config/nvim/current
 nvim --headless '+qa'
 nvim --headless '+checkhealth' '+w! /tmp/hpf-nvim-checkhealth.txt' '+qa'
 ```
 
 After the first normal Neovim startup, Mason automatically installs every configured LSP server.
+`languages.json` is the single catalog for languages, LSPs, Treesitter parsers,
+formatters, linters, external tools, and verification fixtures. Both the Lua runtime
+and the release installer project their own inputs from it.
 You can also manually trigger the full installation:
 
 ```vim
@@ -227,7 +232,7 @@ Markdown buffers remain plain editing surfaces without an in-buffer rendering pl
 
 If browser preview doesn't work:
 ```bash
-cd ~/.local/share/nvim/lazy/markdown-preview.nvim/app/ && npm install
+cd "$(readlink -f ~/.local/share/hpf-linux-config/nvim/current)/xdg/data/nvim/lazy/markdown-preview.nvim/app/" && npm install
 ```
 
 ### Treesitter

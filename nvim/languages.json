@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "tools": [
+    { "id": "git", "command": "git", "owner": "apt", "package": "git", "required": true, "role": "build" },
+    { "id": "gcc", "command": "gcc", "owner": "apt", "package": "gcc", "required": true, "role": "build" },
+    { "id": "make", "command": "make", "owner": "apt", "package": "make", "required": true, "role": "build" },
+    { "id": "curl", "command": "curl", "owner": "apt", "package": "curl", "required": true, "role": "build" },
+    { "id": "tar", "command": "tar", "owner": "apt", "package": "tar", "required": true, "role": "build" },
+    { "id": "unzip", "command": "unzip", "owner": "apt", "package": "unzip", "required": true, "role": "build" },
+    { "id": "wget", "command": "wget", "owner": "apt", "package": "wget", "required": true, "role": "build" },
+    { "id": "npm", "command": "npm", "owner": "apt", "package": "npm", "required": true, "role": "build" },
+    { "id": "cargo", "command": "cargo", "owner": "apt", "package": "cargo", "required": true, "role": "build" },
+    { "id": "python3", "command": "python3", "owner": "apt", "package": ["python3", "python3-venv"], "required": true, "role": "provider" },
+    { "id": "xclip", "command": "xclip", "owner": "apt", "package": "xclip", "required": true, "role": "runtime" },
+    { "id": "ripgrep", "command": "rg", "owner": "apt", "package": "ripgrep", "required": true, "role": "runtime" },
+    { "id": "shellcheck", "command": "shellcheck", "owner": "apt", "package": "shellcheck", "required": true, "role": "linter" },
+    { "id": "shfmt", "command": "shfmt", "owner": "apt", "package": "shfmt", "required": true, "role": "formatter" },
+    { "id": "rst-lint", "command": "rst-lint", "owner": "apt", "package": "python3-restructuredtext-lint", "required": true, "role": "linter" },
+    { "id": "pandoc", "command": "pandoc", "owner": "apt", "package": "pandoc", "required": true, "role": "formatter" },
+    { "id": "node-provider", "command": "neovim-node-host", "owner": "npm", "package": "neovim", "required": true, "role": "provider" },
+    { "id": "prettier", "command": "prettier", "owner": "npm", "package": "prettier", "version": "3.8.3", "version_args": ["--version"], "required": true, "role": "formatter" },
+    { "id": "typescript", "command": "tsc", "owner": "npm", "package": "typescript", "version": "6.0.3", "version_args": ["--version"], "required": true, "role": "runtime" },
+    { "id": "tree-sitter", "command": "tree-sitter", "owner": "cargo", "package": "tree-sitter-cli", "version": "0.26.9", "version_args": ["--version"], "locked": true, "required": true, "role": "parser" },
+    { "id": "stylua", "command": "stylua", "owner": "cargo", "package": "stylua", "version": "2.5.2", "version_args": ["--version"], "locked": true, "required": true, "role": "formatter" },
+    { "id": "lua-language-server", "command": "lua-language-server", "owner": "mason", "package": "lua-language-server", "required": true, "role": "lsp" },
+    { "id": "clangd", "command": "clangd", "owner": "mason", "package": "clangd", "required": true, "role": "lsp" },
+    { "id": "pyright", "command": "pyright-langserver", "owner": "mason", "package": "pyright", "required": true, "role": "lsp" },
+    { "id": "bash-language-server", "command": "bash-language-server", "owner": "mason", "package": "bash-language-server", "required": true, "role": "lsp" },
+    { "id": "json-lsp", "command": "vscode-json-language-server", "owner": "mason", "package": "json-lsp", "required": true, "role": "lsp" },
+    { "id": "marksman", "command": "marksman", "owner": "mason", "package": "marksman", "required": true, "role": "lsp" },
+    { "id": "typescript-language-server", "command": "typescript-language-server", "owner": "mason", "package": "typescript-language-server", "required": true, "role": "lsp" }
+  ],
+  "languages": [
+    {
+      "id": "lua",
+      "filetypes": ["lua"],
+      "lsp": { "name": "lua_ls", "tool": "lua-language-server" },
+      "parsers": ["lua"],
+      "formatters": [{ "name": "stylua", "tool": "stylua" }],
+      "linters": [],
+      "fixtures": [
+        { "filename": "test.lua", "content": "local  x={1,2}\n", "parser": "lua", "lsp": true, "format": { "expected_contains": "local x = { 1, 2 }" } }
+      ]
+    },
+    {
+      "id": "c_cpp",
+      "filetypes": ["c", "cpp"],
+      "lsp": { "name": "clangd", "tool": "clangd" },
+      "parsers": ["c", "cpp"],
+      "formatters": [],
+      "linters": [],
+      "fixtures": [
+        { "filename": "test.c", "content": "#include <stdio.h>\nint main(void) { return 0; }\n", "parser": "c", "lsp": true },
+        { "filename": "test.cpp", "content": "int main() { return 0; }\n", "parser": "cpp" }
+      ]
+    },
+    {
+      "id": "python",
+      "filetypes": ["python"],
+      "lsp": { "name": "pyright", "tool": "pyright" },
+      "parsers": ["python"],
+      "formatters": [],
+      "linters": [],
+      "fixtures": [
+        { "filename": "test.py", "content": "print(\"hello\")\n", "parser": "python", "lsp": true }
+      ]
+    },
+    {
+      "id": "shell",
+      "filetypes": ["sh", "bash", "zsh"],
+      "lsp": { "name": "bashls", "tool": "bash-language-server" },
+      "parsers": ["bash"],
+      "formatters": [{ "name": "shfmt", "tool": "shfmt" }],
+      "linters": [{ "name": "shellcheck", "tool": "shellcheck" }],
+      "fixtures": [
+        { "filename": "test.sh", "content": "#!/usr/bin/env bash\necho $UNQUOTED\n", "parser": "bash", "lsp": true, "lint": { "expect_diagnostics": true } }
+      ]
+    },
+    {
+      "id": "json",
+      "filetypes": ["json", "jsonc"],
+      "lsp": { "name": "jsonls", "tool": "json-lsp" },
+      "parsers": ["json"],
+      "formatters": [{ "name": "prettier", "tool": "prettier" }],
+      "linters": [],
+      "fixtures": [
+        { "filename": "test.json", "content": "{\"ok\": true}\n", "parser": "json", "lsp": true }
+      ]
+    },
+    {
+      "id": "yaml",
+      "filetypes": ["yaml"],
+      "parsers": ["yaml"],
+      "formatters": [{ "name": "prettier", "tool": "prettier" }],
+      "linters": [],
+      "fixtures": [
+        { "filename": "test.yaml", "content": "ok: true\n", "parser": "yaml" }
+      ]
+    },
+    {
+      "id": "markdown",
+      "filetypes": ["markdown"],
+      "lsp": { "name": "marksman", "tool": "marksman" },
+      "parsers": ["markdown"],
+      "formatters": [{ "name": "prettier", "tool": "prettier" }],
+      "linters": [],
+      "fixtures": [
+        { "filename": "test.md", "content": "# Title\n\ntext\n", "parser": "markdown", "lsp": true }
+      ]
+    },
+    {
+      "id": "javascript_typescript",
+      "filetypes": ["javascript", "typescript"],
+      "lsp": { "name": "ts_ls", "tool": "typescript-language-server" },
+      "parsers": ["javascript", "typescript"],
+      "formatters": [{ "name": "prettier", "tool": "prettier" }],
+      "linters": [],
+      "fixtures": [
+        { "filename": "test.js", "content": "let value = 1;\n", "parser": "javascript" },
+        { "filename": "test.ts", "content": "const message: string = \"hello\";\n", "parser": "typescript", "lsp": true }
+      ]
+    },
+    {
+      "id": "html",
+      "filetypes": ["html"],
+      "parsers": ["html"],
+      "formatters": [{ "name": "prettier", "tool": "prettier" }],
+      "linters": [],
+      "fixtures": [
+        { "filename": "test.html", "content": "<html><body></body></html>\n", "parser": "html" }
+      ]
+    },
+    {
+      "id": "css",
+      "filetypes": ["css"],
+      "parsers": ["css"],
+      "formatters": [{ "name": "prettier", "tool": "prettier" }],
+      "linters": [],
+      "fixtures": [
+        { "filename": "test.css", "content": "body { color: red; }\n", "parser": "css" }
+      ]
+    },
+    {
+      "id": "vim",
+      "filetypes": ["vim"],
+      "parsers": ["vim"],
+      "formatters": [],
+      "linters": [],
+      "fixtures": [
+        { "filename": "test.vim", "content": "let g:catalog_fixture = 1\n", "parser": "vim" }
+      ]
+    },
+    {
+      "id": "rst",
+      "filetypes": ["rst"],
+      "parsers": [],
+      "formatters": [{ "name": "rst_pandoc", "tool": "pandoc" }],
+      "linters": [{ "name": "rst_lint", "tool": "rst-lint" }],
+      "fixtures": [
+        { "filename": "test.rst", "content": "Title\n=====\n\nBad `link\n", "lint": { "expect_diagnostics": true } }
+      ]
+    }
+  ],
+  "extra_parsers": [
+    "markdown_inline",
+    "vimdoc",
+    "regex",
+    { "name": "just", "fixture": { "filename": "justfile", "content": "default:\n\techo hi\n" } }
+  ]
+}

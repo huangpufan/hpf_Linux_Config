@@ -9,46 +9,7 @@ return {
   {
     "akinsho/toggleterm.nvim",
     cmd = { "ToggleTerm", "TermExec", "TermNew", "TermSelect" },
-    keys = {
-      {
-        "<C-p>",
-        function()
-          terminal_manager.toggle "float"
-        end,
-        mode = { "n", "t" },
-        desc = "Toggle floating terminal",
-      },
-      {
-        "<C-q>",
-        terminal_manager.new_terminal,
-        mode = { "n", "t" },
-        desc = "New terminal in current layout",
-      },
-      {
-        "<C-left>",
-        function()
-          terminal_manager.cycle(-1)
-        end,
-        mode = { "n", "t" },
-        desc = "Previous terminal in current layout",
-      },
-      {
-        "<C-right>",
-        function()
-          terminal_manager.cycle(1)
-        end,
-        mode = { "n", "t" },
-        desc = "Next terminal in current layout",
-      },
-      {
-        "<C-up>",
-        terminal_manager.select_terminal,
-        mode = { "n", "t" },
-        desc = "Select terminal in current layout",
-      },
-      { "-", desc = "Toggle horizontal terminal" },
-      { "=", desc = "Toggle vertical terminal" },
-    },
+    keys = require("config.actions").lazy_keys "toggleterm",
     opts = {
       highlights = {
         Normal = { link = "Normal" },
@@ -73,13 +34,6 @@ return {
     },
     config = function(_, opts)
       require("toggleterm").setup(opts)
-
-      vim.keymap.set("n", "-", function()
-        terminal_manager.toggle "horizontal"
-      end, { desc = "Toggle horizontal terminal" })
-      vim.keymap.set("n", "=", function()
-        terminal_manager.toggle "vertical"
-      end, { desc = "Toggle vertical terminal" })
     end,
   },
 }

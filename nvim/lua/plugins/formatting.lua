@@ -9,21 +9,7 @@ return {
     cmd = "ConformInfo",
     event = "VeryLazy",
     opts = {
-      formatters_by_ft = {
-        lua = { "stylua" },
-        sh = { "shfmt" },
-        bash = { "shfmt" },
-        zsh = { "shfmt" },
-        rst = { "rst_pandoc" },
-        json = { "prettier" },
-        jsonc = { "prettier" },
-        yaml = { "prettier" },
-        markdown = { "prettier" },
-        html = { "prettier" },
-        css = { "prettier" },
-        javascript = { "prettier" },
-        typescript = { "prettier" },
-      },
+      formatters_by_ft = require("config.languages").runtime().formatters_by_ft,
       default_format_opts = {
         lsp_format = "fallback",
         timeout_ms = 1000,
@@ -61,12 +47,7 @@ return {
         }),
       }
 
-      lint.linters_by_ft = {
-        sh = { "shellcheck" },
-        bash = { "shellcheck" },
-        zsh = { "shellcheck" },
-        rst = { "rst_lint" },
-      }
+      lint.linters_by_ft = require("config.languages").runtime().linters_by_ft
 
       vim.api.nvim_create_user_command("Lint", function()
         lint.try_lint()

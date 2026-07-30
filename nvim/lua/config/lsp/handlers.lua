@@ -4,32 +4,8 @@
 
 local M = {}
 
-local function lsp_keymaps(bufnr)
-  local opts = { noremap = true, silent = true, buffer = bufnr }
-  local map = vim.keymap.set
-
-  map("n", "gD", vim.lsp.buf.declaration, opts)
-  map("n", "gd", vim.lsp.buf.definition, opts)
-  map("n", "K", vim.lsp.buf.hover, opts)
-  map("n", "gi", vim.lsp.buf.implementation, opts)
-  map("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-  map("n", "gr", function()
-    require("telescope.builtin").lsp_references({
-      include_declaration = false,
-      show_line = true,
-      trim_text = true,
-    })
-  end, opts)
-  map("n", "[d", function()
-    vim.diagnostic.jump({ count = -1, float = true })
-  end, opts)
-  map("n", "]d", function()
-    vim.diagnostic.jump({ count = 1, float = true })
-  end, opts)
-end
-
-M.on_attach = function(_, bufnr)
-  lsp_keymaps(bufnr)
+M.on_attach = function(client, bufnr)
+  require("config.actions").install("lsp", { bufnr = bufnr, client = client })
 end
 
 M.capabilities = function()
@@ -45,7 +21,7 @@ end
 
 function M.setup()
   -- Diagnostic config
-  vim.diagnostic.config({
+  vim.diagnostic.config {
     virtual_text = true,
     signs = {
       text = {
@@ -66,7 +42,7 @@ function M.setup()
       header = "",
       prefix = "",
     },
-  })
+  }
 
   -- Hover and signature help borders
   local hover = vim.lsp.handlers.hover

@@ -41,8 +41,8 @@ return {
       "neovim/nvim-lspconfig",
     },
     opts = {
-      ensure_installed = require("config.lsp.servers").names,
-      automatic_enable = require("config.lsp.servers").names,
+      ensure_installed = require("config.languages").runtime().lsp_names,
+      automatic_enable = require("config.languages").runtime().lsp_names,
     },
     config = function(_, opts)
       require("mason-lspconfig").setup(opts)

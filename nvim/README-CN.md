@@ -179,11 +179,12 @@ python3 install-script/agent-runner.py check nvim
 
 安装脚本会完成：
 
-- 安装 Neovim 依赖与 provider 依赖
-- 安装固定版本 Neovim 到 `~/.local/nvim-<version>/`
-- 创建 `~/.local/bin/nvim`
+- 按 `languages.json` 安装 Neovim 外部工具与 provider 依赖
+- 在 `~/.local/share/hpf-linux-config/nvim/releases/` 构建隔离 candidate
+- 通过 `~/.local/bin/nvim` 稳定 launcher 激活 `current` release
 - 将 `~/.config/nvim` 链接到 `~/hpf_Linux_Config/nvim`
-- 同步 `lazy.nvim` 插件并执行 headless 启动验收
+- 在 candidate 内同步插件、Mason LSP 与 parser，完整验收后才原子切换
+- 保留 `previous`，激活后 smoke 失败自动回滚；用户数据放在 `persistent/`
 
 安装后可人工复核：
 
@@ -191,11 +192,14 @@ python3 install-script/agent-runner.py check nvim
 which -a nvim
 nvim --version
 test -L ~/.config/nvim && readlink ~/.config/nvim
+readlink ~/.local/share/hpf-linux-config/nvim/current
 nvim --headless '+qa'
 nvim --headless '+checkhealth' '+w! /tmp/hpf-nvim-checkhealth.txt' '+qa'
 ```
 
 首次正常启动 Neovim 后，Mason 会自动安装配置中声明的全部 LSP 服务器。
+语言、LSP、Treesitter、formatter、linter、外部工具与验证 fixture 的唯一目录是
+`languages.json`；Lua 运行时和 release 安装器都从它生成各自的投影。
 也可以手动重新触发完整安装：
 
 ```vim
@@ -225,7 +229,7 @@ Neovim buffer 内保持普通 Markdown 编辑，不加载本地渲染插件。�
 
 如果浏览器预览无法工作：
 ```bash
-cd ~/.local/share/nvim/lazy/markdown-preview.nvim/app/ && npm install
+cd "$(readlink -f ~/.local/share/hpf-linux-config/nvim/current)/xdg/data/nvim/lazy/markdown-preview.nvim/app/" && npm install
 ```
 
 ### Treesitter

@@ -2,41 +2,19 @@
   Treesitter configuration
 --]]
 
-local parsers = {
-  "c",
-  "cpp",
-  "lua",
-  "python",
-  "bash",
-  "json",
-  "yaml",
-  "markdown",
-  "markdown_inline",
-  "vim",
-  "vimdoc",
-  "regex",
-  "html",
-  "css",
-  "javascript",
-  "typescript",
-  "just",
-}
+local parsers = require("config.languages").runtime().parsers
 
-local install_dir = vim.fn.stdpath("data") .. "/site"
+local install_dir = vim.fn.stdpath "data" .. "/site"
 
 return {
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
-    build = function()
-      local treesitter = require("nvim-treesitter")
-      treesitter.setup({ install_dir = install_dir })
-      treesitter.install(parsers):wait(300000)
-    end,
     config = function()
-      local treesitter = require("nvim-treesitter")
-      treesitter.setup({ install_dir = install_dir })
+      local treesitter = require "nvim-treesitter"
+      treesitter.setup { install_dir = install_dir }
+      treesitter.install(parsers)
 
       vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("HPFTreesitter", { clear = true }),
@@ -55,16 +33,16 @@ return {
     branch = "main",
     dependencies = "nvim-treesitter/nvim-treesitter",
     config = function()
-      require("nvim-treesitter-textobjects").setup({
+      require("nvim-treesitter-textobjects").setup {
         select = {
           lookahead = true,
         },
         move = {
           set_jumps = true,
         },
-      })
+      }
 
-      local select = require("nvim-treesitter-textobjects.select")
+      local select = require "nvim-treesitter-textobjects.select"
       vim.keymap.set({ "x", "o" }, "af", function()
         select.select_textobject("@function.outer", "textobjects")
       end)
@@ -78,7 +56,7 @@ return {
         select.select_textobject("@class.inner", "textobjects")
       end)
 
-      local move = require("nvim-treesitter-textobjects.move")
+      local move = require "nvim-treesitter-textobjects.move"
       vim.keymap.set({ "n", "x", "o" }, "]m", function()
         move.goto_next_start("@function.outer", "textobjects")
       end)

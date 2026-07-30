@@ -8,15 +8,14 @@ return {
     "folke/which-key.nvim",
     event = "VeryLazy",
     config = function()
-      local wk = require("which-key")
-      wk.setup({
+      local wk = require "which-key"
+      wk.setup {
         plugins = {
           marks = false,
           registers = true,
         },
-      })
+      }
 
-      -- Keybindings are defined in config/keybindings.lua
       require("config.keybindings").setup(wk)
     end,
   },
@@ -26,7 +25,7 @@ return {
     "nvim-tree/nvim-tree.lua",
     cmd = { "NvimTreeToggle", "NvimTreeFindFile", "NvimTreeOpen" },
     config = function()
-      require("nvim-tree").setup({
+      require("nvim-tree").setup {
         sort_by = "case_sensitive",
         view = {
           adaptive_size = false,
@@ -44,7 +43,7 @@ return {
         git = {
           enable = true,
         },
-      })
+      }
     end,
   },
 
@@ -53,7 +52,7 @@ return {
     "akinsho/bufferline.nvim",
     event = "VeryLazy",
     config = function()
-      require("bufferline").setup({
+      require("bufferline").setup {
         options = {
           numbers = "none",
           diagnostics = false,
@@ -79,11 +78,11 @@ return {
           },
           groups = {
             items = {
-              require("bufferline.groups").builtin.pinned:with({ icon = "" }),
+              require("bufferline.groups").builtin.pinned:with { icon = "" },
             },
           },
         },
-      })
+      }
     end,
   },
 
@@ -104,8 +103,8 @@ return {
       return vim.fn.argc(-1) == 0
     end,
     config = function()
-      local alpha = require("alpha")
-      local dashboard = require("alpha.themes.dashboard")
+      local alpha = require "alpha"
+      local dashboard = require "alpha.themes.dashboard"
 
       dashboard.section.header.val = {
         "                                                     ",
@@ -130,7 +129,7 @@ return {
       -- Center dashboard vertically
       dashboard.config.opts.noautocmd = true
       dashboard.config.layout = {
-        { type = "padding", val = vim.fn.max({ 2, vim.fn.floor(vim.fn.winheight(0) * 0.2) }) },
+        { type = "padding", val = vim.fn.max { 2, vim.fn.floor(vim.fn.winheight(0) * 0.2) } },
         dashboard.section.header,
         { type = "padding", val = 2 },
         dashboard.section.buttons,
@@ -147,8 +146,8 @@ return {
     "b0o/incline.nvim",
     event = "VeryLazy",
     config = function()
-      local helpers = require("incline.helpers")
-      require("incline").setup({
+      local helpers = require "incline.helpers"
+      require("incline").setup {
         window = {
           padding = 0,
           margin = { horizontal = 0 },
@@ -165,7 +164,7 @@ return {
             guibg = "#44406e",
           }
         end,
-      })
+      }
     end,
   },
 
@@ -174,7 +173,7 @@ return {
     "stevearc/aerial.nvim",
     cmd = "AerialToggle",
     config = function()
-      require("aerial").setup({
+      require("aerial").setup {
         backends = { "markdown", "man", "lsp", "treesitter" },
         layout = {
           max_width = { 35, 0.16 },
@@ -183,7 +182,7 @@ return {
           default_direction = "right",
         },
         attach_mode = "global",
-      })
+      }
     end,
   },
 
@@ -210,5 +209,4 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {},
   },
-
 }
