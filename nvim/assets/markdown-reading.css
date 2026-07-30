@@ -29,7 +29,7 @@
 .markdown-body {
   box-sizing: border-box;
   max-width: none;
-  padding: 0;
+  padding: 0 1.75em;
   color: var(--markdown-text);
   background: var(--markdown-surface);
   border: 1px solid var(--markdown-border);
@@ -58,6 +58,7 @@
 .markdown-body h4,
 .markdown-body h5,
 .markdown-body h6 {
+  position: relative;
   margin-top: 1.4em;
   margin-bottom: 0.65em;
   font-weight: 650;
@@ -221,7 +222,10 @@
 }
 
 .markdown-body .anchor {
-  margin-left: -1.25em;
+  position: absolute;
+  right: 100%;
+  margin-right: 0.35em;
+  margin-left: 0;
   visibility: hidden;
 }
 
