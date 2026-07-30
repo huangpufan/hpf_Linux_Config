@@ -186,17 +186,72 @@ class NvimReleaseTest(unittest.TestCase):
         self.assertEqual(curl[curl.index("--continue-at") + 1], "-")
         self.assertEqual(timeout, 930)
         self.assertTrue((candidate / "nvim/bin/nvim").is_file())
+        self.assertEqual((candidate / "lazy-lock.json").read_text(encoding="utf-8"), "{}")
 
-    def test_candidate_build_restores_plugin_lock_without_updating_it(self) -> None:
+    def test_candidate_build_installs_from_plugin_lock_without_updating_it(self) -> None:
         candidate = self.make_release("new.candidate")
         installer = self.installer()
         commands: list[list[str]] = []
-        installer._run = lambda command, **kwargs: commands.append(command)
+
+        def record(command: list[str], **kwargs) -> None:
+            commands.append(command)
+            if command[:2] == ["git", "clone"]:
+                entrypoint = Path(command[-1]) / "lua/lazy/init.lua"
+                entrypoint.parent.mkdir(parents=True)
+                entrypoint.write_text("return {}", encoding="utf-8")
+
+        installer._run = record
 
         installer.build_candidate(candidate)
 
-        self.assertIn("+Lazy! restore", commands[0])
-        self.assertNotIn("+Lazy! sync", commands[0])
+        self.assertEqual(commands[0][:2], ["git", "clone"])
+        self.assertIn("+Lazy! install", commands[1])
+        self.assertNotIn("+Lazy! sync", commands[1])
+        self.assertNotIn("+Lazy! restore", commands[1])
+        self.assertEqual(installer._release_env(candidate)["HPF_NVIM_LOCKFILE"], str(candidate / "lazy-lock.json"))
+
+    def test_lazy_bootstrap_retries_after_a_stalled_clone(self) -> None:
+        candidate = self.make_release("new.candidate")
+        installer = self.installer()
+        attempts = 0
+        observed_env: dict[str, str] = {}
+
+        def flaky_clone(command: list[str], *, env=None, timeout=None) -> None:
+            nonlocal attempts, observed_env
+            attempts += 1
+            observed_env = env
+            self.assertEqual(timeout, 180)
+            if attempts == 1:
+                Path(command[-1]).mkdir(parents=True)
+                raise subprocess.TimeoutExpired(command, timeout)
+            entrypoint = Path(command[-1]) / "lua/lazy/init.lua"
+            entrypoint.parent.mkdir(parents=True)
+            entrypoint.write_text("return {}", encoding="utf-8")
+
+        installer._run = flaky_clone
+        installer.install_lazy_bootstrap(candidate)
+
+        self.assertEqual(attempts, 2)
+        self.assertEqual(observed_env["GIT_HTTP_LOW_SPEED_LIMIT"], "1024")
+        self.assertEqual(observed_env["GIT_HTTP_LOW_SPEED_TIME"], "30")
+
+    def test_lazy_bootstrap_replaces_an_incomplete_clone(self) -> None:
+        candidate = self.make_release("new.candidate")
+        destination = candidate / "xdg/data/nvim/lazy/lazy.nvim"
+        destination.mkdir(parents=True)
+        (destination / "partial").write_text("incomplete", encoding="utf-8")
+        installer = self.installer()
+
+        def complete_clone(command: list[str], **kwargs) -> None:
+            self.assertFalse((Path(command[-1]) / "partial").exists())
+            entrypoint = Path(command[-1]) / "lua/lazy/init.lua"
+            entrypoint.parent.mkdir(parents=True)
+            entrypoint.write_text("return {}", encoding="utf-8")
+
+        installer._run = complete_clone
+        installer.install_lazy_bootstrap(candidate)
+
+        self.assertTrue((destination / "lua/lazy/init.lua").is_file())
 
     def test_release_id_keeps_loader_cache_paths_below_name_limit(self) -> None:
         installer = self.installer()
@@ -231,6 +286,24 @@ class NvimReleaseTest(unittest.TestCase):
         self.assertEqual(observed["release"], str(first))
         self.assertEqual(observed["data"], str(first / "xdg/data"))
         self.assertEqual(observed["config"], str(first / "xdg/config"))
+
+    def test_candidate_curl_wrapper_bounds_nested_downloads(self) -> None:
+        candidate = self.make_release("new.candidate")
+        installer = self.installer()
+        installer.install_network_wrappers(candidate)
+
+        wrapper = candidate / "support/bin/curl"
+        script = wrapper.read_text(encoding="utf-8")
+        self.assertIn("--retry-all-errors", script)
+        self.assertIn("--speed-time 30", script)
+        self.assertIn("--max-time 600", script)
+        self.assertTrue(os.access(wrapper, os.X_OK))
+        wget_wrapper = candidate / "support/bin/wget"
+        wget_script = wget_wrapper.read_text(encoding="utf-8")
+        self.assertIn("--tries=5", wget_script)
+        self.assertIn("--read-timeout=30", wget_script)
+        self.assertTrue(os.access(wget_wrapper, os.X_OK))
+        self.assertEqual(installer._release_env(candidate)["PATH"].split(":", 1)[0], str(candidate / "support/bin"))
 
     def test_success_keeps_current_and_previous_only(self) -> None:
         old = self.make_release("old")

@@ -224,6 +224,7 @@ class ReleaseInstaller:
         for relative in ("xdg/config", "xdg/data", "xdg/state", "xdg/cache"):
             (candidate / relative).mkdir(parents=True, exist_ok=True)
         (candidate / "xdg/config/nvim").symlink_to(self.repo_root / "nvim")
+        shutil.copy2(self.repo_root / "nvim/lazy-lock.json", candidate / "lazy-lock.json")
         self._link_persistent(candidate)
 
         if self.skip_download:
@@ -290,17 +291,76 @@ class ReleaseInstaller:
                 "XDG_STATE_HOME": str(release / "xdg/state"),
                 "XDG_CACHE_HOME": str(release / "xdg/cache"),
                 "HPF_NVIM_RELEASE_DIR": str(release),
-                "PATH": f"{release / 'nvim/bin'}:{release / 'xdg/data/nvim/mason/bin'}:{self.home / '.local/bin'}:{self.home / '.cargo/bin'}:{env.get('PATH', '')}",
+                "HPF_NVIM_LOCKFILE": str(release / "lazy-lock.json"),
+                "GIT_HTTP_LOW_SPEED_LIMIT": "1024",
+                "GIT_HTTP_LOW_SPEED_TIME": "30",
+                "GIT_TERMINAL_PROMPT": "0",
+                "PATH": f"{release / 'support/bin'}:{release / 'nvim/bin'}:{release / 'xdg/data/nvim/mason/bin'}:{self.home / '.local/bin'}:{self.home / '.cargo/bin'}:{env.get('PATH', '')}",
             }
         )
         return env
 
+    def install_network_wrappers(self, candidate: Path) -> None:
+        system_curl = shutil.which("curl")
+        system_wget = shutil.which("wget")
+        if not system_curl or not system_wget:
+            raise ReleaseError("required system download commands are missing")
+        wrapper = candidate / "support/bin/curl"
+        wrapper.parent.mkdir(parents=True, exist_ok=True)
+        wrapper.write_text(
+            "#!/usr/bin/env bash\n"
+            "set -Eeuo pipefail\n"
+            f'exec "{system_curl}" --retry 5 --retry-all-errors --retry-delay 2 '
+            '--connect-timeout 20 --speed-limit 1024 --speed-time 30 --max-time 600 "$@"\n',
+            encoding="utf-8",
+        )
+        wrapper.chmod(0o755)
+        wget_wrapper = candidate / "support/bin/wget"
+        wget_wrapper.write_text(
+            "#!/usr/bin/env bash\n"
+            "set -Eeuo pipefail\n"
+            f'exec "{system_wget}" --tries=5 --timeout=30 --read-timeout=30 --waitretry=2 "$@"\n',
+            encoding="utf-8",
+        )
+        wget_wrapper.chmod(0o755)
+
+    def install_lazy_bootstrap(self, candidate: Path) -> None:
+        destination = candidate / "xdg/data/nvim/lazy/lazy.nvim"
+        lazy_entrypoint = destination / "lua/lazy/init.lua"
+        if lazy_entrypoint.is_file():
+            return
+        env = self._release_env(candidate)
+        command = [
+            "git",
+            "clone",
+            "--filter=blob:none",
+            "--branch=stable",
+            "https://github.com/folke/lazy.nvim.git",
+            str(destination),
+        ]
+        last_error: Exception | None = None
+        for attempt in range(1, 6):
+            if destination.exists():
+                shutil.rmtree(destination)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            try:
+                self._run(command, env=env, timeout=180)
+                if lazy_entrypoint.is_file():
+                    return
+                last_error = ReleaseError("lazy.nvim clone completed without lua/lazy/init.lua")
+            except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as error:
+                last_error = error
+            print(f"[nvim-release] lazy.nvim bootstrap attempt {attempt}/5 failed", file=sys.stderr, flush=True)
+        raise ReleaseError("unable to bootstrap lazy.nvim after 5 attempts") from last_error
+
     def build_candidate(self, candidate: Path) -> None:
         binary = candidate / "nvim/bin/nvim"
+        self.install_network_wrappers(candidate)
         env = self._release_env(candidate)
         self._fail_if_injected("lazy")
+        self.install_lazy_bootstrap(candidate)
         startup_guard = "+lua if vim.v.errmsg ~= '' then io.stderr:write(vim.v.errmsg .. '\\n'); vim.cmd('cquit 1') end"
-        self._run([str(binary), "--headless", "+Lazy! restore", startup_guard, "+qa"], env=env, timeout=900)
+        self._run([str(binary), "--headless", "+Lazy! install", startup_guard, "+qa"], env=env, timeout=900)
         self._fail_if_injected("mason")
         self._run(
             [
