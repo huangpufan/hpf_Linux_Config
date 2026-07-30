@@ -3,18 +3,7 @@
 --]]
 
 return {
-  -- Markdown preview in Neovim buffers
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    ft = { "markdown" },
-    opts = {},
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "nvim-tree/nvim-web-devicons",
-    },
-  },
-
-  -- Browser preview for documents that need it
+  -- Browser preview for Markdown documents
   {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },

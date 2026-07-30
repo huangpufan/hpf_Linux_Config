@@ -95,7 +95,7 @@ nvim/
 - 📐 多光标编辑
 - 🧹 使用 snacks.nvim 进行不破坏窗口布局的 buffer 删除、单词引用与隐藏 buffer 清理
 - 🖥️ 通过 toggleterm.nvim 提供浮动与分屏终端
-- 📝 通过 render-markdown.nvim 提供 Markdown 内渲染，并保留 markdown-preview.nvim 作为可选浏览器预览
+- 📝 通过 markdown-preview.nvim 提供按需启动的 Markdown 浏览器阅读模式
 
 ## ⌨️ 快捷键
 
@@ -221,7 +221,7 @@ npm install -g neovim
 ```
 
 ### Markdown
-render-markdown.nvim 是主要的 Neovim buffer 内 Markdown 阅读路径。需要更宽松的双栏浏览器阅读体验时，使用 `<Space>md` 调用 markdown-preview.nvim。网页正文默认使用 17px 字号、1.75 行高和 900px 正文宽度，并为表格、代码块、列表和引用保留更宽的可读空间。
+Neovim buffer 内保持普通 Markdown 编辑，不加载本地渲染插件。需要渲染阅读时，使用 `<Space>md` 调用 markdown-preview.nvim 浏览器阅读模式。网页正文默认使用 17px 字号、1.75 行高和 900px 正文宽度，并为表格、代码块、列表和引用保留更宽的可读空间。
 
 如果浏览器预览无法工作：
 ```bash

@@ -95,7 +95,7 @@ nvim/
 - 📐 Multi-cursor editing
 - 🧹 Layout-safe buffer deletion, word references, and hidden buffer cleanup with snacks.nvim
 - 🖥️ Floating and split terminals through toggleterm.nvim
-- 📝 Markdown rendering with render-markdown.nvim and optional browser preview through markdown-preview.nvim
+- 📝 On-demand Markdown browser reading mode through markdown-preview.nvim
 
 ## ⌨️ Key Bindings
 
@@ -223,7 +223,7 @@ npm install -g neovim
 ```
 
 ### Markdown
-render-markdown.nvim provides the main in-buffer Markdown reading path. `<Space>md` provides a wider two-column browser reading mode through markdown-preview.nvim when needed. The browser view uses 17px body text, 1.75 line height, a 900px prose width, and wider space for tables, code blocks, lists, and quotations.
+Markdown buffers remain plain editing surfaces without an in-buffer rendering plugin. Use `<Space>md` to open markdown-preview.nvim browser reading mode when rendered output is needed. The browser view uses 17px body text, 1.75 line height, a 900px prose width, and wider space for tables, code blocks, lists, and quotations.
 
 If browser preview doesn't work:
 ```bash

@@ -190,7 +190,7 @@ python3 install-script/agent-runner.py check nvim
 
 `make link-nvim` is only a legacy/manual fallback for relinking an already installed configuration; it does not install Neovim, providers, or plugins.
 
-The current Neovim path keeps Telescope, nvim-tree, Aerial, Incline, and toggleterm. Markdown uses render-markdown.nvim for in-buffer rendering and markdown-preview.nvim as optional browser preview.
+The current Neovim path keeps Telescope, nvim-tree, Aerial, Incline, and toggleterm. Markdown stays unrendered while editing in the buffer, with markdown-preview.nvim providing browser reading mode when needed.
 
 ## Requirements
 

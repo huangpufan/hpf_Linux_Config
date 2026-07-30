@@ -20,6 +20,7 @@ vim.api.nvim_exec_autocmds("VimEnter", {})
 vim.wait(100)
 
 local preview = require "config.markdown_preview"
+local plugins = require("lazy.core.config").plugins
 
 assert_equal(vim.g.mkdp_auto_start, 0, "Markdown preview should only start explicitly")
 assert_equal(vim.g.mkdp_auto_close, 0, "reading mode should survive buffer switches")
@@ -30,6 +31,7 @@ assert_equal(vim.g.mkdp_preview_options.sync_scroll_type, "relative", "preview s
 assert(vim.g.mkdp_markdown_css:match "markdown%-reading%.css$", "custom reading CSS should be configured")
 assert_equal(vim.g.mkdp_browserfunc, "OpenMarkdownReadingPreview", "browser callback")
 assert_equal(vim.fn.exists "*OpenMarkdownReadingPreview", 1, "browser callback should be callable through Vim RPC")
+assert_equal(plugins["render-markdown.nvim"], nil, "in-buffer Markdown renderer should remain uninstalled")
 
 local css = table.concat(vim.fn.readfile(vim.g.mkdp_markdown_css), "\n")
 assert(css:find "font%-size: 17px", "reading CSS font size")

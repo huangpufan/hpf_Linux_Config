@@ -190,7 +190,7 @@ python3 install-script/agent-runner.py check nvim
 
 `make link-nvim` 只作为已安装环境上的 legacy/manual relink fallback；它不会安装 Neovim、provider 或插件。
 
-Neovim 当前主路径保留 Telescope、nvim-tree、Aerial、Incline 与 toggleterm；Markdown 使用 render-markdown.nvim 作为内渲染路径，markdown-preview.nvim 作为可选浏览器预览。
+Neovim 当前主路径保留 Telescope、nvim-tree、Aerial、Incline 与 toggleterm；Markdown 在 buffer 内保持普通编辑，需要渲染阅读时使用 markdown-preview.nvim 浏览器预览。
 
 ## 环境要求
 

@@ -1,7 +1,7 @@
 # Neovim 插件现代化调研与进度记录
 
 调研日期：2026-05-25
-进度更新：2026-07-29
+进度更新：2026-07-30
 
 本文件现在作为历史调研与进度记录保存，不再作为待办清单或安装入口。当前 Neovim 配置事实以 `nvim/lua/plugins/`、`nvim/lazy-lock.json`、`nvim/README-CN.md` 和 `nvim/README.md` 为准。
 
@@ -19,7 +19,7 @@
 - 搜索与导航：Telescope + nvim-tree + Aerial + Incline。
 - 终端：`toggleterm.nvim`。
 - 缩进视觉：`indent-blankline.nvim`。
-- Markdown：`render-markdown.nvim` 作为 Neovim 内渲染路径，`markdown-preview.nvim` 作为可选浏览器预览路径。
+- Markdown：buffer 内保持普通编辑，渲染阅读统一使用 `markdown-preview.nvim` 浏览器预览路径。
 
 ## 已完成项
 
@@ -52,10 +52,15 @@
 - 已受控刷新 LSP、Treesitter、Blink、Mason、Fidget 与 nvim-lint；有上游变化的锁定点已经更新，并把 Mason、Spectre、Ouroboros、transparent.nvim 声明切换到当前规范仓库名。
 - 已由 Snacks 接管 `vim.ui.input` 与 `vim.ui.select`；显式安装 handler，确保无 UI 的健康检查与自动化启动也使用同一实现。
 
+### 2026-07-30 Markdown 路径收敛
+
+- 已移除 `render-markdown.nvim`，Neovim buffer 内不再做 Markdown 本地渲染。
+- 保留 `markdown-preview.nvim` 与 `<Space>md`，作为唯一渲染阅读路径。
+
 ## 仍保留的设计选择
 
 - Telescope、nvim-tree、Aerial、Incline 都保留。它们共同构成当前搜索、文件树、代码大纲与轻量文件上下文模型。
-- `markdown-preview.nvim` 继续保留，作为需要浏览器预览时的路径；内渲染日常阅读优先用 `render-markdown.nvim`。
+- `markdown-preview.nvim` 继续保留，作为唯一 Markdown 渲染阅读路径；buffer 内保持普通编辑。
 - `indent-blankline.nvim` 保留为唯一缩进视觉层，暂不切到 `snacks.indent` / `snacks.scope`。
 - `toggleterm.nvim` 保留为终端主路径，暂不切到 `snacks.terminal`。
 - `alpha-nvim`、`nvim-tree.lua`、Telescope 等仍在使用；是否进一步替换为 snacks 模块或其他插件应另开任务评估。
