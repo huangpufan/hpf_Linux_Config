@@ -51,12 +51,6 @@ nvim/
 ├── after/
 │   └── plugin/               # 后加载脚本
 │       └── utils.vim         # 工具函数
-│
-└── snippets/                 # 自定义代码片段
-    ├── c.snippets
-    ├── cpp.snippets
-    ├── markdown.snippets
-    └── sh.snippets
 ```
 
 ## ✨ 特性
@@ -72,7 +66,6 @@ nvim/
 - 🔧 多语言 LSP 支持
 - ✏️ blink.cmp 自动补全
 - 🧹 conform.nvim 格式化与 nvim-lint 异步 lint
-- 📝 LuaSnip 代码片段与自定义 `snippets/`
 - 💡 代码操作与诊断
 
 ### 导航与搜索

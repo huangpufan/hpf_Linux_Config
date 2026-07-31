@@ -314,11 +314,7 @@ check_replacement_capabilities() {
         "+lua vim.api.nvim_win_set_cursor(0, { 1, 29 }); assert(vim.wait(20000, function() return #vim.lsp.get_clients({ bufnr = 0, name = 'lua_ls' }) > 0 end, 100), 'lua_ls did not attach'); local params=vim.lsp.util.make_position_params(0, 'utf-16'); local responses=vim.lsp.buf_request_sync(0, 'textDocument/signatureHelp', params, 10000); local found=false; for _, response in pairs(responses or {}) do if response.result and response.result.signatures and #response.result.signatures > 0 then found=true end end; assert(found, 'signatureHelp returned no signatures')" \
         '+qa'
 
-    timeout 30s nvim --headless \
-        "+lua require('lazy').load({ plugins = { 'LuaSnip' }, wait = true }); local ls=require('luasnip'); vim.bo.filetype='c'; vim.cmd('doautocmd FileType c'); vim.wait(1000); local custom=false; for _, snippet in ipairs(ls.get_snippets('c')) do if snippet.trigger == 'lpr' then custom=true end end; assert(custom, 'custom lpr snippet missing')" \
-        '+qa'
-
-    pass "Git blame, LSP signature help, and custom snippets"
+    pass "Git blame and LSP signature help"
 }
 
 check_format_lint_matrix() {

@@ -51,12 +51,6 @@ nvim/
 ├── after/
 │   └── plugin/               # After-load scripts
 │       └── utils.vim         # Utility functions
-│
-└── snippets/                 # Custom snippets
-    ├── c.snippets
-    ├── cpp.snippets
-    ├── markdown.snippets
-    └── sh.snippets
 ```
 
 ## ✨ Features
@@ -72,7 +66,6 @@ nvim/
 - 🔧 LSP support for multiple languages
 - ✏️ Auto-completion with blink.cmp
 - 🧹 Formatting with conform.nvim and linting with nvim-lint
-- 📝 Snippets with LuaSnip and custom `snippets/`
 - 💡 Code actions and diagnostics
 
 ### Navigation & Search

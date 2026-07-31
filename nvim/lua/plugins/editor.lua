@@ -181,15 +181,6 @@ return {
     end,
   },
 
-  -- FeMaco (edit fenced code blocks)
-  {
-    "AckslD/nvim-FeMaco.lua",
-    event = "VeryLazy",
-    config = function()
-      require("femaco").setup()
-    end,
-  },
-
   -- Img-clip (paste images)
   {
     "HakonHarnes/img-clip.nvim",

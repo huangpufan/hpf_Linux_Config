@@ -19,7 +19,6 @@
   │       ├── treesitter.lua
   │       ├── telescope.lua
   │       └── completion.lua
-  ├── snippets/             # Custom snippets
   └── ftplugin/             # Filetype specific configs
 --]]
 
