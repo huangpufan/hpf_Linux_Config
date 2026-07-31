@@ -80,7 +80,6 @@ nvim/
 - 🌳 nvim-tree 文件浏览器
 - 🧭 Aerial 代码大纲与 Incline 浮动文件名上下文
 - ⚡ Flash.nvim 快速跳转
-- 📌 书签支持
 
 ### Git 集成
 - 📊 侧边栏 Git 标记

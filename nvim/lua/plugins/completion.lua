@@ -7,10 +7,8 @@ return {
   {
     "L3MON4D3/LuaSnip",
     event = "InsertEnter",
-    dependencies = { "rafamadriz/friendly-snippets" },
     config = function()
-      require("luasnip.loaders.from_snipmate").lazy_load({ paths = "~/.config/nvim/snippets/" })
-      require("luasnip.loaders.from_vscode").lazy_load()
+      require("luasnip.loaders.from_snipmate").lazy_load { paths = "~/.config/nvim/snippets/" }
     end,
   },
 
@@ -23,11 +21,11 @@ return {
       "L3MON4D3/LuaSnip",
     },
     opts = function()
-      local luasnip = require("luasnip")
+      local luasnip = require "luasnip"
 
       local has_words_before = function()
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match "%s" == nil
       end
 
       local expand_or_jump_snippet = function()

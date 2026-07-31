@@ -114,30 +114,6 @@ return {
     end,
   },
 
-  -- Bookmarks
-  {
-    "crusj/bookmarks.nvim",
-    branch = "main",
-    cmd = { "BookmarkToggle", "BookmarkAnnotate", "BookmarkShowAll" },
-    config = function()
-      local bookmarks = require "bookmarks"
-      bookmarks.setup {
-        mappings_enabled = false,
-        virt_pattern = { "*.lua", "*.md", "*.c", "*.h", "*.sh" },
-      }
-
-      vim.api.nvim_create_user_command("BookmarkToggle", function()
-        bookmarks.add_bookmarks(false)
-      end, {})
-      vim.api.nvim_create_user_command("BookmarkAnnotate", function()
-        bookmarks.add_bookmarks(false)
-      end, {})
-      vim.api.nvim_create_user_command("BookmarkShowAll", function()
-        bookmarks.toggle_bookmarks()
-      end, {})
-    end,
-  },
-
   -- Session management
   {
     "olimorris/persisted.nvim",

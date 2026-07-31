@@ -12,10 +12,10 @@ return {
       "nvim-telescope/telescope-fzf-native.nvim",
     },
     config = function()
-      local telescope = require("telescope")
-      local actions = require("telescope.actions")
+      local telescope = require "telescope"
+      local actions = require "telescope.actions"
 
-      telescope.setup({
+      telescope.setup {
         defaults = {
           prompt_prefix = "   ",
           selection_caret = "  ",
@@ -72,11 +72,10 @@ return {
             case_mode = "smart_case",
           },
         },
-      })
+      }
 
       -- Load extensions
       pcall(telescope.load_extension, "fzf")
-      pcall(telescope.load_extension, "bookmarks")
     end,
   },
 
@@ -85,8 +84,7 @@ return {
     "nvim-telescope/telescope-fzf-native.nvim",
     build = "make",
     cond = function()
-      return vim.fn.executable("make") == 1
+      return vim.fn.executable "make" == 1
     end,
   },
-
 }

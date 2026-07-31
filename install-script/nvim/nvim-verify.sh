@@ -315,10 +315,10 @@ check_replacement_capabilities() {
         '+qa'
 
     timeout 30s nvim --headless \
-        "+lua require('lazy').load({ plugins = { 'LuaSnip' }, wait = true }); local ls=require('luasnip'); vim.bo.filetype='c'; vim.cmd('doautocmd FileType c'); vim.wait(1000); local custom=false; for _, snippet in ipairs(ls.get_snippets('c')) do if snippet.trigger == 'lpr' then custom=true end end; vim.bo.filetype='lua'; vim.cmd('doautocmd FileType lua'); vim.wait(1000); local public=false; for _, snippet in ipairs(ls.get_snippets('lua')) do if snippet.trigger == 'lfu' then public=true end end; assert(custom, 'custom lpr snippet missing'); assert(public, 'friendly lfu snippet missing')" \
+        "+lua require('lazy').load({ plugins = { 'LuaSnip' }, wait = true }); local ls=require('luasnip'); vim.bo.filetype='c'; vim.cmd('doautocmd FileType c'); vim.wait(1000); local custom=false; for _, snippet in ipairs(ls.get_snippets('c')) do if snippet.trigger == 'lpr' then custom=true end end; assert(custom, 'custom lpr snippet missing')" \
         '+qa'
 
-    pass "Git blame, LSP signature help, and snippets"
+    pass "Git blame, LSP signature help, and custom snippets"
 }
 
 check_format_lint_matrix() {

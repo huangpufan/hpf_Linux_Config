@@ -24,6 +24,10 @@ for _, expectation in ipairs(expected_global) do
 end
 
 assert(vim.tbl_isempty(vim.fn.maparg("<Space>at", "n", false, true)), "removed translation action is still mapped")
+assert(vim.tbl_isempty(vim.fn.maparg("<Space>lr", "n", false, true)), "removed code runner action is still mapped")
+for _, lhs in ipairs { "ma", "md", "mm", "mn" } do
+  assert(vim.tbl_isempty(vim.fn.maparg(lhs, "n", false, true)), "removed bookmark action is still mapped: " .. lhs)
+end
 
 local owners = {
   multicursor = 9,

@@ -80,7 +80,6 @@ nvim/
 - 🌳 File explorer with nvim-tree
 - 🧭 Code outline with Aerial and floating filename context with Incline
 - ⚡ Quick jump with Flash.nvim
-- 📌 Bookmarks support
 
 ### Git Integration
 - 📊 Git signs in gutter

@@ -11,7 +11,6 @@ local groups = {
   { id = "group.search", lhs = "<space>s", group = "Search" },
   { id = "group.multicursor", lhs = "<space>x", group = "Multiple cursors" },
   { id = "group.toggle", lhs = "<space>t", group = "Toggle/Theme" },
-  { id = "group.bookmarks", lhs = "m", group = "Bookmarks" },
 }
 
 local allowed_owners = {
@@ -267,7 +266,6 @@ add_command(
 add_command("lsp.rename", "<space>ln", command "lua vim.lsp.buf.rename()", "Rename")
 add_command("lsp.signature", "<space>ls", command "lua vim.lsp.buf.signature_help()", "Signature help")
 add_command("diagnostics.loclist", "<space>lq", command "lua vim.diagnostic.setloclist()", "Set loc list")
-add_command("code.run", "<space>lr", command "RunCode", "Run code")
 add("rename.incremental", {
   lhs = "<space>rn",
   desc = "Rename sign",
@@ -297,16 +295,6 @@ add_command(
   "<cmd>set nocursorline<cr><cmd>TransparentToggle<cr>",
   "Make background transparent"
 )
-add_command("bookmarks.search", "ma", command "Telescope bookmarks", "Search bookmarks")
-add_command(
-  "bookmarks.delete",
-  "md",
-  command "lua require'bookmarks.list'.delete_on_virt()",
-  "Delete bookmark at virt text line"
-)
-add_command("bookmarks.add", "mm", command "lua require'bookmarks'.add_bookmarks()", "Add bookmarks")
-add_command("bookmarks.note", "mn", command "lua require'bookmarks.list'.show_desc()", "Show bookmark note")
-
 add("lsp.declaration", { lhs = "gD", scope = "lsp", desc = "Go to declaration", run = vim.lsp.buf.declaration })
 add("lsp.definition", { lhs = "gd", scope = "lsp", desc = "Go to definition", run = vim.lsp.buf.definition })
 add("lsp.hover", { lhs = "K", scope = "lsp", desc = "Document", run = vim.lsp.buf.hover })
