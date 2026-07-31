@@ -152,14 +152,6 @@ return {
     end,
   },
 
-  -- Neogen (documentation generator)
-  {
-    "danymat/neogen",
-    cmd = "Neogen",
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    config = true,
-  },
-
   -- Hlargs (highlight arguments)
   {
     "m-demare/hlargs.nvim",

@@ -15,12 +15,6 @@ return {
     end,
   },
 
-  -- Fugitive
-  {
-    "tpope/vim-fugitive",
-    cmd = "Git",
-  },
-
   -- Diffview
   {
     "sindrets/diffview.nvim",
