@@ -224,6 +224,7 @@ check_targeted_behavior() {
     for test_file in \
         "$NVIM_CONFIG/tests/actions_spec.lua" \
         "$NVIM_CONFIG/tests/terminal_manager_spec.lua" \
+        "$NVIM_CONFIG/tests/terminal_state_frame_spec.lua" \
         "$NVIM_CONFIG/tests/terminal_keymaps_spec.lua" \
         "$NVIM_CONFIG/tests/markdown_preview_spec.lua"; do
         local output

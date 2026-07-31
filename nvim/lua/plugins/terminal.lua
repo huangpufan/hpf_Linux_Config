@@ -9,6 +9,7 @@ return {
   {
     "akinsho/toggleterm.nvim",
     cmd = { "ToggleTerm", "TermExec", "TermNew", "TermSelect" },
+    dependencies = { "nvim-zh/colorful-winsep.nvim" },
     keys = require("config.actions").lazy_keys "toggleterm",
     opts = {
       highlights = {
@@ -34,6 +35,7 @@ return {
     },
     config = function(_, opts)
       require("toggleterm").setup(opts)
+      terminal_manager.setup()
     end,
   },
 }

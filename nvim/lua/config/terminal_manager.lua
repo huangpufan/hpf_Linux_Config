@@ -2,6 +2,33 @@ local M = {}
 
 local last_terminal_id
 
+local frame_states = {
+  editor = {
+    color = "#e78284",
+  },
+  input = {
+    color = "#a6d189",
+    frame_highlight = "TerminalInputFrame",
+    title_highlight = "TerminalInputTitle",
+    marker = "● INPUT",
+    title_foreground = "#303446",
+  },
+  normal = {
+    color = "#e5c890",
+    frame_highlight = "TerminalNormalFrame",
+    title_highlight = "TerminalNormalTitle",
+    marker = "◆ NAV",
+    title_foreground = "#303446",
+  },
+  inactive = {
+    color = "#626880",
+    frame_highlight = "TerminalInactiveFrame",
+    title_highlight = "TerminalInactiveTitle",
+    marker = "○ IDLE",
+    title_foreground = "#c6d0f5",
+  },
+}
+
 local function terminal_api()
   return require "toggleterm.terminal"
 end
@@ -14,6 +41,65 @@ local function is_open(term)
   return term and term:is_open() and is_valid_window(term.window)
 end
 
+local function define_frame_highlights()
+  for name, state in pairs(frame_states) do
+    if name ~= "editor" then
+      vim.api.nvim_set_hl(0, state.frame_highlight, { fg = state.color, bold = true })
+      vim.api.nvim_set_hl(0, state.title_highlight, {
+        fg = state.title_foreground,
+        bg = state.color,
+        bold = true,
+      })
+    end
+  end
+end
+
+local function set_window_highlights(win, replacements)
+  local current = vim.api.nvim_get_option_value("winhighlight", { win = win })
+  local values = {}
+  local order = {}
+
+  for entry in current:gmatch "[^,]+" do
+    local source, target = entry:match "^([^:]+):(.+)$"
+    if source and target then
+      values[source] = target
+      order[#order + 1] = source
+    end
+  end
+
+  local additions = {}
+  for source, target in pairs(replacements) do
+    if not values[source] then
+      additions[#additions + 1] = source
+    end
+    values[source] = target
+  end
+  table.sort(additions)
+  vim.list_extend(order, additions)
+
+  local result = {}
+  for _, source in ipairs(order) do
+    result[#result + 1] = source .. ":" .. values[source]
+  end
+  vim.api.nvim_set_option_value("winhighlight", table.concat(result, ","), { win = win })
+end
+
+local function terminal_state(term)
+  if term.window ~= vim.api.nvim_get_current_win() then
+    return frame_states.inactive
+  end
+
+  if vim.api.nvim_get_mode().mode:sub(1, 1) == "t" then
+    return frame_states.input
+  end
+
+  return frame_states.normal
+end
+
+local function visible_label(term, label)
+  return string.format("%s · %s", terminal_state(term).marker, label)
+end
+
 local function remember(term)
   if term then
     last_terminal_id = term.id
@@ -24,6 +110,24 @@ local function focused_terminal()
   local terminal = terminal_api()
   local id = terminal.get_focused_id()
   return id and terminal.get(id) or nil
+end
+
+local function sync_active_split_frame()
+  local color = frame_states.editor.color
+  local current_win = vim.api.nvim_get_current_win()
+  local current_config = vim.api.nvim_win_get_config(current_win)
+
+  if current_config.relative == "" and vim.bo[vim.api.nvim_win_get_buf(current_win)].buftype == "terminal" then
+    local focused = focused_terminal()
+    if focused then
+      color = terminal_state(focused).color
+    end
+  end
+
+  local ok, colorful_winsep = pcall(require, "colorful-winsep")
+  if ok then
+    colorful_winsep.set_colors { color }
+  end
 end
 
 local function active_terminal()
@@ -142,17 +246,28 @@ function M.sync_labels()
     term.display_name = label
 
     if is_open(term) then
+      local state = terminal_state(term)
+      local stateful_label = visible_label(term, label)
+      set_window_highlights(term.window, {
+        FloatBorder = state.frame_highlight,
+        FloatTitle = state.title_highlight,
+        WinBar = state.title_highlight,
+        WinBarNC = state.title_highlight,
+      })
+
       if term:is_float() then
         vim.wo[term.window].winbar = ""
         vim.api.nvim_win_set_config(term.window, {
-          title = label,
+          title = " " .. stateful_label .. " ",
           title_pos = "center",
         })
       else
-        vim.wo[term.window].winbar = "%=" .. label .. "%="
+        vim.wo[term.window].winbar = string.format("%%#%s#%%=  %s  %%=%%*", state.title_highlight, stateful_label)
       end
     end
   end
+
+  sync_active_split_frame()
 end
 
 function M.toggle(direction)
@@ -232,6 +347,25 @@ end
 
 function M.on_exit()
   vim.schedule(M.sync_labels)
+end
+
+function M.setup()
+  define_frame_highlights()
+
+  local group = vim.api.nvim_create_augroup("terminal_state_frame", { clear = true })
+  vim.api.nvim_create_autocmd({ "TermEnter", "TermLeave", "WinEnter", "WinLeave", "BufEnter" }, {
+    group = group,
+    callback = function()
+      vim.schedule(M.sync_labels)
+    end,
+  })
+  vim.api.nvim_create_autocmd("ColorScheme", {
+    group = group,
+    callback = function()
+      define_frame_highlights()
+      vim.schedule(M.sync_labels)
+    end,
+  })
 end
 
 return M
