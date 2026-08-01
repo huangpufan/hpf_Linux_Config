@@ -23,5 +23,29 @@ return {
         },
       },
     },
+    config = function(_, opts)
+      -- Ensure sixel backend uses nvim_ui_send (bypasses nvim's channel system)
+      -- instead of chansend(stderr) which can buffer/intercept escape sequences.
+      local sixel_path = vim.fs.joinpath(
+        vim.fn.stdpath("data"), "lazy", "image.nvim", "lua", "image", "backends", "sixel.lua"
+      )
+      local content = vim.fn.readfile(sixel_path)
+      local patched = false
+      for i, line in ipairs(content) do
+        local new_line, n = line:gsub(
+          'vim%.fn%.chansend%(vim%.v%.stderr, ([^)]+)%s*%)',
+          'vim.api.nvim_ui_send(%1)'
+        )
+        if n > 0 then
+          content[i] = new_line
+          patched = true
+        end
+      end
+      if patched then
+        vim.fn.writefile(content, sixel_path)
+      end
+
+      require("image").setup(opts)
+    end,
   },
 }
