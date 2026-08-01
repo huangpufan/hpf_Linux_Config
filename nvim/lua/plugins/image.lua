@@ -24,20 +24,22 @@ return {
       },
     },
     config = function(_, opts)
-      -- Ensure sixel backend uses nvim_ui_send (bypasses nvim's channel system)
-      -- instead of chansend(stderr) which can buffer/intercept escape sequences.
+      -- Patch sixel backend: use io.stderr:write instead of chansend(stderr).
+      -- vim.fn.chansend(vim.v.stderr,...) fails with E900 "Invalid channel id"
+      -- when called from vim.schedule callbacks (which is how the flush pipeline
+      -- sends sixel data). io.stderr:write goes directly to the fd and works
+      -- in any context.
       local sixel_path = vim.fs.joinpath(
         vim.fn.stdpath("data"), "lazy", "image.nvim", "lua", "image", "backends", "sixel.lua"
       )
       local content = vim.fn.readfile(sixel_path)
       local patched = false
       for i, line in ipairs(content) do
-        local new_line, n = line:gsub(
-          'vim%.fn%.chansend%(vim%.v%.stderr, ([^)]+)%s*%)',
-          'vim.api.nvim_ui_send(%1)'
-        )
-        if n > 0 then
-          content[i] = new_line
+        if line:find("vim%.fn%.chansend%(vim%.v%.stderr,") then
+          content[i] = line:gsub(
+            'vim%.fn%.chansend%(vim%.v%.stderr, ([^)]+)%s*%)',
+            'io.stderr:write(%1)'
+          )
           patched = true
         end
       end
@@ -46,6 +48,32 @@ return {
       end
 
       require("image").setup(opts)
+
+      -- Sixel data is a one-shot escape sequence: any nvim screen redraw
+      -- (cursor move, timer, statusline update) erases it.  The decoration
+      -- provider skips re-render when geometry is unchanged, so the image
+      -- stays invisible.  Fix: periodically force re-render to re-send the
+      -- sixel data and keep the image visible.
+      local timer = vim.uv.new_timer()
+      timer:start(500, 500, vim.schedule_wrap(function()
+        local ok, api = pcall(require, "image")
+        if not ok then return end
+        for _, img in ipairs(api.get_images()) do
+          if img.is_rendered and not img.pending_transform_key then
+            img.is_rendered = false
+            img:render()
+          end
+        end
+      end))
+
+      vim.api.nvim_create_autocmd("VimLeavePre", {
+        callback = function()
+          if timer and not timer:is_closing() then
+            timer:stop()
+            timer:close()
+          end
+        end,
+      })
     end,
   },
 }
