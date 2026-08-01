@@ -23,5 +23,6 @@ return {
   { import = "plugins.git" },
   { import = "plugins.terminal" },
   { import = "plugins.markdown" },
+  { import = "plugins.image" },
   { import = "plugins.tools" },
 }
