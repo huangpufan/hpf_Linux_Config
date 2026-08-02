@@ -60,6 +60,19 @@ return {
 
       require("image").setup(opts)
 
+      -- Fix 3: hijack_buffer doesn't reserve virtual lines for the image,
+      -- so nvim redraws erase the sixel data below the first buffer line.
+      -- Wrap hijack_buffer to enable inline + with_virtual_padding so the
+      -- buffer reserves enough rows for the full image height.
+      local api = require("image")
+      local orig_hijack = api.hijack_buffer
+      api.hijack_buffer = function(path, win, buf, options)
+        options = options or {}
+        options.inline = true
+        options.with_virtual_padding = true
+        return orig_hijack(path, win, buf, options)
+      end
+
       -- Force re-render on every decoration cycle to keep sixel images
       -- visible after nvim screen redraws.  The built-in decoration
       -- provider skips re-render when geometry is unchanged; we work
