@@ -49,6 +49,7 @@ nvim/
 │   └── markdown-reading-mode.ps1 # Windows Terminal/browser layout helper
 ├── tests/
 │   ├── markdown_preview_spec.lua    # Reading-mode behavior checks
+│   ├── scrollview_spec.lua          # First-page scrollbar and Incline coexistence check
 │   ├── sixel_image_spec.lua         # Sixel sizing, lifecycle, and write checks
 │   └── sixel_ffi_collision_check.lua # Isolated LuaJIT declaration check
 │

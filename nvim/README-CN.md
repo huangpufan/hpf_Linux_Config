@@ -49,6 +49,7 @@ nvim/
 │   └── markdown-reading-mode.ps1 # Windows Terminal/浏览器摆窗脚本
 ├── tests/
 │   ├── markdown_preview_spec.lua    # 阅读模式行为检查
+│   ├── scrollview_spec.lua          # 首页滚动条与 Incline 共存检查
 │   ├── sixel_image_spec.lua         # Sixel 尺寸、生命周期与写入检查
 │   └── sixel_ffi_collision_check.lua # 隔离的 LuaJIT 声明冲突检查
 │
