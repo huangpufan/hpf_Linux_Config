@@ -78,7 +78,7 @@ end
 local function close_current_buffer()
   local buf = vim.api.nvim_get_current_buf()
   if vim.bo[buf].buftype == "terminal" then
-    require("config.terminal_manager").cycle(-1)
+    require("config.terminal_manager").kill_current_and_previous()
     return
   end
   vim.cmd "wall"

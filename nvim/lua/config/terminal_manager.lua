@@ -314,6 +314,32 @@ function M.cycle(step)
   return open_in_presentation(terminals[target_index], presentation)
 end
 
+function M.kill_current_and_previous()
+  local terminal = terminal_api()
+  local presentation = current_presentation "float"
+  local current = presentation.term
+  if not current then
+    return
+  end
+
+  local terminals = terminal.get_all()
+  if #terminals <= 1 then
+    current:shutdown()
+    M.sync_labels()
+    return
+  end
+
+  -- Switch to the previous terminal first so the killed one is only hidden,
+  -- then shut the original down (terminate its job and drop it from the pool).
+  M.cycle(-1)
+
+  local original = terminal.get(current.id)
+  if original then
+    original:shutdown()
+  end
+  M.sync_labels()
+end
+
 function M.select_terminal()
   local terminals = terminal_api().get_all()
   if #terminals == 0 then

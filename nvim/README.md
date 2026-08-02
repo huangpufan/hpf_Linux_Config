@@ -116,7 +116,7 @@ nvim/
 | `<C-p>` | Show/hide the floating terminal |
 | `<C-q>` | Create a terminal in the current layout; default to floating when no terminal is visible |
 | `<C-Left>/<C-Right>` | Switch terminals while preserving the current layout |
-| `<C-w>` | On a terminal, switch to the previous terminal (does not close); on a normal buffer, still closes it |
+| `<C-w>` | On a terminal, kill the current terminal and switch to the previous one; on a normal buffer, still closes it |
 | `<C-Up>` | Select a terminal while preserving the current layout |
 | `-` / `=` | Show a horizontal/vertical terminal |
 | `<C-d>` | Leave terminal input mode and return to Normal mode |
