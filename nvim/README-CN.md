@@ -20,6 +20,7 @@ nvim/
 │   ├── config/               # 非插件配置模块
 │   │   ├── keybindings.lua   # Which-key 快捷键绑定
 │   │   ├── markdown_preview.lua # Markdown 阅读模式控制器
+│   │   ├── sixel_image.lua   # 无短写丢失的 Sixel 图片渲染器
 │   │   └── lsp/              # LSP 工具模块
 │   │       ├── handlers.lua  # LSP 处理器
 │   │       └── servers.lua   # 服务器配置
@@ -37,6 +38,7 @@ nvim/
 │       ├── git.lua           # Git 集成
 │       ├── terminal.lua      # 终端插件
 │       ├── markdown.lua      # Markdown 插件
+│       ├── image.lua         # 直接打开图片的集成入口
 │       ├── tools.lua         # 其他工具
 │       └── lsp/              # LSP 插件规格
 │           └── init.lua      # LSP 插件
@@ -46,7 +48,9 @@ nvim/
 ├── scripts/
 │   └── markdown-reading-mode.ps1 # Windows Terminal/浏览器摆窗脚本
 ├── tests/
-│   └── markdown_preview_spec.lua # 阅读模式行为检查
+│   ├── markdown_preview_spec.lua    # 阅读模式行为检查
+│   ├── sixel_image_spec.lua         # Sixel 尺寸、生命周期与写入检查
+│   └── sixel_ffi_collision_check.lua # 隔离的 LuaJIT 声明冲突检查
 │
 ├── after/
 │   └── plugin/               # 后加载脚本
@@ -88,6 +92,7 @@ nvim/
 - 🧹 使用 snacks.nvim 进行不破坏窗口布局的 buffer 删除、单词引用与隐藏 buffer 清理
 - 🖥️ 通过 toggleterm.nvim 提供浮动与分屏终端
 - 📝 通过 markdown-preview.nvim 提供按需启动的 Markdown 浏览器阅读模式
+- 🖼️ 通过 Windows Terminal Sixel 协议直接打开真实图片
 
 ## ⌨️ 快捷键
 

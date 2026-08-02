@@ -219,10 +219,11 @@ LUA
 }
 
 check_targeted_behavior() {
-    log "checking terminal and Markdown reading-mode behavior"
+    log "checking terminal, Sixel image, and Markdown reading-mode behavior"
     local test_file
     for test_file in \
         "$NVIM_CONFIG/tests/actions_spec.lua" \
+        "$NVIM_CONFIG/tests/sixel_image_spec.lua" \
         "$NVIM_CONFIG/tests/terminal_manager_spec.lua" \
         "$NVIM_CONFIG/tests/terminal_state_frame_spec.lua" \
         "$NVIM_CONFIG/tests/terminal_keymaps_spec.lua" \
@@ -234,7 +235,7 @@ check_targeted_behavior() {
             fail "targeted behavior check failed: $(basename "$test_file")"
         fi
     done
-    pass "terminal and Markdown reading-mode behavior"
+    pass "terminal, Sixel image, and Markdown reading-mode behavior"
 }
 
 check_lsp_matrix() {

@@ -20,6 +20,7 @@ nvim/
 │   ├── config/               # Non-plugin configurations
 │   │   ├── keybindings.lua   # Which-key bindings
 │   │   ├── markdown_preview.lua # Markdown reading-mode controller
+│   │   ├── sixel_image.lua   # Short-write-safe Sixel image-buffer renderer
 │   │   └── lsp/              # LSP utility modules
 │   │       ├── handlers.lua  # LSP handlers
 │   │       └── servers.lua   # Server configs
@@ -37,6 +38,7 @@ nvim/
 │       ├── git.lua           # Git integration
 │       ├── terminal.lua      # Terminal plugins
 │       ├── markdown.lua      # Markdown plugins
+│       ├── image.lua         # Direct image-buffer integration
 │       ├── tools.lua         # Misc tools
 │       └── lsp/              # LSP plugin specs
 │           └── init.lua      # LSP plugins
@@ -46,7 +48,9 @@ nvim/
 ├── scripts/
 │   └── markdown-reading-mode.ps1 # Windows Terminal/browser layout helper
 ├── tests/
-│   └── markdown_preview_spec.lua # Reading-mode behavior checks
+│   ├── markdown_preview_spec.lua    # Reading-mode behavior checks
+│   ├── sixel_image_spec.lua         # Sixel sizing, lifecycle, and write checks
+│   └── sixel_ffi_collision_check.lua # Isolated LuaJIT declaration check
 │
 ├── after/
 │   └── plugin/               # After-load scripts
@@ -88,6 +92,7 @@ nvim/
 - 🧹 Layout-safe buffer deletion, word references, and hidden buffer cleanup with snacks.nvim
 - 🖥️ Floating and split terminals through toggleterm.nvim
 - 📝 On-demand Markdown browser reading mode through markdown-preview.nvim
+- 🖼️ Direct real-image buffers through Windows Terminal's Sixel protocol
 
 ## ⌨️ Key Bindings
 
