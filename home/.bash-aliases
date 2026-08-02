@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 ################################## My Alias #####################################
 
 # Bashrc related
@@ -79,7 +80,25 @@ alias cc="ccusage"
 alias e="explorer.exe ."
 
 # alias code="\"/mnt/c/Users/kaihong-huangpufan/AppData/Local/Programs/Microsoft VS Code/bin/code\""
-alias code="\"/mnt/c/Users/$(cmd.exe /c echo %USERNAME% 2>/dev/null | tr -d '\r')/AppData/Local/Programs/Microsoft VS Code/bin/code\""
+# Resolve the Windows launcher only when `code` is actually invoked. Running
+# cmd.exe while sourcing this file adds roughly 100 ms to every WSL shell.
+code() {
+    local code_bin windows_user
+
+    code_bin="$(type -P code 2>/dev/null || true)"
+    if [ -n "$code_bin" ] && [ -x "$code_bin" ]; then
+        "$code_bin" "$@"
+        return
+    fi
+
+    windows_user="$(cmd.exe /c echo %USERNAME% 2>/dev/null | tr -d '\r')"
+    code_bin="/mnt/c/Users/$windows_user/AppData/Local/Programs/Microsoft VS Code/bin/code"
+    if [ ! -x "$code_bin" ]; then
+        printf 'code: VS Code launcher not found at %s\n' "$code_bin" >&2
+        return 127
+    fi
+    "$code_bin" "$@"
+}
 
 # 添加http/https代理, apt代理, git代理（已禁用）
 #export hostip=$(ip route | grep default | awk '{print $3}')

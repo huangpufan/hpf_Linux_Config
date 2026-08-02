@@ -1,3 +1,91 @@
-# This file hold which should be sourced.
+# shellcheck shell=bash
+# This file holds interactive shell integrations that should be sourced.
 
-source ~/hpf_Linux_Config/install-script/basic/just/just.bash
+# just completion is generated in-repo and is cheap enough to load eagerly.
+if [ -r "$HOME/hpf_Linux_Config/install-script/basic/just/just.bash" ]; then
+    # shellcheck source=/dev/null
+    . "$HOME/hpf_Linux_Config/install-script/basic/just/just.bash"
+fi
+
+# Put the configured default Node.js version on PATH without sourcing nvm.sh.
+# nvm.sh performs hundreds of subprocess-heavy checks in WSL, so defer it until
+# the first explicit `nvm` command while keeping node/npm/global CLIs available
+# immediately. Common nvm alias chains (for example default -> lts/* ->
+# lts/krypton -> v24.x.y) are resolved with Bash builtins only.
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+if [ -s "$NVM_DIR/nvm.sh" ] && ! declare -F nvm >/dev/null 2>&1; then
+    _hpf_nvm_alias=""
+    _hpf_nvm_bin=""
+
+    if [ -r "$NVM_DIR/alias/default" ]; then
+        IFS= read -r _hpf_nvm_alias < "$NVM_DIR/alias/default" || true
+    fi
+
+    for _hpf_nvm_alias_depth in 1 2 3 4; do
+        case "$_hpf_nvm_alias" in
+            v[0-9]*)
+                if [ -x "$NVM_DIR/versions/node/$_hpf_nvm_alias/bin/node" ]; then
+                    _hpf_nvm_bin="$NVM_DIR/versions/node/$_hpf_nvm_alias/bin"
+                fi
+                break
+                ;;
+            ""|/*|*..*)
+                break
+                ;;
+            *)
+                if [ -r "$NVM_DIR/alias/$_hpf_nvm_alias" ]; then
+                    IFS= read -r _hpf_nvm_alias < "$NVM_DIR/alias/$_hpf_nvm_alias" || true
+                else
+                    break
+                fi
+                ;;
+        esac
+    done
+
+    if [ -n "$_hpf_nvm_bin" ]; then
+        case ":$PATH:" in
+            *":$_hpf_nvm_bin:"*) ;;
+            *) export PATH="$_hpf_nvm_bin:$PATH" ;;
+        esac
+        export NVM_BIN="$_hpf_nvm_bin"
+        export NVM_INC="${_hpf_nvm_bin%/bin}/include/node"
+
+        __hpf_load_nvm() {
+            if [ ! -s "$NVM_DIR/nvm.sh" ]; then
+                printf 'nvm: %s is unavailable\n' "$NVM_DIR/nvm.sh" >&2
+                return 127
+            fi
+
+            unset -f nvm
+            # --no-use keeps the already selected fast-path Node.js version.
+            # shellcheck source=/dev/null
+            . "$NVM_DIR/nvm.sh" --no-use
+            if [ -r "$NVM_DIR/bash_completion" ]; then
+                # shellcheck source=/dev/null
+                . "$NVM_DIR/bash_completion"
+            fi
+        }
+
+        nvm() {
+            __hpf_load_nvm || return
+            nvm "$@"
+        }
+
+        __hpf_nvm_lazy_completion() {
+            __hpf_load_nvm || return
+            __nvm
+        }
+        complete -o default -F __hpf_nvm_lazy_completion nvm 2>/dev/null || true
+    else
+        # Preserve nvm's normal behavior for uncommon or invalid aliases rather
+        # than silently selecting a different Node.js installation.
+        # shellcheck source=/dev/null
+        . "$NVM_DIR/nvm.sh"
+        if [ -r "$NVM_DIR/bash_completion" ]; then
+            # shellcheck source=/dev/null
+            . "$NVM_DIR/bash_completion"
+        fi
+    fi
+
+    unset _hpf_nvm_alias _hpf_nvm_alias_depth _hpf_nvm_bin
+fi
