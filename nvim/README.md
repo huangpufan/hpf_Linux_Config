@@ -75,7 +75,7 @@ nvim/
 ### Navigation & Search
 - 🔍 Fuzzy finding with Telescope
 - 🌳 File explorer with nvim-tree
-- 🧭 Code outline with Aerial and floating filename context with Incline
+- 🧭 Code outline with Aerial, floating filename context with Incline, and a right-edge reading-position scrollbar with nvim-scrollview
 - ⚡ Quick jump with Flash.nvim
 
 ### Git Integration

@@ -75,7 +75,7 @@ nvim/
 ### 导航与搜索
 - 🔍 Telescope 模糊查找
 - 🌳 nvim-tree 文件浏览器
-- 🧭 Aerial 代码大纲与 Incline 浮动文件名上下文
+- 🧭 Aerial 代码大纲、Incline 浮动文件名上下文，以及 nvim-scrollview 右侧阅读位置滚动条
 - ⚡ Flash.nvim 快速跳转
 
 ### Git 集成

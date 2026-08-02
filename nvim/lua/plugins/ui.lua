@@ -98,6 +98,25 @@ return {
     end,
   },
 
+  -- Reading-position scrollbar
+  {
+    "dstein64/nvim-scrollview",
+    event = "VeryLazy",
+    opts = {
+      current_only = true,
+      hide_on_float_intersect = true,
+      visibility = "overflow",
+      excluded_filetypes = {
+        "NvimTree",
+        "TelescopePrompt",
+        "alpha",
+        "image_sixel",
+        "lazy",
+        "mason",
+      },
+    },
+  },
+
   -- Alpha dashboard
   {
     "goolord/alpha-nvim",
