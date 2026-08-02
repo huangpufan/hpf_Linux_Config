@@ -81,14 +81,11 @@ vim.cmd([[hi BufferLineBufferSelected guifg=white guibg=none gui=bold,underline]
 -- Startup behavior
 --------------------------------------------------------------------------------
 
--- Start with alpha or nvim-tree depending on arguments
+-- Open nvim-tree for explicit file arguments. With no arguments,
+-- persisted.nvim restores the cwd session or opens Alpha when none is usable.
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
-    if vim.fn.argc(-1) == 0 then
-      -- No file arguments: show alpha dashboard
-      -- Alpha is loaded lazily, will be triggered by the plugin
-    else
-      -- Has file arguments: open nvim-tree
+    if vim.fn.argc(-1) > 0 then
       vim.defer_fn(function()
         local ok, tree_api = pcall(require, "nvim-tree.api")
         if ok then

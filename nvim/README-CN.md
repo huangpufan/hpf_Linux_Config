@@ -48,6 +48,7 @@ nvim/
 ├── scripts/
 │   └── markdown-reading-mode.ps1 # Windows Terminal/浏览器摆窗脚本
 ├── tests/
+│   ├── session_restore_spec.lua     # 会话自动恢复与光标位置检查
 │   ├── markdown_preview_spec.lua    # 阅读模式行为检查
 │   ├── scrollview_spec.lua          # 首页滚动条与 Incline 共存检查
 │   ├── sixel_image_spec.lua         # Sixel 尺寸、生命周期与写入检查
@@ -88,7 +89,7 @@ nvim/
 ### 编辑器增强
 - 🎯 使用 indent-blankline.nvim 提供缩进视觉层
 - 💬 快速注释
-- 🔄 会话持久化
+- 🔄 按启动工作目录自动恢复文件 buffer、标签页/分屏、折叠和光标位置
 - 📐 多光标编辑
 - 🧹 使用 snacks.nvim 进行不破坏窗口布局的 buffer 删除、单词引用与隐藏 buffer 清理
 - 🖥️ 通过 toggleterm.nvim 提供浮动与分屏终端
@@ -128,6 +129,12 @@ nvim/
 | `<C-d>` | 退出终端输入模式，回到普通模式 |
 
 所有终端共用同一个终端池。浮动、横向和纵向只是显示方式；切换终端不会改变当前布局，改变布局也不会新建或替换终端会话。
+
+### 会话恢复
+
+不带文件参数启动 `nvim` 时，会自动恢复该启动工作目录上次保存的会话，包括已列出的文件 buffer、标签页/分屏、折叠，以及每个窗口的光标和视图位置。显式指定文件（例如 `nvim path/to/file`）时，始终优先打开本次指定的文件，不会被旧会话替换。
+
+Alpha 首页只在当前目录没有可恢复的有效会话时作为兜底。只有首页或临时 scratch buffer 的退出不会写入会话，因此空首页不会覆盖已有的有效会话。会话文件由 persisted.nvim 管理并保存在 `stdpath("data")/sessions`；对于不在恢复窗口中的单独文件，ShaDa 仍负责提供上次编辑位置标记。
 
 ### 搜索 (Telescope)
 | 快捷键 | 功能 |

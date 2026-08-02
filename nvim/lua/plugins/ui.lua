@@ -117,13 +117,10 @@ return {
     },
   },
 
-  -- Alpha dashboard
+  -- Alpha dashboard (shown by persisted.nvim only when this cwd has no usable session)
   {
     "goolord/alpha-nvim",
-    event = "VimEnter",
-    cond = function()
-      return vim.fn.argc(-1) == 0
-    end,
+    cmd = "Alpha",
     config = function()
       local alpha = require "alpha"
       local dashboard = require "alpha.themes.dashboard"
@@ -148,7 +145,8 @@ return {
         dashboard.button("q", "  Quit", ":qa<CR>"),
       }
 
-      -- Center dashboard vertically
+      -- Session restoration owns startup; Alpha is an explicit no-session fallback.
+      dashboard.config.opts.autostart = false
       dashboard.config.opts.noautocmd = true
       dashboard.config.layout = {
         { type = "padding", val = vim.fn.max { 2, vim.fn.floor(vim.fn.winheight(0) * 0.2) } },

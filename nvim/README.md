@@ -48,6 +48,7 @@ nvim/
 ├── scripts/
 │   └── markdown-reading-mode.ps1 # Windows Terminal/browser layout helper
 ├── tests/
+│   ├── session_restore_spec.lua     # Session auto-restore and cursor-position check
 │   ├── markdown_preview_spec.lua    # Reading-mode behavior checks
 │   ├── scrollview_spec.lua          # First-page scrollbar and Incline coexistence check
 │   ├── sixel_image_spec.lua         # Sixel sizing, lifecycle, and write checks
@@ -88,7 +89,7 @@ nvim/
 ### Editor Enhancements
 - 🎯 Smart indentation with indent-blankline.nvim
 - 💬 Easy commenting
-- 🔄 Session persistence
+- 🔄 Automatic per-working-directory session restoration for file buffers, tabs/splits, folds, and cursor positions
 - 📐 Multi-cursor editing
 - 🧹 Layout-safe buffer deletion, word references, and hidden buffer cleanup with snacks.nvim
 - 🖥️ Floating and split terminals through toggleterm.nvim
@@ -128,6 +129,12 @@ nvim/
 | `<C-d>` | Leave terminal input mode and return to Normal mode |
 
 All terminals share one terminal pool. Floating, horizontal, and vertical windows are presentation modes: switching terminals preserves the current layout, and changing layout preserves the terminal session.
+
+### Session Restoration
+
+Starting `nvim` without file arguments automatically restores the session last saved for the startup working directory, including listed file buffers, tabs/splits, folds, and each window's cursor/view position. Starting with an explicit file, such as `nvim path/to/file`, always opens that request instead of replacing it with a saved session.
+
+The Alpha dashboard is only a fallback when the current directory has no usable saved session. Dashboard-only and scratch-only exits are not saved, so an empty start screen cannot overwrite a useful session. Session files are managed by persisted.nvim under `stdpath("data")/sessions`; ShaDa continues to provide the last edit mark when a file is opened outside a restored window.
 
 ### Search (Telescope)
 | Key | Action |

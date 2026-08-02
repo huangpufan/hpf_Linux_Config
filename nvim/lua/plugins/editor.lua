@@ -2,6 +2,22 @@
   Editor enhancement plugins
 --]]
 
+local function has_file_buffer()
+  for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.fn.buflisted(buffer) == 1 and vim.bo[buffer].buftype == "" and vim.api.nvim_buf_get_name(buffer) ~= "" then
+      return true
+    end
+  end
+  return false
+end
+
+local function show_dashboard()
+  -- Headless checks do not need a dashboard. Interactive first starts do.
+  if #vim.api.nvim_list_uis() > 0 then
+    vim.cmd "Alpha"
+  end
+end
+
 return {
   -- Autopairs
   {
@@ -114,17 +130,46 @@ return {
     end,
   },
 
-  -- Session management
+  -- Session management. This must be a startup plugin: persisted registers its
+  -- automatic restore on VimEnter, so loading it on VeryLazy is already too late.
   {
     "olimorris/persisted.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("persisted").setup {
-        autoload = true,
-        before_save = function()
-          vim.cmd "NvimTreeClose"
+    lazy = false,
+    opts = {
+      autoload = true,
+      should_save = function()
+        -- Do not replace a useful session from a dashboard, scratch, or headless run.
+        return #vim.api.nvim_list_uis() > 0 and vim.bo.filetype ~= "alpha" and has_file_buffer()
+      end,
+      on_autoload_no_session = show_dashboard,
+    },
+    config = function(_, opts)
+      require("persisted").setup(opts)
+
+      local group = vim.api.nvim_create_augroup("hpf_persisted", { clear = true })
+
+      -- `before_save` is not a persisted.nvim option; use its documented event.
+      vim.api.nvim_create_autocmd("User", {
+        group = group,
+        pattern = "PersistedSavePre",
+        callback = function()
+          local tree = package.loaded["nvim-tree.api"]
+          if tree and tree.tree.is_visible() then
+            tree.tree.close()
+          end
         end,
-      }
+      })
+
+      -- Old or damaged empty sessions should still reach the first-use fallback.
+      vim.api.nvim_create_autocmd("User", {
+        group = group,
+        pattern = "PersistedLoadPost",
+        callback = function()
+          if not has_file_buffer() then
+            show_dashboard()
+          end
+        end,
+      })
     end,
   },
 
