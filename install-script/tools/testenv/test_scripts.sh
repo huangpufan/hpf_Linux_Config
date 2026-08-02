@@ -21,9 +21,9 @@ FAILED=0
 WARNINGS=0
 
 info()    { echo -e "${BLUE}[INFO]${NC} $*"; }
-success() { echo -e "${GREEN}[PASS]${NC} $*"; ((PASSED++)); ((TOTAL++)); }
-fail()    { echo -e "${RED}[FAIL]${NC} $*"; ((FAILED++)); ((TOTAL++)); }
-warn()    { echo -e "${YELLOW}[WARN]${NC} $*"; ((WARNINGS++)); }
+success() { echo -e "${GREEN}[PASS]${NC} $*"; ((++PASSED, ++TOTAL)); }
+fail()    { echo -e "${RED}[FAIL]${NC} $*"; ((++FAILED, ++TOTAL)); }
+warn()    { echo -e "${YELLOW}[WARN]${NC} $*"; ((++WARNINGS)); }
 
 # ========================================
 # 测试函数
@@ -233,17 +233,19 @@ test_single_script() {
     info "测试: $relpath"
     echo "----------------------------------------"
     
-    check_syntax "$script"
-    check_shebang "$script"
-    check_error_handling "$script"
-    check_undefined_vars "$script"
-    check_hardcoded_paths "$script"
-    check_snap_usage "$script"
-    check_relative_calls "$script"
-    check_apt_key "$script"
-    check_interactive "$script"
-    check_source_files "$script"
-    run_shellcheck "$script"
+    # Individual checks return non-zero when they record a finding. Those are
+    # expected results to aggregate, not reasons for `set -e` to stop the run.
+    check_syntax "$script" || true
+    check_shebang "$script" || true
+    check_error_handling "$script" || true
+    check_undefined_vars "$script" || true
+    check_hardcoded_paths "$script" || true
+    check_snap_usage "$script" || true
+    check_relative_calls "$script" || true
+    check_apt_key "$script" || true
+    check_interactive "$script" || true
+    check_source_files "$script" || true
+    run_shellcheck "$script" || true
 }
 
 print_summary() {
