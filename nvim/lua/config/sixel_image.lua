@@ -369,8 +369,7 @@ local function restore_window_options(state, window)
     window_owners[window] = nil
     -- Preserve the baseline through the remainder of this buffer transition.
     -- A following image owner consumes it synchronously in M.open(); an
-    -- ordinary replacement keeps its own lifecycle changes because this
-    -- scheduled callback only discards the transfer record.
+    -- ordinary replacement can apply its own lifecycle options afterwards.
     pending_window_options[window] = snapshot
     apply_window_options(window, snapshot)
     vim.schedule(function()
@@ -500,12 +499,21 @@ local function fail_state(state, message)
 end
 
 local function render_state(state)
-  if states[state.buffer] ~= state or not state.ready or state.refreshing or not terminal_output_available() then
+  if states[state.buffer] ~= state or not state.ready or state.refreshing then
     return
   end
 
   local window = visible_window(state.buffer)
   if not window then
+    return
+  end
+
+  -- Sixel writes target the terminal rather than an individual Neovim
+  -- window. Re-emitting the image after a redraw in another focused window
+  -- can cover that window's character grid; cursor movement then reveals
+  -- only the rows Neovim redraws. Keep the existing raster dormant while
+  -- focus is elsewhere and render it again when the image window is entered.
+  if vim.api.nvim_get_current_win() ~= window or not terminal_output_available() then
     return
   end
 
@@ -743,7 +751,7 @@ local function service_provider_state(state)
     reconcile_buffer_owner(state.buffer)
   end
   local owner = state.window
-  if state.ready and owner_window_is_valid(state) then
+  if state.ready and owner_window_is_valid(state) and vim.api.nvim_get_current_win() == owner then
     if
       vim.api.nvim_win_get_width(owner) ~= state.window_width
       or vim.api.nvim_win_get_height(owner) ~= state.window_height
@@ -755,9 +763,9 @@ local function service_provider_state(state)
   end
 end
 
-local function release_buffer_window(buffer)
+local function release_buffer_window(buffer, window)
   local state = states[buffer]
-  local window = vim.api.nvim_get_current_win()
+  window = window or vim.api.nvim_get_current_win()
   if not state or state.window ~= window then
     return
   end
@@ -769,6 +777,38 @@ local function release_buffer_window(buffer)
   vim.schedule(function()
     reconcile_buffer_owner(buffer)
   end)
+end
+
+local function release_buffer_window_if_detached(buffer)
+  local state = states[buffer]
+  local window = state and state.window
+  if not window then
+    return
+  end
+
+  -- BufLeave fires before Neovim reveals whether the buffer is being
+  -- replaced or focus is merely moving elsewhere. Decide after the event
+  -- sequence has settled so a still-visible image keeps its owner/raster.
+  vim.schedule(function()
+    if states[buffer] ~= state or state.window ~= window then
+      return
+    end
+    if vim.api.nvim_win_is_valid(window) and vim.api.nvim_win_get_buf(window) == buffer then
+      return
+    end
+    release_buffer_window(buffer, window)
+  end)
+end
+
+local function prepare_buffer_window_leave(buffer, window)
+  local state = states[buffer]
+  if state and state.window == window then
+    -- Restore before the replacement buffer's lifecycle runs. If this turns
+    -- out to be a focus-only transition, WinLeave immediately re-applies the
+    -- image options without releasing ownership or clearing the raster.
+    restore_window_options(state, window)
+  end
+  release_buffer_window_if_detached(buffer)
 end
 
 local function cleanup_buffer(buffer)
@@ -864,22 +904,29 @@ function M.setup(opts)
       activate_buffer(event.buf)
     end,
   })
-  vim.api.nvim_create_autocmd("BufWinLeave", {
-    group = group,
-    callback = function(event)
-      release_buffer_window(event.buf)
-    end,
-  })
+  -- BufLeave happens both when the owner buffer is replaced and when focus
+  -- merely moves to another window. Restore options synchronously, then defer
+  -- the ownership decision until Neovim has completed the transition.
   vim.api.nvim_create_autocmd("BufLeave", {
     group = group,
     callback = function(event)
-      release_buffer_window(event.buf)
+      prepare_buffer_window_leave(event.buf, vim.api.nvim_get_current_win())
+    end,
+  })
+  vim.api.nvim_create_autocmd("BufWinLeave", {
+    group = group,
+    callback = function(event)
+      local state = states[event.buf]
+      prepare_buffer_window_leave(event.buf, state and state.window)
     end,
   })
   vim.api.nvim_create_autocmd("WinLeave", {
     group = group,
     callback = function(event)
-      if states[event.buf] then
+      local state = states[event.buf]
+      local window = vim.api.nvim_get_current_win()
+      if state and state.window == window and vim.api.nvim_win_get_buf(window) == event.buf then
+        configure_window(state, window)
         show_cursor()
       end
     end,

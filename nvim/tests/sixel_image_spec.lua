@@ -214,10 +214,15 @@ do
     group = replacement_group,
     once = true,
     callback = function()
+      -- The replacement intentionally keeps number at the same value used by
+      -- the image viewer. Restoration must not mistake equal values for an
+      -- unchanged option and overwrite the replacement's choice.
+      vim.wo.number = false
       vim.wo.wrap = true
     end,
   })
   local expected_after_replacement = vim.deepcopy(expected)
+  expected_after_replacement.number = false
   expected_after_replacement.wrap = true
 
   vim.cmd.enew()
@@ -237,6 +242,74 @@ do
   }, expected_after_replacement, "ordinary buffer should keep replacement lifecycle options")
   vim.fn.delete(path)
   vim.fn.delete(second_path)
+end
+
+-- Moving focus away from an image is not the same as removing that image
+-- from its window. The background raster and owner must survive so browsing
+-- an adjacent file tree does not trigger a clear/refresh cycle.
+do
+  local path = vim.fn.tempname() .. ".PnG"
+  vim.fn.writefile({ "focus-transition image fixture" }, path, "b")
+  vim.cmd.edit(vim.fn.fnameescape(path))
+  local image_buffer = vim.api.nvim_get_current_buf()
+  local image_window = vim.api.nvim_get_current_win()
+  assert(
+    vim.wait(1000, function()
+      local state = viewer.state(image_buffer)
+      return state and not state.refreshing and state.error ~= nil
+    end, 10),
+    "focus-transition image should initialize"
+  )
+
+  vim.cmd.vnew()
+  local navigation_window = vim.api.nvim_get_current_win()
+  vim.wait(250, function()
+    return false
+  end, 10)
+  assert(
+    vim.wait(1000, function()
+      local state = viewer.state(image_buffer)
+      return state and state.window == image_window and not state.refreshing and not state.render_pending
+    end, 10),
+    "visible background image should settle after creating an adjacent window"
+  )
+
+  vim.api.nvim_set_current_win(image_window)
+  vim.wait(100, function()
+    return false
+  end, 10)
+  assert(
+    vim.wait(1000, function()
+      local state = viewer.state(image_buffer)
+      return state and state.window == image_window and not state.refreshing and not state.render_pending
+    end, 10),
+    "image should regain ownership before the focus-only transition"
+  )
+  local state = viewer.state(image_buffer)
+  state.ready = true
+  state.rendered = true
+  state.window_width = vim.api.nvim_win_get_width(image_window)
+  state.window_height = vim.api.nvim_win_get_height(image_window)
+
+  vim.api.nvim_set_current_win(navigation_window)
+  vim.wait(100, function()
+    return false
+  end, 10)
+  state = viewer.state(image_buffer)
+  assert(state and state.window == image_window, "focus-only transition must retain the visible image owner")
+  assert(state.ready, "focus-only transition must not schedule an image refresh")
+  assert(state.rendered, "focus-only transition must preserve the existing background raster")
+
+  vim.api.nvim_win_close(navigation_window, true)
+  vim.api.nvim_set_current_win(image_window)
+  vim.cmd.enew()
+  assert(
+    vim.wait(1000, function()
+      return viewer.state(image_buffer) == nil
+    end, 10),
+    "removing the image from its window should still clean viewer state"
+  )
+  vim.fn.delete(path)
 end
 
 do
@@ -290,8 +363,21 @@ do
         and vim.api.nvim_win_is_valid(first_window)
         and vim.api.nvim_win_get_buf(first_window) == image_buffer
         and not state.refreshing
+        and not state.render_pending
     end, 10),
     "remaining duplicate should automatically become the active image owner"
+  )
+
+  owner_state = viewer.state(image_buffer)
+  owner_state.ready = true
+  owner_state.window_width = vim.api.nvim_win_get_width(first_window)
+  owner_state.window_height = vim.api.nvim_win_get_height(first_window)
+  local background_render_token = owner_state.render_token or 0
+  viewer._service_provider_state(owner_state)
+  assert_equal(
+    owner_state.render_token or 0,
+    background_render_token,
+    "redraws from another focused window must not queue terminal-global Sixel writes"
   )
 
   vim.api.nvim_set_current_win(first_window)
