@@ -57,5 +57,13 @@ second = focused_terminal()
 assert_equal(second.direction, "float", "Ctrl-P should move the current terminal to a float")
 assert_equal(vim.wo[second.window].winbar, "", "floating terminal should show only its border title")
 
+-- Ctrl-W on a terminal must switch to the previous terminal instead of killing it
+feed "<C-d>"
+feed "<C-w>"
+local focused = focused_terminal()
+assert(focused and focused.id == first.id, "Ctrl-W should switch to the previous terminal, not close it")
+local terminal = require "toggleterm.terminal"
+assert_equal(#terminal.get_all(), 2, "Ctrl-W should keep both terminals in the pool")
+
 print "terminal_keymaps_spec: ok"
 vim.cmd "qa!"

@@ -76,9 +76,13 @@ local function open_or_search(target)
 end
 
 local function close_current_buffer()
-  vim.cmd "wall"
   local buf = vim.api.nvim_get_current_buf()
-  Snacks.bufdelete.delete { buf = buf, force = vim.bo[buf].buftype == "terminal" }
+  if vim.bo[buf].buftype == "terminal" then
+    require("config.terminal_manager").cycle(-1)
+    return
+  end
+  vim.cmd "wall"
+  Snacks.bufdelete.delete { buf = buf }
 end
 
 local function close_hidden_buffers()
