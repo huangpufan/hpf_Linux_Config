@@ -56,6 +56,35 @@ local smaller_footprint = viewer._placement(100, 40, 90, 200, 10, 20)
 assert_equal(old_footprint.column_offset, smaller_footprint.column_offset, "a smaller payload can keep the same origin")
 assert(old_footprint.columns ~= smaller_footprint.columns, "same-origin replacement can still leave stale edge pixels")
 
+do
+  local unrendered = {
+    sixel = "encoded but never sent",
+    rendered = false,
+    last_screen_row = 3,
+    last_screen_column = 10,
+    last_layout = { columns = 10, rows = 10 },
+  }
+  assert(not viewer._clear_rendered_image(unrendered), "encoded-only state must not clear the terminal UI")
+  assert_equal(unrendered.last_screen_row, 3, "unrendered state should retain placement metadata")
+
+  local dirty = {
+    rendered = false,
+    terminal_dirty = true,
+    last_screen_row = 3,
+    last_screen_column = 10,
+    last_layout = { columns = 10, rows = 10 },
+  }
+  assert(viewer._clear_rendered_image(dirty), "a partial failed write should clear its dirty terminal layer")
+  assert_equal(dirty.terminal_dirty, false, "dirty clear should reset terminal state")
+  assert_equal(dirty.last_screen_row, nil, "dirty clear should reset partial placement")
+
+  unrendered.rendered = true
+  assert(viewer._clear_rendered_image(unrendered), "a successfully rendered payload should be clearable")
+  assert_equal(unrendered.rendered, false, "clear should reset rendered state")
+  assert_equal(unrendered.last_screen_row, nil, "clear should reset rendered placement")
+  assert_equal(unrendered.last_layout, nil, "clear should reset rendered footprint")
+end
+
 -- Regression for Neovim/libuv marking stderr O_NONBLOCK. The original viewer
 -- made one 13,476-byte write; the pty accepted 11,776 bytes and silently lost
 -- the remaining 1,700 bytes. The loop must retain the offset across EAGAIN.

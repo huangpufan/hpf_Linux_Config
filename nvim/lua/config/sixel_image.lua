@@ -459,12 +459,22 @@ local function clear_terminal_image_layer()
   end, 20)
 end
 
+local function clear_rendered_image(state)
+  if not state or not (state.rendered or state.terminal_dirty) then
+    return false
+  end
+  state.rendered = false
+  state.terminal_dirty = false
+  state.last_screen_row = nil
+  state.last_screen_column = nil
+  state.last_layout = nil
+  clear_terminal_image_layer()
+  return true
+end
+
 local function adopt_window(state, window)
   if state.window and state.window ~= window then
     restore_window_options(state, state.window)
-    clear_terminal_image_layer()
-    state.last_screen_row = nil
-    state.last_screen_column = nil
   end
   state.window = window
   configure_window(state, window)
@@ -474,6 +484,7 @@ local schedule_refresh
 local schedule_render
 
 local function fail_state(state, message)
+  clear_rendered_image(state)
   state.ready = false
   state.refreshing = false
   state.error = message
@@ -516,9 +527,7 @@ local function render_state(state)
   local screen_row = info.winrow + layout.row_offset
   local screen_column = info.wincol + layout.column_offset
   if state.last_screen_row and (state.last_screen_row ~= screen_row or state.last_screen_column ~= screen_column) then
-    state.last_screen_row = nil
-    state.last_screen_column = nil
-    clear_terminal_image_layer()
+    clear_rendered_image(state)
     schedule_render(state, options.initial_render_delay_ms)
     return
   end
@@ -533,13 +542,12 @@ local function render_state(state)
 
   local ok, diagnostics = write_all(sequence)
   state.last_write = diagnostics
-  state.last_layout = layout
-  state.last_screen_row = screen_row
-  state.last_screen_column = screen_column
   if not ok then
-    -- A failed DCS write can leave the terminal parser inside the sequence.
-    -- Send ST before surfacing the error so subsequent Neovim output remains usable.
+    -- A failed DCS write can leave both the parser and a partial raster dirty.
+    -- Close the DCS first, then clear even though this was not a complete render.
     write_all "\27\\\27[u\27[?25h"
+    state.terminal_dirty = (diagnostics.bytes or 0) > 0
+    clear_rendered_image(state)
     if not state.write_error_reported then
       state.write_error_reported = true
       vim.notify(
@@ -553,6 +561,11 @@ local function render_state(state)
       )
     end
   else
+    state.rendered = true
+    state.terminal_dirty = false
+    state.last_layout = layout
+    state.last_screen_row = screen_row
+    state.last_screen_column = screen_column
     state.write_error_reported = false
   end
 end
@@ -644,10 +657,7 @@ local function refresh_state(state, token)
   end
 
   if state.sixel then
-    clear_terminal_image_layer()
-    state.last_screen_row = nil
-    state.last_screen_column = nil
-    state.last_layout = nil
+    clear_rendered_image(state)
   end
 
   state.sixel = sixel
@@ -756,7 +766,6 @@ local function release_buffer_window(buffer)
   restore_window_options(state, window)
   state.window = nil
   show_cursor()
-  clear_terminal_image_layer()
   vim.schedule(function()
     reconcile_buffer_owner(buffer)
   end)
@@ -771,7 +780,7 @@ local function cleanup_buffer(buffer)
   states[buffer] = nil
   release_state_windows(state)
   show_cursor()
-  clear_terminal_image_layer()
+  clear_rendered_image(state)
 end
 
 function M.open(buffer, path)
@@ -918,6 +927,7 @@ function M._ffi_status()
 end
 
 M._drain_writes = drain_writes
+M._clear_rendered_image = clear_rendered_image
 M._extension_pattern = case_insensitive_extension
 M._fit_dimensions = fit_dimensions
 M._parse_sixel_dimensions = parse_sixel_dimensions
