@@ -2,6 +2,12 @@ local M = {}
 
 local last_terminal_id
 
+-- Per-terminal saved scroll view (id -> { topline, leftcol }).
+-- Floating windows are destroyed on close and recreated on open, so the
+-- window-level scroll position (topline) is lost. We persist it here so
+-- switching terminals and coming back keeps the user's scroll position.
+local terminal_views = {}
+
 local frame_states = {
   editor = {
     color = "#e78284",
@@ -39,6 +45,28 @@ end
 
 local function is_open(term)
   return term and term:is_open() and is_valid_window(term.window)
+end
+
+local function save_view(term)
+  if not is_open(term) then return end
+  local view = vim.api.nvim_win_call(term.window, function()
+    return vim.fn.winsaveview()
+  end)
+  -- Only the window-level scroll position is meaningful for terminal
+  -- buffers; lnum/curswant would fight the terminal cursor.
+  terminal_views[term.id] = { topline = view.topline, leftcol = view.leftcol }
+end
+
+local function restore_view(term)
+  local view = terminal_views[term.id]
+  if not view or not is_open(term) then return end
+  vim.api.nvim_win_call(term.window, function()
+    pcall(vim.fn.winrestview, { topline = view.topline, leftcol = view.leftcol })
+  end)
+end
+
+local function clear_view(term)
+  if term then terminal_views[term.id] = nil end
 end
 
 local function define_frame_highlights()
@@ -221,10 +249,15 @@ local function open_in_presentation(target, presentation)
 
   remember(target)
 
+  -- Persist window-level scroll positions before the floating windows are
+  -- destroyed; they are recreated on open and would otherwise snap back to
+  -- the bottom of the scrollback.
   if current and current ~= target and is_open(current) then
+    save_view(current)
     current:close()
   end
   if is_open(target) then
+    save_view(target)
     target:close()
   end
 
@@ -275,6 +308,7 @@ function M.toggle(direction)
   local target = presentation.term
 
   if target and is_open(target) and target.direction == direction then
+    save_view(target)
     remember(target)
     target:close()
     return target
@@ -368,10 +402,12 @@ end
 
 function M.on_open(term)
   remember(term)
+  restore_view(term)
   M.sync_labels()
 end
 
-function M.on_exit()
+function M.on_exit(term)
+  clear_view(term)
   vim.schedule(M.sync_labels)
 end
 

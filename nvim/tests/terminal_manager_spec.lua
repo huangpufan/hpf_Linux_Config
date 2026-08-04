@@ -68,9 +68,33 @@ assert_equal(
   "new terminal output should preserve the user's scrollback position"
 )
 
+-- Switching terminals must preserve the user's scroll position: floating
+-- windows are destroyed on close and recreated on open, so the window-level
+-- topline would otherwise snap back to the bottom of the scrollback.
+vim.cmd "stopinsert"
+vim.api.nvim_win_set_height(second.window, 10)
+vim.api.nvim_win_set_cursor(second.window, { 40, 0 })
+vim.api.nvim_win_call(second.window, function()
+  vim.cmd "normal! zt"
+end)
+local preserved_topline = vim.api.nvim_win_call(second.window, function()
+  return vim.fn.winsaveview().topline
+end)
+assert(preserved_topline > 1, "scrollback topline should be set above the bottom before cycling")
+
 manager.cycle(-1)
 assert_equal(focused_terminal().id, first.id, "cycle should switch terminal session")
 assert_equal(focused_terminal().direction, "float", "cycle should preserve float layout")
+
+manager.cycle(-1)
+assert_equal(focused_terminal().id, second.id, "cycle should return to the scrolled terminal")
+local restored_topline = vim.api.nvim_win_call(second.window, function()
+  return vim.fn.winsaveview().topline
+end)
+assert_equal(restored_topline, preserved_topline, "cycling back should restore the saved scroll position")
+
+manager.cycle(-1)
+assert_equal(focused_terminal().id, first.id, "cycle should return to the first terminal for the layout change")
 
 manager.toggle "vertical"
 first = focused_terminal()
