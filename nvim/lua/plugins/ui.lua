@@ -39,6 +39,7 @@ return {
         },
         filters = {
           dotfiles = false,
+          git_ignored = false,
         },
         update_focused_file = {
           enable = true,
