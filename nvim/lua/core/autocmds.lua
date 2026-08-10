@@ -15,10 +15,26 @@ autocmd({ "FocusGained", "BufEnter" }, {
   command = "checktime",
 })
 
--- Auto save when losing focus
+-- Auto save when losing focus / switching buffers.
+-- Guard against recreating files that were removed on disk (e.g. nvim-tree
+-- delete, trash, git operations): `:update` re-creates a missing file from
+-- the in-memory buffer even when &modified is false, so it must be skipped
+-- when the file no longer exists. See issue: deleting an open file in
+-- nvim-tree first closes the buffer and requires a second delete.
 autocmd({ "FocusLost", "BufLeave" }, {
   pattern = "*",
-  command = "silent! update",
+  callback = function(args)
+    local bo = vim.bo[args.buf]
+    if bo.buftype ~= "" or bo.readonly or not bo.modifiable then
+      return
+    end
+    -- Only persist buffers whose backing file still exists on disk; otherwise
+    -- `:update` would resurrect a file that was just removed.
+    if vim.fn.filereadable(args.file) ~= 1 then
+      return
+    end
+    vim.cmd("silent! update")
+  end,
 })
 
 -- Return to last edit position
