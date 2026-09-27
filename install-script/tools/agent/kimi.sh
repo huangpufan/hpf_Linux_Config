@@ -22,6 +22,29 @@ is_installed() {
     command -v kimi >/dev/null 2>&1 || [ -x "$KIMI_BIN" ]
 }
 
+ensure_login_path() {
+    # kimi 装在 ~/.kimi-code/bin，官方安装器只把它追加进 ~/.bashrc；而登录 shell
+    # 不会读到那里（Ubuntu 的 .bashrc 对非交互 shell 会提前 return），所以
+    # 非交互/自动化场景下 `kimi` 找不到。这里补 ~/.profile（登录 shell 会读）。
+    local profile="$HOME/.profile"
+    local marker="# kimi-code on PATH for login shells (managed by hpf_Linux_Config)"
+    if [ -f "$profile" ] && grep -qF "$marker" "$profile"; then
+        return 0
+    fi
+    cat >> "$profile" <<'EOF'
+
+# kimi-code on PATH for login shells (managed by hpf_Linux_Config)
+if [ -d "$HOME/.kimi-code/bin" ]; then
+    case ":$PATH:" in
+        *":$HOME/.kimi-code/bin:"*) ;;
+        *) PATH="$HOME/.kimi-code/bin:$PATH" ;;
+    esac
+    export PATH
+fi
+EOF
+    log_info "kimi-code path appended to ~/.profile (login shells)"
+}
+
 do_install() {
     # shellcheck source=./_ensure.sh
     . "$SCRIPT_DIR/_ensure.sh"
@@ -52,6 +75,7 @@ main() {
 
     if is_installed; then
         log_info "$TOOL_NAME installed successfully"
+        ensure_login_path
         if ! command -v kimi >/dev/null 2>&1; then
             log_warn "kimi 尚未在当前 shell 的 PATH 中，重新登录 shell 后生效（或 source ~/.bashrc）"
         fi

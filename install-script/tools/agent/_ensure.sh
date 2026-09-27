@@ -42,23 +42,16 @@ configure_npm_registry() {
     fi
 }
 
-# npm 全局安装位置对齐本机（实测踩过）：nvm 生效时 npm 的全局 prefix 默认是
-# nvm 的 node 目录（~/.nvm/versions/node/<ver>/bin），而登录 shell 的 PATH 里
-# 没有那个目录 —— 结果 pi/codex/claude/opencode/gemini 都装上了却找不到。
-# 指向 ~/.local 后全局命令落在 ~/.local/bin，而 Ubuntu 的 .profile 会把它加进 PATH。
+# npm 全局安装位置：**不主动设 prefix**。
 #
-# 注意用 `npm config set`（写 ~/.npmrc），**不能**用 NPM_CONFIG_PREFIX 环境变量：
-# nvm 检测到该环境变量会直接拒绝运行。
-configure_npm_prefix() {
-    local wanted="$HOME/.local"
-    local current
-    current="$(npm config get prefix 2>/dev/null || true)"
-    if [ "$current" != "$wanted" ]; then
-        npm config set prefix "$wanted"
-        log_info "npm prefix set to $wanted"
-    fi
-}
-
+# 曾经试过把 prefix 设成 ~/.local（为了让全局命令落在 ~/.local/bin，而 Ubuntu 的
+# .profile 会把它加进 PATH），但实测代价太大：
+#   * nvm.sh 一看到 .npmrc 里有 prefix 就报 "has a `globalconfig` and/or a
+#     `prefix` setting, which are incompatible with nvm"，并且行为异常；
+#   * 与 nvm 自己的 check_cmd（会 source nvm.sh）冲突，导致安装验证失败。
+# 改用另一条路：让登录 shell 能找到 nvm 的 node 目录（见 tools/curl/nvm.sh 的
+# ensure_login_path）。npm 全局默认就装在 nvm 的 node 目录里，于是 node 与
+# 全局命令（pi/codex/gemini…）一起在 PATH 上，不需要改 prefix。
 # 有些 Agent 包的原生二进制靠 postinstall 装配（实测：@anthropic-ai/claude-code、
 # opencode-ai、agent-browser）。npm 默认**禁止** install scripts，会导致装完
 # 只有一个 500 字节的 shim，运行时才报 "native binary not installed"。
@@ -92,7 +85,6 @@ ensure_npm() {
     fi
 
     log_info "npm is available: $(npm --version)"
-    configure_npm_prefix
     configure_npm_registry
     configure_npm_allow_scripts
 }
