@@ -26,6 +26,7 @@ PRESET_TOOL_IDS = {
     "dev-cli": "preset-dev-cli",
     "dev-full": "preset-dev-full",
     "all-tools": "preset-all-tools",
+    "agents": "preset-agents",
 }
 PERSONAL_BOOTSTRAP_TOOL_IDS = {"preset-bootstrap", "preset-all-tools"}
 
