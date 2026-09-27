@@ -10,13 +10,26 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 # shellcheck source=../../lib/common.sh
 . "$REPO_ROOT/lib/common.sh"
 
-# 加载 nvm 环境（Agent CLI 多数是 npm 全局包）
-load_nvm() {
-    export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
-    if [ -s "$NVM_DIR/nvm.sh" ]; then
-        # shellcheck source=/dev/null
-        . "$NVM_DIR/nvm.sh"
+# 把 nvm 装的 node 加进 PATH。
+#
+# 注意：这里**故意不 source nvm.sh**。实测（2026-09-28，在云主机上）：
+#   nvm.sh 只能在脚本顶层被 source；在**函数里** source 会报
+#   "pop_var_context: head of shell_variables not a function context"，
+#   并且无法把 node 加进 PATH —— 结果是所有 npm 类 Agent 全部装不上。
+#   （仓库原有的 tools/npm/_ensure.sh 也是同样的写法，同样有这个隐患。）
+# 直接按版本目录把最新的 node bin 加进 PATH 更稳，也绕开了 nvm.sh 对
+# .npmrc 里 prefix 设置的告警。
+ensure_node_on_path() {
+    local bin
+    bin="$(ls -d "$NVM_DIR"/versions/node/*/bin 2>/dev/null | sort -V | tail -1)"
+    if [ -z "$bin" ] || [ ! -x "$bin/node" ]; then
+        return 1
     fi
+    case ":$PATH:" in
+        *":$bin:"*) ;;
+        *) export PATH="$bin:$PATH" ;;
+    esac
+    return 0
 }
 
 # 中国网络下必须用镜像源，否则装 npm 包会超时
@@ -66,7 +79,11 @@ configure_npm_allow_scripts() {
 }
 
 ensure_npm() {
-    load_nvm
+    export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+
+    if ! command -v npm >/dev/null 2>&1; then
+        ensure_node_on_path || true
+    fi
 
     if ! command -v npm >/dev/null 2>&1; then
         log_err "npm is not installed. Agent CLI（npm 类）需要 Node.js/npm。"

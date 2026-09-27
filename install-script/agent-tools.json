@@ -675,7 +675,7 @@
           "script": "nvim/nvim-install.sh",
           "requires_sudo": true,
           "requires_ssh": false,
-        "check_cmd": "timeout 300s bash nvim/nvim-verify.sh",
+          "check_cmd": "timeout 300s bash nvim/nvim-verify.sh",
           "timeout": 1800
         },
         {
@@ -727,7 +727,7 @@
           "script": "tools/agent/pi.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; command -v pi",
+          "check_cmd": "command -v pi",
           "timeout": 1800
         },
         {
@@ -737,7 +737,7 @@
           "script": "tools/agent/codex.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; command -v codex",
+          "check_cmd": "command -v codex",
           "timeout": 1800
         },
         {
@@ -747,7 +747,7 @@
           "script": "tools/agent/claude.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; command -v claude",
+          "check_cmd": "command -v claude",
           "timeout": 1800
         },
         {
@@ -757,7 +757,7 @@
           "script": "tools/agent/opencode.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; command -v opencode",
+          "check_cmd": "command -v opencode",
           "timeout": 1800
         },
         {
@@ -767,7 +767,7 @@
           "script": "tools/agent/gemini.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; command -v gemini",
+          "check_cmd": "command -v gemini",
           "timeout": 1800
         },
         {

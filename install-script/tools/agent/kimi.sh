@@ -27,8 +27,18 @@ do_install() {
     . "$SCRIPT_DIR/_ensure.sh"
     ensure_curl
 
+    # 与 devin 同样的问题：官方安装器在最后会**自动启动一次交互式登录**，
+    # 在非交互环境（Docker 构建、CI、远程自动化）里那一步会被取消并让整个
+    # 步骤返回非零 —— 但此时二进制已经装好了。所以落盘后以 </dev/null 执行并
+    # 容错，真正的判定交给 main() 的 is_installed。
+    local installer
+    installer="$(mktemp)"
     log_info "Running official installer: $INSTALL_URL"
-    curl -fsSL "$INSTALL_URL" | bash
+    curl -fsSL "$INSTALL_URL" -o "$installer"
+    if ! bash "$installer" </dev/null; then
+        log_warn "安装器返回非零（通常是它启动的登录流程被取消）；继续按二进制是否存在判定"
+    fi
+    rm -f "$installer"
 }
 
 main() {
