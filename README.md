@@ -16,6 +16,7 @@
 - **Modular Scripts** - Each tool keeps its own install script under `install-script/`.
 - **Preset Bundles** - `minimal`, `dev-cli`, `dev-full`, and `all-tools`, where `all-tools` means the default `bootstrap + dev-full` preset chain.
 - **Neovim Config** - Included config for C/C++ development with LSP support and scoped snacks.nvim utility modules.
+- **Agent Config Submodule** - `agent-config/` (submodule) is the source of truth for AI coding agent configs — pi's local extensions plus codex/claude/devin settings. It holds no secrets: key-bearing configs ship as `templates/*.example` only.
 
 ## Quick Start
 
@@ -128,6 +129,9 @@ hpf_Linux_Config/
 │   ├── basic/
 │   └── lib/
 ├── nvim/                          # installed/linked through agent-runner.py install nvim
+├── agent-config/                  # submodule → huangpufan/agent-config
+│                                  #   AI coding agent 配置正本：pi 扩展 + codex/claude/opencode/devin 配置
+│                                  #   部署：cd agent-config && ./install.sh
 └── makefile
 ```
 
