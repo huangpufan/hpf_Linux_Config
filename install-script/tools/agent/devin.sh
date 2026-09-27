@@ -26,8 +26,18 @@ do_install() {
     . "$SCRIPT_DIR/_ensure.sh"
     ensure_curl
 
+    # 先把安装器落盘再跑，并把 stdin 接到 /dev/null：官方安装器在最后会
+    # **自动启动一次交互式登录**（打印 "Welcome to Devin CLI!"），在非交互环境
+    # （Docker 构建、CI）里那一步会被取消，让整个步骤返回非零 —— 但此时二进制
+    # 已经装好了。所以这里容错，真正的判定交给 main() 的 command -v devin。
+    local installer
+    installer="$(mktemp)"
     log_info "Running official installer: $INSTALL_URL"
-    curl -fsSL "$INSTALL_URL" | bash
+    curl -fsSL "$INSTALL_URL" -o "$installer"
+    if ! bash "$installer" </dev/null; then
+        log_warn "安装器返回非零（通常是它启动的登录流程被取消）；继续按二进制是否存在判定"
+    fi
+    rm -f "$installer"
 }
 
 main() {

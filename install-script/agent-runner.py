@@ -157,11 +157,24 @@ def run_check_command(command: str) -> subprocess.CompletedProcess:
 def ensure_sudo(spec: ToolSpec) -> int:
     if not spec.requires_sudo:
         return 0
-    print("[runner] refreshing sudo credentials...")
-    completed = subprocess.run(["sudo", "-v"], cwd=str(INSTALL_ROOT))
-    if completed.returncode != 0:
+    # 先用 -n 探测：NOPASSWD 或已有缓存凭据时会直接成功，且**不需要 TTY**。
+    # 不能用 `sudo -v` 当探测手段 —— 它在没有 TTY 的环境（Docker 构建、CI）
+    # 一律要求密码而失败，会把所有 requires_sudo 的工具误判为安装失败。
+    if subprocess.run(["sudo", "-n", "true"], cwd=str(INSTALL_ROOT)).returncode == 0:
+        return 0
+    # 真需要密码时：只在有 TTY 的情况下尝试刷新凭据（交互式使用）。
+    if sys.stdin.isatty():
+        print("[runner] refreshing sudo credentials...")
+        completed = subprocess.run(["sudo", "-v"], cwd=str(INSTALL_ROOT))
+        if completed.returncode == 0:
+            return 0
         eprint("[runner] sudo -v failed")
-    return completed.returncode
+        return completed.returncode
+    eprint(
+        "[runner] sudo requires a password but no TTY is available "
+        "(configure NOPASSWD:ALL for this user, or run interactively)"
+    )
+    return 1
 
 
 def ensure_ssh(spec: ToolSpec) -> int:
