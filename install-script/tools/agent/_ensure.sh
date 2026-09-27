@@ -29,6 +29,23 @@ configure_npm_registry() {
     fi
 }
 
+# npm 全局安装位置对齐本机（实测踩过）：nvm 生效时 npm 的全局 prefix 默认是
+# nvm 的 node 目录（~/.nvm/versions/node/<ver>/bin），而登录 shell 的 PATH 里
+# 没有那个目录 —— 结果 pi/codex/claude/opencode/gemini 都装上了却找不到。
+# 指向 ~/.local 后全局命令落在 ~/.local/bin，而 Ubuntu 的 .profile 会把它加进 PATH。
+#
+# 注意用 `npm config set`（写 ~/.npmrc），**不能**用 NPM_CONFIG_PREFIX 环境变量：
+# nvm 检测到该环境变量会直接拒绝运行。
+configure_npm_prefix() {
+    local wanted="$HOME/.local"
+    local current
+    current="$(npm config get prefix 2>/dev/null || true)"
+    if [ "$current" != "$wanted" ]; then
+        npm config set prefix "$wanted"
+        log_info "npm prefix set to $wanted"
+    fi
+}
+
 # 有些 Agent 包的原生二进制靠 postinstall 装配（实测：@anthropic-ai/claude-code、
 # opencode-ai、agent-browser）。npm 默认**禁止** install scripts，会导致装完
 # 只有一个 500 字节的 shim，运行时才报 "native binary not installed"。
@@ -58,6 +75,7 @@ ensure_npm() {
     fi
 
     log_info "npm is available: $(npm --version)"
+    configure_npm_prefix
     configure_npm_registry
     configure_npm_allow_scripts
 }
