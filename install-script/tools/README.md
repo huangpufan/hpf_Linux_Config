@@ -15,7 +15,8 @@ tools/
 ├── cargo/    # Cargo / Rust 工具
 ├── npm/      # NPM 工具
 ├── pip/      # Pip 工具
-└── curl/     # 通过 curl 安装
+├── curl/     # 通过 curl 安装
+└── agent/    # AI coding agent CLI（pi / codex / claude / opencode / gemini / cursor-agent / devin / kimi）
 ```
 
 ## 使用方式
@@ -57,6 +58,17 @@ python3 install-script/agent-runner.py preset minimal
 2. **独立性**：不要依赖其他工具脚本的隐式副作用。
 3. **标准输出**：优先复用 `install-script/lib/common.sh` 中的日志函数。
 4. **可验证性**：新增脚本时必须提供对应的 `check_cmd`。
+
+## Agent CLI（`agent/`）
+
+Agent CLI 单独放在 `agent/`，不按安装方式分类（npm 与 curl 混用）：
+
+- npm 全局包：`pi`、`codex`、`claude`、`opencode`、`gemini`
+- 官方一键脚本：`cursor-agent`、`devin`、`kimi`
+
+一键装全部：`python3 install-script/agent-runner.py preset agents`
+
+**这些脚本只装 CLI 本体，不处理登录与凭据。** 各 Agent 的认证方式不同，写在每个脚本头部的注释里（例如 codex 是 OAuth 明文文件、pi/opencode 是明文 key、claude 支持第三方兼容网关），装完后按对应方式登录。
 
 ### 脚本模板
 

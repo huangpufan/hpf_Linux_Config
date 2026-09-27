@@ -53,6 +53,16 @@
           "requires_ssh": false,
           "check_cmd": "python3 presets/check-preset.py all-tools",
           "timeout": 3600
+        },
+        {
+          "id": "preset-agents",
+          "name": "Agent CLI 工具集",
+          "description": "安装 pi、codex、claude、opencode、gemini、cursor-agent、devin、kimi；只装 CLI 本体，不处理登录与凭据",
+          "script": "presets/agents.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "python3 presets/check-preset.py agents",
+          "timeout": 3600
         }
       ]
     },
@@ -702,6 +712,92 @@
           "requires_sudo": false,
           "requires_ssh": false,
           "check_cmd": "test -d ~/.config/ranger",
+          "timeout": 1800
+        }
+      ]
+    },
+    {
+      "id": "agent-tools",
+      "name": "Agent CLI 工具",
+      "tools": [
+        {
+          "id": "pi",
+          "name": "pi coding agent",
+          "description": "pi coding agent（npm 全局包 @earendil-works/pi-coding-agent）；认证用明文 key，存 ~/.pi/agent/",
+          "script": "tools/agent/pi.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; command -v pi",
+          "timeout": 1800
+        },
+        {
+          "id": "codex",
+          "name": "OpenAI Codex CLI",
+          "description": "OpenAI Codex CLI（npm 全局包 @openai/codex）；ChatGPT 登录凭据在 ~/.codex/auth.json，无设备绑定",
+          "script": "tools/agent/codex.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; command -v codex",
+          "timeout": 1800
+        },
+        {
+          "id": "claude",
+          "name": "Claude Code",
+          "description": "Claude Code（npm 全局包 @anthropic-ai/claude-code）；支持 OAuth、ANTHROPIC_API_KEY 或第三方兼容网关",
+          "script": "tools/agent/claude.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; command -v claude",
+          "timeout": 1800
+        },
+        {
+          "id": "opencode",
+          "name": "OpenCode",
+          "description": "OpenCode（npm 全局包 opencode-ai）；认证用明文 key，存 ~/.local/share/opencode/auth.json",
+          "script": "tools/agent/opencode.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; command -v opencode",
+          "timeout": 1800
+        },
+        {
+          "id": "gemini",
+          "name": "Google Gemini CLI",
+          "description": "Google Gemini CLI（npm 全局包 @google/gemini-cli）；状态在 ~/.gemini/",
+          "script": "tools/agent/gemini.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; command -v gemini",
+          "timeout": 1800
+        },
+        {
+          "id": "cursor-agent",
+          "name": "Cursor CLI",
+          "description": "Cursor CLI（官方脚本 https://cursor.com/install）；版本装在 ~/.local/share/cursor-agent/",
+          "script": "tools/agent/cursor-agent.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "command -v cursor-agent",
+          "timeout": 1800
+        },
+        {
+          "id": "devin",
+          "name": "Devin CLI",
+          "description": "Devin CLI（官方脚本 https://cli.devin.ai/install.sh）；版本装在 ~/.local/share/devin/",
+          "script": "tools/agent/devin.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "command -v devin",
+          "timeout": 1800
+        },
+        {
+          "id": "kimi",
+          "name": "Kimi Code CLI",
+          "description": "Kimi Code CLI（官方脚本 https://code.kimi.com/kimi-code/install.sh）；装在 ~/.kimi-code/，安装脚本会改 ~/.bashrc 的 PATH",
+          "script": "tools/agent/kimi.sh",
+          "requires_sudo": false,
+          "requires_ssh": false,
+          "check_cmd": "command -v kimi || test -x \"$HOME/.kimi-code/bin/kimi\"",
           "timeout": 1800
         }
       ]
