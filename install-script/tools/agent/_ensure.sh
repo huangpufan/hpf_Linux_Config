@@ -29,6 +29,25 @@ configure_npm_registry() {
     fi
 }
 
+# 有些 Agent 包的原生二进制靠 postinstall 装配（实测：@anthropic-ai/claude-code、
+# opencode-ai、agent-browser）。npm 默认**禁止** install scripts，会导致装完
+# 只有一个 500 字节的 shim，运行时才报 "native binary not installed"。
+#
+# 两个坑（都已实测）：
+#   1. `npm install-scripts approve` 对**全局安装无效** —— npm 源码直接报
+#      "does not work for global installs"。全局安装只能靠 .npmrc 的配置。
+#   2. `allow-scripts` **没有通配符**（`*` 会被当作非法版本范围丢弃），
+#      必须逐个列包名；裸包名表示该包任意版本都放行。
+configure_npm_allow_scripts() {
+    local wanted="@anthropic-ai/claude-code,opencode-ai,agent-browser"
+    local current
+    current="$(npm config get allow-scripts 2>/dev/null || true)"
+    if [ "$current" != "$wanted" ]; then
+        npm config set allow-scripts="$wanted" --location=user
+        log_info "npm allow-scripts configured for packages needing postinstall"
+    fi
+}
+
 ensure_npm() {
     load_nvm
 
@@ -40,6 +59,7 @@ ensure_npm() {
 
     log_info "npm is available: $(npm --version)"
     configure_npm_registry
+    configure_npm_allow_scripts
 }
 
 ensure_curl() {
