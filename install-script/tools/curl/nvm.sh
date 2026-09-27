@@ -39,8 +39,39 @@ do_install() {
     set -u
 }
 
+ensure_login_path() {
+    # 让**登录 shell** 也能找到 nvm 装的 node。
+    # 为什么需要：npm 全局 shim（pi/codex/gemini…）是 `#!/usr/bin/env node`，
+    # 只有 shim 在 PATH 上、node 不在时会报
+    # "/usr/bin/env: 'node': No such file or directory"。
+    # 仓库的 .bash-source 只覆盖交互式 shell（它从 .bashrc 进来，而 .bashrc 对
+    # 非交互 shell 会提前 return），所以这里补 ~/.profile（登录 shell 会读）。
+    local profile="$HOME/.profile"
+    local marker="# nvm node on PATH for login shells (managed by hpf_Linux_Config)"
+    if [ -f "$profile" ] && grep -qF "$marker" "$profile"; then
+        return 0
+    fi
+    cat >> "$profile" <<'EOF'
+
+# nvm node on PATH for login shells (managed by hpf_Linux_Config)
+if [ -d "$HOME/.nvm/versions/node" ]; then
+    _hpf_node_bin="$(ls -d "$HOME"/.nvm/versions/node/*/bin 2>/dev/null | sort -V | tail -1)"
+    if [ -n "$_hpf_node_bin" ]; then
+        case ":$PATH:" in
+            *":$_hpf_node_bin:"*) ;;
+            *) PATH="$_hpf_node_bin:$PATH" ;;
+        esac
+        export PATH
+    fi
+    unset _hpf_node_bin
+fi
+EOF
+    log_info "node path appended to ~/.profile (login shells)"
+}
+
 ensure_shell_integration() {
     bash "$REPO_ROOT/basic/bashrc-init.sh"
+    ensure_login_path
 }
 
 main() {

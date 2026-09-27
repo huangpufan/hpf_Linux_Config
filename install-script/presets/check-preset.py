@@ -77,11 +77,23 @@ BOOTSTRAP_MEMBERS = [
     "github-ssh",
 ]
 
+AGENTS_MEMBERS = [
+    "pi",
+    "codex",
+    "claude",
+    "opencode",
+    "gemini",
+    "cursor-agent",
+    "devin",
+    "kimi",
+]
+
 PRESET_MEMBERS = {
     "bootstrap": BOOTSTRAP_MEMBERS,
     "minimal": MINIMAL_MEMBERS,
     "dev-cli": MINIMAL_MEMBERS + DEV_CLI_EXTRA_MEMBERS,
     "dev-full": MINIMAL_MEMBERS + DEV_CLI_EXTRA_MEMBERS + DEV_FULL_EXTRA_MEMBERS,
+    "agents": AGENTS_MEMBERS,
     "all-tools": BOOTSTRAP_MEMBERS
     + MINIMAL_MEMBERS
     + DEV_CLI_EXTRA_MEMBERS
