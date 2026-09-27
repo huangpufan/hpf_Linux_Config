@@ -67,6 +67,8 @@ do_install() {
 main() {
     if is_installed; then
         log_info "$TOOL_NAME is already installed"
+        # 已安装也要确保登录 shell 的 PATH 已补上（否则幂等重跑时不会修 PATH）。
+        ensure_login_path
         return 0
     fi
 
