@@ -18,7 +18,10 @@ TOOL_CMD="devin"
 INSTALL_URL="https://cli.devin.ai/install.sh"
 
 is_installed() {
-    command -v "$TOOL_CMD" >/dev/null 2>&1
+    # 不能只看 `command -v`：runner 执行本脚本时用的是**非交互 shell**，PATH 里
+    # 没有 ~/.local/bin（那是 Ubuntu 的 .profile 给登录 shell 加的），而 npm 的
+    # 全局前缀已被 _ensure.sh 统一设成 ~/.local —— 结果会误判"没装"。
+    command -v "$TOOL_CMD" >/dev/null 2>&1 || [ -x "$HOME/.local/bin/$TOOL_CMD" ]
 }
 
 do_install() {
