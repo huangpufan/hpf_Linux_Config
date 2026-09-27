@@ -89,3 +89,11 @@ if [ -s "$NVM_DIR/nvm.sh" ] && ! declare -F nvm >/dev/null 2>&1; then
 
     unset _hpf_nvm_alias _hpf_nvm_alias_depth _hpf_nvm_bin
 fi
+
+# 按命令注入代理的包装函数（codex / cursor-agent / gemini / grok / agy / devin）。
+# 只对仓库所有者生效 —— 本仓库是公开的，个人代理约定不能默认施加给所有 clone 的人；
+# 生效条件与代理地址覆盖方式见该文件头部说明。
+if [ -r "$HOME/.bash-agent-proxy" ]; then
+    # shellcheck source=/dev/null
+    . "$HOME/.bash-agent-proxy"
+fi

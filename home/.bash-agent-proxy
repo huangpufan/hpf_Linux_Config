@@ -1,0 +1,138 @@
+# shellcheck shell=bash
+# 按命令注入代理的包装函数 —— 只对仓库所有者生效。
+#
+# 为什么需要它：codex / cursor-agent / gemini / grok / agy / devin 需要直连境外
+# （OpenAI、Google、cursor.com、codeium.com 等），在本网络环境下必须走本地代理；
+# 而其余命令不应该被代理影响（国内源、内网、apt/npm 镜像都不该绕出去）。
+# 所以做法是：交互 shell 保持无代理，只有这些命令在调用时临时注入代理环境变量。
+#
+# 为什么默认不生效：hpf_Linux_Config 是**公开仓库**。这套代理地址与端口是本机
+# 的个人约定，不能默认施加给所有 clone 的人。生效条件（满足任一）：
+#   1. 当前用户是仓库所有者 hpf
+#   2. 显式设置 HPF_AGENT_PROXY_ENABLE=1（例如在别的机器上想用同一套机制）
+#
+# 代理地址可用 HPF_AGENT_PROXY 覆盖，默认是本机 BoostNet 的环回地址。
+# 容器/云主机上代理换成 sing-box 时，只需改这一个环境变量，函数定义不用动：
+#   export HPF_AGENT_PROXY="http://127.0.0.1:1080"
+
+if [ "${USER:-$(id -un 2>/dev/null)}" = "hpf" ] || [ "${HPF_AGENT_PROXY_ENABLE:-0}" = "1" ]; then
+
+    # WSL mirrored networking 下 Windows 的环回服务可直接访问，所以代理在
+    # 127.0.0.1 上；容器里换成 sing-box 的监听地址即可。
+    __agent_proxy="${HPF_AGENT_PROXY:-http://127.0.0.1:7892}"
+
+    # grok CLI
+    grok() {
+        http_proxy="$__agent_proxy" \
+        https_proxy="$__agent_proxy" \
+        HTTP_PROXY="$__agent_proxy" \
+        HTTPS_PROXY="$__agent_proxy" \
+        all_proxy="$__agent_proxy" \
+        ALL_PROXY="$__agent_proxy" \
+        no_proxy="localhost,127.0.0.1,::1" \
+        NO_PROXY="localhost,127.0.0.1,::1" \
+        command "$HOME/.grok/bin/grok" "$@"
+    }
+
+    # Cursor CLI
+    cursor-agent() {
+        http_proxy="$__agent_proxy" \
+        https_proxy="$__agent_proxy" \
+        HTTP_PROXY="$__agent_proxy" \
+        HTTPS_PROXY="$__agent_proxy" \
+        all_proxy="$__agent_proxy" \
+        ALL_PROXY="$__agent_proxy" \
+        no_proxy="localhost,127.0.0.1,::1" \
+        NO_PROXY="localhost,127.0.0.1,::1" \
+        command cursor-agent "$@"
+    }
+
+    # Gemini CLI：OAuth 换 token 与 API 请求都要直连 Google，不走代理会卡在
+    # 授权后换 token 一步。GEMINI_FORCE_FILE_STORAGE=true 让 token 存到
+    # ~/.gemini/gemini-credentials.json（AES-256-GCM 加密），绕开 WSL 里没有
+    # 配置好的系统密钥环（否则登录后会弹 "Choose password for new keyring" 并卡住）。
+    gemini() {
+        GEMINI_FORCE_FILE_STORAGE=true \
+        http_proxy="$__agent_proxy" \
+        https_proxy="$__agent_proxy" \
+        HTTP_PROXY="$__agent_proxy" \
+        HTTPS_PROXY="$__agent_proxy" \
+        all_proxy="$__agent_proxy" \
+        ALL_PROXY="$__agent_proxy" \
+        no_proxy="localhost,127.0.0.1,::1" \
+        NO_PROXY="localhost,127.0.0.1,::1" \
+        command gemini "$@"
+    }
+
+    # Antigravity CLI（gemini CLI 的官方继承者），同样要直连 Google。
+    agy() {
+        http_proxy="$__agent_proxy" \
+        https_proxy="$__agent_proxy" \
+        HTTP_PROXY="$__agent_proxy" \
+        HTTPS_PROXY="$__agent_proxy" \
+        all_proxy="$__agent_proxy" \
+        ALL_PROXY="$__agent_proxy" \
+        no_proxy="localhost,127.0.0.1,::1" \
+        NO_PROXY="localhost,127.0.0.1,::1" \
+        command agy "$@"
+    }
+
+    # Codex：除 http(s) 外必须补 all_proxy/ALL_PROXY —— Codex 的部分请求走
+    # SOCKS/全协议代理，只给 http(s) 不够。代理只作用在 codex 这一条命令上。
+    codex() {
+        http_proxy="$__agent_proxy" \
+        https_proxy="$__agent_proxy" \
+        HTTP_PROXY="$__agent_proxy" \
+        HTTPS_PROXY="$__agent_proxy" \
+        all_proxy="$__agent_proxy" \
+        ALL_PROXY="$__agent_proxy" \
+        no_proxy="localhost,127.0.0.1,::1" \
+        NO_PROXY="localhost,127.0.0.1,::1" \
+        command codex "$@"
+    }
+
+    # Devin CLI（Rust 二进制，按标准代理环境变量走代理；登录与 API 分别访问
+    # server.codeium.com / api.devin.ai）。
+    # 另加 systemd scope 内存上限：devin 的 REPL 与 acp 子进程同处一个 scope，
+    # 单个会话失控时 cgroup OOM 只杀这个 scope，不连坐整机。所有实例归到
+    # devin.slice（合计上限 22G）。单进程默认 10G，可用 DEVIN_MEMMAX=20G 临时调大。
+    # systemd 用户管理器不可用时（例如容器里）自动回退为无上限直跑。
+    devin() {
+        if [ -z "${__devin_cgroup_ok+x}" ]; then
+            systemd-run --user --scope -q /bin/true >/dev/null 2>&1 \
+                && __devin_cgroup_ok=1 || __devin_cgroup_ok=0
+        fi
+        local __devin_cmd=(command devin)
+        if [ "$__devin_cgroup_ok" = 1 ]; then
+            __devin_cmd=(systemd-run --user --scope -q --collect \
+                --slice=devin.slice \
+                -p MemoryMax="${DEVIN_MEMMAX:-10G}" -p MemorySwapMax=4G \
+                -- "$(type -P devin)")
+        fi
+        http_proxy="$__agent_proxy" \
+        https_proxy="$__agent_proxy" \
+        HTTP_PROXY="$__agent_proxy" \
+        HTTPS_PROXY="$__agent_proxy" \
+        all_proxy="$__agent_proxy" \
+        ALL_PROXY="$__agent_proxy" \
+        no_proxy="localhost,127.0.0.1,::1" \
+        NO_PROXY="localhost,127.0.0.1,::1" \
+        "${__devin_cmd[@]}" "$@"
+    }
+
+    # Devin 多账号：复用上面的 devin() 代理包装，只额外隔离 XDG_DATA_HOME
+    # （凭证 credentials.toml、会话 sessions.db、日志）与 XDG_CONFIG_HOME
+    # （config.json）。首次使用需各跑一次 `devin1 auth login` / `devin2 auth login`。
+    devin1() {
+        XDG_DATA_HOME="$HOME/.local/share/devin1" \
+        XDG_CONFIG_HOME="$HOME/.config/devin1" \
+        devin "$@"
+    }
+
+    devin2() {
+        XDG_DATA_HOME="$HOME/.local/share/devin2" \
+        XDG_CONFIG_HOME="$HOME/.config/devin2" \
+        devin "$@"
+    }
+
+fi
