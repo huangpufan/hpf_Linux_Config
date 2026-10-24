@@ -369,7 +369,7 @@
           "script": "tools/curl/nvm.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\" && command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1 && [ \"$(nvm version default 2>/dev/null)\" != \"N/A\" ]",
+          "check_cmd": "nvm_dir=\"${NVM_DIR:-$HOME/.nvm}\"; [ -s \"$nvm_dir/nvm.sh\" ] && [ -s \"$nvm_dir/alias/default\" ] && for node in \"$nvm_dir\"/versions/node/*/bin/node; do [ -x \"$node\" ] && exit 0; done; exit 1",
           "timeout": 1800
         },
         {
@@ -531,7 +531,7 @@
           "script": "tools/npm/fkill.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "export NVM_DIR=\"$HOME/.nvm\"; [ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"; command -v fkill",
+          "check_cmd": "command -v fkill >/dev/null 2>&1 && exit 0; for bin in \"${NVM_DIR:-$HOME/.nvm}\"/versions/node/*/bin/fkill; do [ -x \"$bin\" ] && exit 0; done; exit 1",
           "timeout": 1800
         }
       ]
