@@ -6,6 +6,9 @@ linux-package-repository
 # AI agent run artifacts (not part of config distribution)
 .sisyphus/
 .codex/
+# Claude Code agent worktrees are nested git repos: committing one records a
+# gitlink with no .gitmodules entry, which breaks `git submodule` in every clone.
+.claude/worktrees/
 *.log
 .cache/
 __pycache__/
