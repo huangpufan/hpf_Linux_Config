@@ -157,7 +157,7 @@
           "script": "basic/config-install.sh",
           "requires_sudo": false,
           "requires_ssh": false,
-          "check_cmd": "test \"$(readlink ~/.tmux.conf)\" = \"$HOME/hpf_Linux_Config/home/.tmux.conf\" && test \"$(readlink ~/.config/herdr/config.toml)\" = \"$HOME/hpf_Linux_Config/home/.config/herdr/config.toml\"",
+          "check_cmd": "test ~/.tmux.conf -ef \"$HOME/hpf_Linux_Config/home/.tmux.conf\" && test ~/.config/herdr/config.toml -ef \"$HOME/hpf_Linux_Config/home/.config/herdr/config.toml\"",
           "timeout": 1800
         }
       ]
