@@ -98,7 +98,13 @@ python3 install-script/agent-runner.py preset all-tools
 # no login or credentials. Needs Node.js/npm, so install nvm first.
 python3 install-script/agent-runner.py preset agents
 python3 install-script/agent-runner.py check preset-agents
+
+# Then, on a machine that should become "mine" (both fetch PRIVATE repos over SSH, so run preset bootstrap first):
+python3 install-script/agent-runner.py install agent-config   # deploys agent configs; backs up what it overwrites
+python3 install-script/agent-runner.py install dsh-plugins    # clones dsh-plugins and runs its own self-installing runner
 ```
+Order for a new machine: `preset bootstrap` → `install nvm` → `preset agents` → `install agent-config` → `install dsh-plugins`
+(see `docs/agent-install-playbook.md`, section 4.1).
 
 Each install streams stdout/stderr to the terminal and writes a log to `~/.local/share/hpf-linux-config/logs/`.
 `all-tools` is the default `bootstrap + dev-full` preset chain; it does not include `nvim`, OpenHarmony, or personal-purpose scripts.

@@ -124,6 +124,45 @@ python3 install-script/agent-runner.py preset all-tools
 `all-tools` 会先执行 `bootstrap`，再进入 `dev-full` 预设；它不是
 OpenHarmony、Neovim 或个人专项脚本的全仓库穷尽安装。
 
+### 4.1 把一台新机器配成“我的机器”：完整顺序
+
+`all-tools` 之后，agent 配置和 dsh 插件各有一个独立的 tool，按下面的顺序（每一步都先 `--dry-run`，装完用 `check` 读回）：
+
+```bash
+python3 install-script/agent-runner.py preset bootstrap        # 1. GitHub SSH、git/gh、目录与 bashrc
+python3 install-script/agent-runner.py install nvm             # 2. Node.js（agents 预设和 dsh-plugins 都依赖它）
+python3 install-script/agent-runner.py preset agents           # 3. agent CLI 本体（不含登录与凭据）
+python3 install-script/agent-runner.py install agent-config    # 4. agent 配置（私有 submodule，覆盖前备份）
+python3 install-script/agent-runner.py install dsh-plugins     # 5. dsh 插件、profile、dsh-web 服务（私有仓库）
+```
+
+顺序的原因：
+
+- 第 4、5 步取回的是**私有**仓库，走 SSH，所以依赖第 1 步生成并上传的 SSH key，以及账号对
+  `huangpufan/agent-config`、`huangpufan/dsh-plugins` 的访问权限。第 4、5 步在连接 GitHub 前会先通过
+  `https://api.github.com/meta` 登记 GitHub 的 SSH 主机密钥，避免无 tty 会话卡在
+  “Are you sure you want to continue connecting?”；这一步不替代第 1 步的认证。
+- 第 4 步 `agent-config` 会**覆盖本机已有的 agent 配置**（`~/.claude/settings.json`、`~/.codex/config.toml`、
+  `~/.config/devin/config.json`、pi 的设置和扩展目录），覆盖前备份为 `<文件>.bak.<时间戳>`。已经有自己配置的机器上，
+  先 `bash agent-config/install.sh --check` 看漂移，再让用户确认。含密钥的配置（pi `models.json`、`opencode.json`）永不覆盖。
+- 第 5 步 `dsh-plugins` 默认放在 `~/project/dsh-plugins`（`DSH_PLUGINS_DIR` 可改）。目录已存在时只在已跟踪文件无改动时
+  `git pull --ff-only`，否则原样保留；之后运行它自带的 `node scripts/agent-runner.mjs apply`。
+
+`install dsh-plugins` 的退出码语义：
+
+| apply 退出码 | 含义 | 本 tool 的表现 |
+|---|---|---|
+| `0` | 已收敛 | 成功 |
+| `2` | 需要人处理（最常见：缺 API key；也可能是插件源码不在云端） | **按成功返回**，并打印 `needs you: see output above`；这不是安装失败 |
+| `1` | 还有可做的事（体积很大的下载，或已改动的本机配置在等确认） | 失败，并提示 `DSH_PLUGINS_APPLY_ARGS` |
+| `3` / 其它 | 某个修复步骤失败 | 原样透传 |
+
+`DSH_PLUGINS_APPLY_ARGS=--include-heavy` 允许下载体积很大的插件资产（`dsh-legao` 约 2.2 GiB），
+`DSH_PLUGINS_APPLY_ARGS=--overwrite-config` 允许覆盖本机已改动的配置（先备份）。两者都不默认开启，要先问用户。
+`check dsh-plugins` 只读，等价于在那个仓库里运行 `node scripts/agent-runner.mjs check`，只有它退出 `0` 才算就绪。
+如果取回的 dsh-plugins 里还没有 `scripts/agent-runner.mjs`，说明最新版本没有推送到 GitHub：tool 会直接报错并说明，
+需要在开发那份 dsh-plugins 的机器上先提交并推送，不要手工拼凑。
+
 ### 5. 先 dry-run，再执行
 
 单工具：

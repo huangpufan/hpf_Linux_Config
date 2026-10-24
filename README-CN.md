@@ -98,7 +98,13 @@ python3 install-script/agent-runner.py preset all-tools
 # 只装 CLI 本体，不处理登录与凭据；需要 Node.js/npm，先装 nvm
 python3 install-script/agent-runner.py preset agents
 python3 install-script/agent-runner.py check preset-agents
+
+# 之后，让这台机器变成“我的机器”（两步都会通过 SSH 取回私有仓库，所以要先跑过 preset bootstrap）：
+python3 install-script/agent-runner.py install agent-config   # 部署 agent 配置；覆盖前自动备份
+python3 install-script/agent-runner.py install dsh-plugins    # 取回 dsh-plugins，并运行它自带的自安装 runner
 ```
+新机器顺序：`preset bootstrap` → `install nvm` → `preset agents` → `install agent-config` → `install dsh-plugins`
+（详见 `docs/agent-install-playbook.md` 4.1 节）。
 
 所有安装执行都会把 stdout/stderr 实时输出到终端，并写入 `~/.local/share/hpf-linux-config/logs/`。
 `all-tools` 是 `bootstrap + dev-full` 默认预设链，不包含 `nvim`、OpenHarmony 或个人专项脚本。

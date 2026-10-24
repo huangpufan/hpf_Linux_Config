@@ -38,7 +38,7 @@ install-script/agent-tools.json      # 唯一 tool id / check_cmd catalog
 | `install-script/agent-runner.py` | 标准执行器 | 提供 `list`、`check`、`install`、`preset`；固定仓库路径 `~/hpf_Linux_Config` |
 | `install-script/agent-tools.json` | 工具目录 | 唯一 tool id、脚本路径、sudo 标记、`check_cmd` 来源 |
 | `install-script/presets/` | 预设组合入口 | `all-tools` 是 `bootstrap + dev-full`，不是全仓库穷尽安装；`agents` 只装 agent CLI 本体，不在 `all-tools` 里 |
-| `install-script/setup/` | 系统与账号配置 | Git identity、GitHub auth、apt/npm/cargo registry 等 |
+| `install-script/setup/` | 系统与账号配置 | Git identity、GitHub auth、apt/npm/cargo registry，以及取回私有仓库的 `agent-config`、`dsh-plugins` 等 |
 | `install-script/basic/` | 基础环境引导脚本 | 只保留仍被 catalog / presets 使用的脚本 |
 | `install-script/tools/` | 单工具安装脚本 | 一个工具一个脚本，供 catalog 引用 |
 | `install-script/openharmony/` | OpenHarmony 专用环境 | 不属于默认机器初始化 |
@@ -121,7 +121,8 @@ python3 install-script/agent-runner.py check nvim
 
 - `bootstrap` / `all-tools` 是仓库所有者的个人新机路径：默认会生成/上传 SSH key，并把 GitHub git protocol 切到 `ssh`。非 `hpf` 账户必须先确认并设置 `HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes` 与 `HPF_GIT_EMAIL`。
 - 预设的组合关系（以 `install-script/presets/*.sh` 为准）：`dev-full` 包含 `dev-cli`，`dev-cli` 包含 `minimal`；`all-tools` 是 `bootstrap + dev-full`，不包含 `nvim`、OpenHarmony 或个人专项脚本；`agents` 独立存在，只装 AI coding agent 的 CLI 本体，不在 `all-tools` 里。
-- `agent-config/` 是私有 submodule：`preset agents` 不会取回也不会部署它。取回用 `git submodule update --init agent-config`；部署用它自带的 `install.sh`，它会覆盖本机已有的 agent 配置（覆盖前备份），`--check` 只检查漂移。
+- `agent-config/` 是私有 submodule：`preset agents` 不会取回也不会部署它，由单独的 tool `agent-config`（`setup/agent-config.sh`）取回并运行它自带的 `install.sh`；这会覆盖本机已有的 agent 配置（覆盖前备份），`install.sh --check` 只检查漂移。
+- `dsh-plugins`（`setup/dsh-plugins.sh`）取回私有的 dsh-plugins 仓库并运行它自带的 runner；仓库是否就绪完全由它自己的 `check` 判定，本仓库不复制它的状态。两个私有仓库都走 SSH，取回前会先把 GitHub 的 SSH 主机密钥登记到 `~/.ssh/known_hosts`（来源 `api.github.com/meta`，`lib/common.sh` 的 `ensure_github_host_key`）。
 - `install-script/openharmony/` 仅在明确需要 OpenHarmony 环境时使用。
 - 本仓库不再维护额外的状态事实目录，也不把旧治理 skill 作为默认全局入口。
 

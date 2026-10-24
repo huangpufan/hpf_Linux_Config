@@ -159,6 +159,26 @@
           "requires_ssh": false,
           "check_cmd": "test ~/.tmux.conf -ef \"$HOME/hpf_Linux_Config/home/.tmux.conf\" && test ~/.config/herdr/config.toml -ef \"$HOME/hpf_Linux_Config/home/.config/herdr/config.toml\"",
           "timeout": 1800
+        },
+        {
+          "id": "agent-config",
+          "name": "Agent 配置",
+          "description": "取回 agent-config 私有子模块并部署到 $HOME（pi/codex/claude/devin 配置）；覆盖前自动备份；需先装 preset agents",
+          "script": "setup/agent-config.sh",
+          "requires_sudo": false,
+          "requires_ssh": true,
+          "check_cmd": "test -f \"$HOME/hpf_Linux_Config/agent-config/install.sh\" && bash \"$HOME/hpf_Linux_Config/agent-config/install.sh\" --check >/dev/null 2>&1",
+          "timeout": 1800
+        },
+        {
+          "id": "dsh-plugins",
+          "name": "dsh 插件与配置",
+          "description": "取回私有 dsh-plugins 并运行其 runner apply（插件、profile、dsh-web 服务）；缺 API key 会提示；大体积插件需 DSH_PLUGINS_APPLY_ARGS=--include-heavy",
+          "script": "setup/dsh-plugins.sh",
+          "requires_sudo": false,
+          "requires_ssh": true,
+          "check_cmd": "node \"${DSH_PLUGINS_DIR:-$HOME/project/dsh-plugins}/scripts/agent-runner.mjs\" check",
+          "timeout": 7200
         }
       ]
     },
