@@ -140,13 +140,31 @@ python3 install-script/agent-runner.py preset minimal --dry-run
 python3 install-script/agent-runner.py preset minimal
 ```
 
-支持的 preset 名称：
+支持的 preset 名称以 `python3 install-script/agent-runner.py list` 的“预设组合”一节为准（runner 里的 `PRESET_TOOL_IDS` 是它的来源），当前为：
 
 - `bootstrap`
 - `minimal`
 - `dev-cli`
 - `dev-full`
 - `all-tools`
+- `agents`
+
+其中 `agents` 只安装 pi、codex、claude、opencode、gemini、cursor-agent、devin、kimi 的 CLI 本体，
+不处理登录与凭据，也**不属于** `all-tools`。它需要 Node.js/npm（先装 `nvm`），验收同样走
+`check_cmd`（`python3 install-script/agent-runner.py check preset-agents`）。
+
+这些 agent 的**配置**不在 `agents` 预设里，而在私有 submodule `agent-config/`（配置正本，不含任何密钥；
+含密钥的配置只有 `templates/*.example` 脱敏模板，真实 key 仍需用户自己填）。新 clone 里它是空目录：
+
+```bash
+git submodule update --init agent-config
+# 先只看会改什么（不改任何文件）
+bash agent-config/install.sh --check
+```
+
+`agent-config/install.sh`（不带 `--check`）会把配置部署到 `$HOME`：`~/.pi/agent/extensions` 用 symlink，
+`~/.claude/settings.json`、`~/.codex/config.toml` 等用拷贝，**覆盖前先备份**为 `<文件>.bak.<时间戳>`。
+在已经有自己 agent 配置的机器上，执行前先 `--check` 并让用户确认。
 
 ## 单工具补充：Neovim
 

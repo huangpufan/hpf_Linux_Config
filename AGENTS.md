@@ -12,12 +12,13 @@
 
 ## 安装时该看哪个文件夹
 
-- `install-script/presets/`：预设组合入口，例如 `minimal`、`dev-cli`、`dev-full`、`all-tools`
+- `install-script/presets/`：预设组合入口：`bootstrap`、`minimal`、`dev-cli`、`dev-full`、`all-tools`、`agents`；以 `python3 install-script/agent-runner.py list` 的输出为准，不要凭文档里的清单推断
 - `install-script/setup/`：系统与账号配置，例如 Git 身份、GitHub 认证、apt 镜像、npm/cargo registry
 - `install-script/basic/`：基础环境引导与兼容性脚本
 - `install-script/tools/`：单工具安装脚本，一个工具一个脚本
 - `install-script/openharmony/`：OpenHarmony 专用环境与依赖，不属于默认机器初始化
 - `nvim/`：编辑器配置，不是整机安装主入口
+- `agent-config/`：AI coding agent 配置正本（私有 submodule，不含任何密钥）；`preset agents` 只装 CLI 本体，不取回也不部署它
 
 ## 仓库约定
 
@@ -25,6 +26,8 @@
 - runner 优先：优先用 `python3 install-script/agent-runner.py ...`，不要默认直接执行脚本
 - `github-auth` 单工具默认走 `gh + HTTPS`
 - `bootstrap` / `all-tools` 是本仓库所有者的个人新机路径，默认会生成/上传 SSH key，并把 GitHub git protocol 切到 `ssh`
+- `agents` 预设只安装 pi、codex、claude、opencode、gemini、cursor-agent、devin、kimi 的 CLI 本体，不处理登录与凭据，也不属于 `all-tools`
+- `agent-config` 是私有 submodule：新 clone 里它是空目录，需先 `git submodule update --init agent-config`；部署脚本 `agent-config/install.sh` 会覆盖本机已有的 agent 配置（先备份），`--check` 只检查漂移、不改任何文件。不要在没确认前直接跑不带 `--check` 的 `install.sh`
 - 执行 `bootstrap` / `all-tools` 前先探测当前账户；如果是 `hpf`，直接执行；如果不是 `hpf`，必须先问用户是否仍要执行个人 SSH bootstrap，并确认 Git 邮箱，获准后用 `HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes` 和 `HPF_GIT_EMAIL` 执行
 - 支持 Ubuntu 20.04 / 22.04 / 24.04；其中 Ubuntu 24.04 的换源走 `ubuntu.sources`，不是旧的 `sources.list`
 - 所有修改完成后必须 `git add -A && git commit && git push`，不允许只改不推

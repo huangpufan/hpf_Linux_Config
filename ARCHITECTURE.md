@@ -18,7 +18,7 @@ install-script/agent-runner.py       # 唯一推荐执行入口
       ▼
 install-script/agent-tools.json      # 唯一 tool id / check_cmd catalog
       │
-      ├─ presets/                    # bootstrap、minimal、dev-cli、dev-full、all-tools
+      ├─ presets/                    # bootstrap、minimal、dev-cli、dev-full、all-tools、agents
       ├─ setup/                      # Git/GitHub、registry、系统/账号配置
       ├─ basic/                      # 基础环境引导与兼容脚本
       ├─ tools/                      # 单工具安装脚本
@@ -37,13 +37,14 @@ install-script/agent-tools.json      # 唯一 tool id / check_cmd catalog
 | `docs/agent-install-playbook.md` | 安装与检查任务的操作手册 | 记录 Ubuntu 20.04/22.04/24.04、bootstrap 个人路径、Neovim 验收 |
 | `install-script/agent-runner.py` | 标准执行器 | 提供 `list`、`check`、`install`、`preset`；固定仓库路径 `~/hpf_Linux_Config` |
 | `install-script/agent-tools.json` | 工具目录 | 唯一 tool id、脚本路径、sudo 标记、`check_cmd` 来源 |
-| `install-script/presets/` | 预设组合入口 | `all-tools` 是 `bootstrap + dev-full`，不是全仓库穷尽安装 |
+| `install-script/presets/` | 预设组合入口 | `all-tools` 是 `bootstrap + dev-full`，不是全仓库穷尽安装；`agents` 只装 agent CLI 本体，不在 `all-tools` 里 |
 | `install-script/setup/` | 系统与账号配置 | Git identity、GitHub auth、apt/npm/cargo registry 等 |
 | `install-script/basic/` | 基础环境引导脚本 | 只保留仍被 catalog / presets 使用的脚本 |
 | `install-script/tools/` | 单工具安装脚本 | 一个工具一个脚本，供 catalog 引用 |
 | `install-script/openharmony/` | OpenHarmony 专用环境 | 不属于默认机器初始化 |
 | `home/` | GNU Stow 运行时配置根目录 | 通过 `stow home -t $HOME` 部署到 `$HOME` |
 | `nvim/` | Neovim 配置 | 通过 runner 安装并链接到 `~/.config/nvim`，不走 stow |
+| `agent-config/` | AI coding agent 配置正本 | 私有 git submodule，不含密钥；自带 `install.sh` 部署到 `$HOME`（symlink 或拷贝+备份），`--check` 只检查漂移 |
 
 ## Runner-first 安装模型
 
@@ -119,7 +120,8 @@ python3 install-script/agent-runner.py check nvim
 ## 个人路径与非默认范围
 
 - `bootstrap` / `all-tools` 是仓库所有者的个人新机路径：默认会生成/上传 SSH key，并把 GitHub git protocol 切到 `ssh`。非 `hpf` 账户必须先确认并设置 `HPF_BOOTSTRAP_CONFIRM_PERSONAL=yes` 与 `HPF_GIT_EMAIL`。
-- `all-tools` 是 `bootstrap + dev-full`，不包含 `nvim`、OpenHarmony 或个人专项脚本。
+- 预设的组合关系（以 `install-script/presets/*.sh` 为准）：`dev-full` 包含 `dev-cli`，`dev-cli` 包含 `minimal`；`all-tools` 是 `bootstrap + dev-full`，不包含 `nvim`、OpenHarmony 或个人专项脚本；`agents` 独立存在，只装 AI coding agent 的 CLI 本体，不在 `all-tools` 里。
+- `agent-config/` 是私有 submodule：`preset agents` 不会取回也不会部署它。取回用 `git submodule update --init agent-config`；部署用它自带的 `install.sh`，它会覆盖本机已有的 agent 配置（覆盖前备份），`--check` 只检查漂移。
 - `install-script/openharmony/` 仅在明确需要 OpenHarmony 环境时使用。
 - 本仓库不再维护额外的状态事实目录，也不把旧治理 skill 作为默认全局入口。
 

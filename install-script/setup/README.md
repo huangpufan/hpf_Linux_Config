@@ -22,19 +22,21 @@
 
 ## 脚本列表
 
+本目录（`install-script/setup/`）里的脚本：
+
 | 脚本 | 说明 |
 |------|------|
-| `bashrc-init.sh` | 初始化 bashrc 配置 |
-| `folder-create.sh` | 创建标准工作目录结构 |
-| `ubuntu-source-change.sh` | 更换 Ubuntu apt 软件源 |
 | `git-identity.sh` | 配置 git user.name / user.email |
 | `github-auth.sh` | 使用 gh 完成 GitHub HTTPS 认证 |
 | `github-ssh.sh` | 使用 gh 生成/上传 SSH key，并切换到 SSH |
 | `npm-registry.sh` | 配置 npm 镜像源 |
 | `cargo-registry.sh` | 配置 cargo 镜像源 |
-| `profile-set.sh` | 配置 profile 文件 |
-| `hosts-adjust.sh` | 调整 hosts 文件 |
-| `dns-adjust.sh` | 调整 DNS 配置 |
+
+下列同属 runner 目录“系统配置”一类，但脚本实际放在 `install-script/basic/`：
+`bashrc-init.sh`（bashrc）、`folder-create.sh`、`ubuntu-source-change.sh`（`source-change`）、
+`config-install.sh`（`configs`）。`profile-set.sh`、`hosts-adjust.sh`、`dns-adjust.sh` 也在 `basic/`，
+没有 catalog 条目，runner 不会调度它们。
+以 `python3 install-script/agent-runner.py list` 的输出为准。
 
 ## 使用方式
 

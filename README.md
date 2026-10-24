@@ -14,7 +14,7 @@
 - **Deterministic Runner** - Standard-library Python entrypoint for `list`, `check`, `install`, and `preset`.
 - **GitHub Auth Flow** - The `github-auth` tool defaults to `gh + HTTPS`; the personal-machine `bootstrap` preset generates/uploads an SSH key and switches GitHub to SSH.
 - **Modular Scripts** - Each tool keeps its own install script under `install-script/`.
-- **Preset Bundles** - `minimal`, `dev-cli`, `dev-full`, and `all-tools`, where `all-tools` means the default `bootstrap + dev-full` preset chain.
+- **Preset Bundles** - `bootstrap`, `minimal`, `dev-cli`, `dev-full`, `all-tools` and `agents`, where `all-tools` means the default `bootstrap + dev-full` preset chain and `agents` installs the AI coding agent CLIs only (not part of `all-tools`). `python3 install-script/agent-runner.py list` is the authoritative list.
 - **Neovim Config** - Included config for C/C++ development with LSP support and scoped snacks.nvim utility modules.
 - **Agent Config Submodule** - `agent-config/` (submodule) is the source of truth for AI coding agent configs — pi's local extensions plus codex/claude/devin settings. It holds no secrets: key-bearing configs ship as `templates/*.example` only.
 
@@ -93,6 +93,11 @@ python3 install-script/agent-runner.py preset minimal
 python3 install-script/agent-runner.py preset dev-cli
 python3 install-script/agent-runner.py preset dev-full
 python3 install-script/agent-runner.py preset all-tools
+
+# AI coding agent CLIs (pi, codex, claude, opencode, gemini, cursor-agent, devin, kimi): CLI bodies only,
+# no login or credentials. Needs Node.js/npm, so install nvm first.
+python3 install-script/agent-runner.py preset agents
+python3 install-script/agent-runner.py check preset-agents
 ```
 
 Each install streams stdout/stderr to the terminal and writes a log to `~/.local/share/hpf-linux-config/logs/`.

@@ -9,10 +9,14 @@
 
 | 预设 | 说明 |
 |------|------|
+| `bootstrap.sh` | 个人新机引导：目录、bashrc、git/gh、GitHub 认证、SSH key 上传；非 `hpf` 账户需显式确认 |
 | `minimal.sh` | 最小工具集：基础命令行工具 |
 | `dev-cli.sh` | 命令行开发环境：现代 CLI 工具 |
 | `dev-full.sh` | 完整开发环境：包含编译器和调试工具 |
 | `all-tools.sh` | 全量预设链：执行 `bootstrap + dev-full`，不包含 Neovim、OpenHarmony 或个人专项脚本 |
+| `agents.sh` | AI coding agent CLI：pi、codex、claude、opencode、gemini、cursor-agent、devin、kimi；只装 CLI 本体，不处理登录与凭据，不在 `all-tools` 里；需要 Node.js/npm（先装 `nvm`） |
+
+可用预设的权威清单是 `python3 install-script/agent-runner.py list`。
 
 ## 使用方式
 

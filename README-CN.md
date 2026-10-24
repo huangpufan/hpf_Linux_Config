@@ -14,7 +14,8 @@
 - **Deterministic Runner** - 使用 Python 标准库提供统一的 `list`、`check`、`install`、`preset` 入口。
 - **GitHub 认证流程** - `github-auth` 单工具默认 `gh + HTTPS`；个人新机 `bootstrap` 默认生成/上传 SSH key 并切到 SSH。
 - **模块化脚本** - 每个工具保留独立安装脚本，位于 `install-script/`。
-- **预设组合** - 提供 `minimal`、`dev-cli`、`dev-full`、`all-tools`，其中 `all-tools` 表示 `bootstrap + dev-full` 默认预设链。
+- **预设组合** - 提供 `bootstrap`、`minimal`、`dev-cli`、`dev-full`、`all-tools`、`agents`：`all-tools` 表示 `bootstrap + dev-full` 默认预设链；`agents` 只安装 AI coding agent 的 CLI 本体，不属于 `all-tools`。以 `python3 install-script/agent-runner.py list` 的输出为准。
+- **Agent 配置子模块** - `agent-config/`（私有 submodule）是各 AI coding agent 配置的正本：pi 的本地扩展，以及 codex / claude / opencode / devin 的设置。它不含任何密钥，含密钥的配置只提供 `templates/*.example` 脱敏模板。
 - **Neovim 配置** - 内置面向 C/C++ 开发的 Neovim 配置，并小范围使用 snacks.nvim 实用模块。
 
 ## 快速开始
@@ -92,6 +93,11 @@ python3 install-script/agent-runner.py preset minimal
 python3 install-script/agent-runner.py preset dev-cli
 python3 install-script/agent-runner.py preset dev-full
 python3 install-script/agent-runner.py preset all-tools
+
+# AI coding agent CLI（pi、codex、claude、opencode、gemini、cursor-agent、devin、kimi）：
+# 只装 CLI 本体，不处理登录与凭据；需要 Node.js/npm，先装 nvm
+python3 install-script/agent-runner.py preset agents
+python3 install-script/agent-runner.py check preset-agents
 ```
 
 所有安装执行都会把 stdout/stderr 实时输出到终端，并写入 `~/.local/share/hpf-linux-config/logs/`。
@@ -128,6 +134,9 @@ hpf_Linux_Config/
 │   ├── basic/
 │   └── lib/
 ├── nvim/                          # 通过 agent-runner.py install nvim 安装/链接
+├── agent-config/                  # submodule → huangpufan/agent-config（私有）
+│                                  #   AI coding agent 配置正本：pi 扩展 + codex/claude/opencode/devin 配置
+│                                  #   部署：cd agent-config && ./install.sh（覆盖前备份；--check 只检查漂移）
 └── makefile
 ```
 
